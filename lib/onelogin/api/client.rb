@@ -1,7 +1,8 @@
-require "httparty"
 require 'json'
-require 'time'
+require "httparty"
+require "onelogin/api/version"
 require 'nokogiri'
+require 'time'
 
 module OneLogin
   module Api
@@ -14,10 +15,12 @@ module OneLogin
   	# 
   	class Client
 
-      attr_accessor :settings, :error, :error_description
+      attr_accessor :settings, :user_agent, :error, :error_description
 
       NOKOGIRI_OPTIONS = Nokogiri::XML::ParseOptions::STRICT |
                          Nokogiri::XML::ParseOptions::NONET
+
+      DEFAULT_USER_AGENT = "onelogin-ruby-sdk v#{OneLogin::Api::VERSION}"
 
       # Create a new instance of the Client.
       #
@@ -25,6 +28,7 @@ module OneLogin
       #
       def initialize(path=nil)
         @settings = OneLogin::Api::Util::Settings.new(path)
+        @user_agent = DEFAULT_USER_AGENT
       end
 
       # Clean any previous error registered at the client.
@@ -176,7 +180,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -225,7 +230,8 @@ module OneLogin
           }
 
           headers = {
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -275,7 +281,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -318,7 +325,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.get(
@@ -376,7 +384,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           users = []
@@ -442,7 +451,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.get(
@@ -486,7 +496,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.get(
@@ -535,7 +546,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.get(
@@ -580,7 +592,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.get(
@@ -632,7 +645,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -683,7 +697,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.put(
@@ -733,7 +748,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.put(
@@ -780,7 +796,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.put(
@@ -829,7 +846,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.put(
@@ -885,7 +903,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.put(
@@ -932,7 +951,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.put(
@@ -974,7 +994,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.put(
@@ -1022,7 +1043,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.put(
@@ -1064,7 +1086,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.delete(
@@ -1110,7 +1133,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           unless allowed_origin.nil? || allowed_origin.empty?
@@ -1171,7 +1195,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -1227,7 +1252,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           roles = []
@@ -1293,7 +1319,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.get(
@@ -1339,7 +1366,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           event_types = []
@@ -1399,7 +1427,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           events = []
@@ -1465,7 +1494,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.get(
@@ -1515,7 +1545,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -1560,7 +1591,8 @@ module OneLogin
           query_parameters = {}
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           groups = []
@@ -1624,7 +1656,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.get(
@@ -1687,7 +1720,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -1747,7 +1781,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -1797,7 +1832,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -1853,7 +1889,8 @@ module OneLogin
 
           headers = {
             'Authorization' => authorization,
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
+            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -1896,8 +1933,13 @@ module OneLogin
             'email'=> email
           }
 
+          headers = {
+            'User-Agent' => @user_agent
+          }
+
           response = HTTParty.get(
             url,
+            :headers => headers,
             :query => data
           )
 
