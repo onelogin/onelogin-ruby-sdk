@@ -88,7 +88,7 @@ module OneLogin
       end
 
       def is_expired
-        return Time.now.utc < @expiration
+        return Time.now.utc > @expiration
       end
 
       def prepare_token
