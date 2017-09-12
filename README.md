@@ -11,11 +11,11 @@ The toolkit is hosted on github. You can download it from:
 * Master repo: https://github.com/onelogin/onelogin-ruby-sdk/tree/master
 
 #### rubygem
-The toolkit is hosted in rubygem, you can find the onelogin-ruby-sdk package at http://www.rubygems.org/gems/onelogin-ruby-sdk
+The toolkit is hosted in rubygem, you can find the package at http://www.rubygems.org/gems/onelogin
 
 You can install it executing:
 ```
-$ gem install onelogin-ruby-sdk
+$ gem install onelogin
 ```
 
 
@@ -57,7 +57,7 @@ Following there is Ruby code that executes calls to any available API methods.
 It assumes that there are 2 users on the OneLogin instance: 'user@example.com' and other with MFA enabled 'usermfa@example.com' and some roles, custom attributes and groups defined.
 
 ```ruby
-require "onelogin-ruby-sdk"
+require "onelogin"
 
 path = File.dirname(File.expand_path(__FILE__))
 client = OneLogin::Api::Client.new(path)

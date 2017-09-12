@@ -3,14 +3,14 @@ $:.push File.expand_path("../lib", __FILE__)
 require "onelogin/api/version"
 
 Gem::Specification.new do |s|
-  s.name              = "onelogin-ruby-sdk"
+  s.name              = "onelogin"
   s.version           = OneLogin::Api::VERSION
   s.platform          = Gem::Platform::RUBY
   s.authors           = ["OneLogin"]
   s.email             = ["support@onelogin.com"]
   s.license           = 'MIT'
   s.homepage          = "https://github.com/onelogin/onelogin-ruby-sdk"
-  s.rubyforge_project = %q{http://www.rubygems.org/gems/onelogin-ruby-sdk}
+  s.rubyforge_project = %q{http://www.rubygems.org/gems/onelogin}
   s.summary           = %q{OneLogin's Ruby SDK.}
   s.description       = %q{OneLogin's Ruby SDK. Use this API client to interact with OneLogin's platform}
   s.extra_rdoc_files = [
