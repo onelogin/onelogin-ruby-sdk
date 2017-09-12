@@ -58,8 +58,7 @@ module OneLogin
         SEND_INVITE_LINK_URL = "https://api.%s.onelogin.com/api/1/invites/send_invite_link"
 
         # Embed Apps URL
-        #EMBED_APP_URL = "https://api.onelogin.com/client/apps/embed2"
-        EMBED_APP_URL = "http://pitbulk.no-ip.org/newonelogin/demo1/xxx.php"
+        EMBED_APP_URL = "https://api.onelogin.com/client/apps/embed2"
       end
     end
   end
