@@ -13,9 +13,9 @@ module OneLogin
         ONELOGIN_PROPERTIES_FILE = "onelogin.sdk.ini"
         CLIENT_ID_KEY = "onelogin.sdk.client_id"
         CLIENT_SECRET_KEY = "onelogin.sdk.client_secret"
-        INSTANCE = "onelogin.sdk.instance"
+        REGION = "onelogin.sdk.region"
 
-        attr_accessor :client_id, :client_secret, :instance
+        attr_accessor :client_id, :client_secret, :region
 
         # Creates a new instance of Settings.
         #
@@ -35,7 +35,7 @@ module OneLogin
           settings = YAML::load_file(filename)
           @client_id = settings[CLIENT_ID_KEY]
           @client_secret = settings[CLIENT_SECRET_KEY]
-          @instance = settings[INSTANCE]
+          @region = settings.fetch(REGION, 'us')
         end
 
         # Build the URL of the API endpoint
@@ -45,9 +45,9 @@ module OneLogin
         #
         def get_url(base, obj_id=nil)
           if obj_id.nil? || obj_id.to_s.empty?
-            base % [@instance]
+            base % [@region]
           else
-            base % [@instance, obj_id]
+            base % [@region, obj_id]
           end
         end
       end
