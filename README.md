@@ -39,7 +39,7 @@ If you don't have an account you can [sign up for a free developer account here]
 |---|---|
 |client_id|Required: A valid OneLogin API client_id|   
 |client_secret|Required: A valid OneLogin API client_secret|   
-|region| Optional: The location of your data. Possible values `us` or `eu`. Defaults to `us`   |   
+|region| Optional: `us` or `eu`. Defaults to `us`   |   
 
 ```ruby
 require 'onelogin'
@@ -47,7 +47,7 @@ require 'onelogin'
 client = OneLogin::Api::Client.new(
     client_id: '', 
     client_secret:'',
-    region: 'Location of instance. Possible values "us" or "eu", Defaults to "us"'
+    region: 'us'
 )
 
 # Now you can make requests 
