@@ -32,7 +32,7 @@ RSpec.describe OneLogin do
       )
       
       expect(client.region).to eq("us")
-    end
+    end 
 
     it 'can be set to "eu"' do 
       client = OneLogin::Api::Client.new(
