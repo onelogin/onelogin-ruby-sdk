@@ -17,6 +17,7 @@ module OneLogin
     class Client
       include OneLogin::Api::Utils
 
+      attr_accessor :client_id, :client_secret, :region
       attr_accessor :user_agent, :error, :error_description
 
       NOKOGIRI_OPTIONS = Nokogiri::XML::ParseOptions::STRICT |
@@ -31,12 +32,20 @@ module OneLogin
       def initialize(config)
         options = Hash[config.map { |(k, v)| [k.to_sym, v] }]
 
-        @client_id = options[:client_id]
+        @client_id = options[:client_id] 
         @client_secret = options[:client_secret]
         @region = options[:region] || 'us'
 
+        validate_config
+
         #@url_builder = OneLogin::Api::Util::UrlBuilder.new(options)
         @user_agent = DEFAULT_USER_AGENT
+      end
+
+      def validate_config
+        unless @client_id && @client_secret
+          raise ArgumentError, "A valid client_id & client_secret are required to use this sdk"
+        end
       end
 
       # Clean any previous error registered at the client.
