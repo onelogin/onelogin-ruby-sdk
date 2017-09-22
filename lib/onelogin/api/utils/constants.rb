@@ -6,7 +6,7 @@ module OneLogin
       # This class defines all the constants that will be used
       # in the OneLogin's Ruby SDK.
       #
-      class Constants
+      module Constants
         # OAuth2 Tokens URLs
         TOKEN_REQUEST_URL = "https://api.%s.onelogin.com/auth/oauth2/token"
         TOKEN_REFRESH_URL = "https://api.%s.onelogin.com/auth/oauth2/token"
