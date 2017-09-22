@@ -37,7 +37,7 @@ require 'onelogin'
 client = OneLogin::Api::Client.new(
     client_id: '', 
     client_secret:'',
-    region: ''
+    region: 'Location of instance. Possible values "us" or "eu", Defaults to "us"'
 )
 
 # Now you can make requests 
