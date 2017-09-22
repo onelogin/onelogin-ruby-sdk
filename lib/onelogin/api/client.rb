@@ -1,5 +1,5 @@
 require "onelogin/version"
-require "onelogin/api/utils"
+require "onelogin/api/util"
 require 'json'
 require "httparty"
 require 'nokogiri'
@@ -15,7 +15,7 @@ module OneLogin
     # at https://developers.onelogin.com/api-docs/1/getting-started/dev-overview.
   	# 
     class Client
-      include OneLogin::Api::Utils
+      include OneLogin::Api::Util
 
       attr_accessor :client_id, :client_secret, :region
       attr_accessor :user_agent, :error, :error_description

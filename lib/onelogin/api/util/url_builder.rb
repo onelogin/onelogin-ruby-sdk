@@ -1,11 +1,6 @@
-require 'yaml'
-
 module OneLogin
   module Api
-    module Utils
-
-      # Endpoints class of the OneLogin's Ruby SDK.
-      #
+    module Util
       module UrlBuilder
 
         # Build the URL of the API endpoint

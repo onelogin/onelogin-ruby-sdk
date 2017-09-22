@@ -1,3 +1,0 @@
-onelogin.sdk.client_id: <OneLogin OAuth2 client ID>
-onelogin.sdk.client_secret: <OneLogin OAuth2 client secret>
-onelogin.sdk.instance: <OneLogin instance, us or eu>
