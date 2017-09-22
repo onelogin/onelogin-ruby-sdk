@@ -14,6 +14,10 @@ Gem::Specification.new do |spec|
   spec.rubyforge_project = %q{http://www.rubygems.org/gems/onelogin-ruby-sdk}
   spec.summary           = %q{OneLogin's Ruby SDK.}
   spec.description       = %q{OneLogin's Ruby SDK. Use this API client to interact with OneLogin's platform}
+  spec.extra_rdoc_files = [
+    "LICENSE",
+    "README.md"
+  ]
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
@@ -30,6 +34,7 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
+  spec.required_ruby_version = '>= 1.9.3'
 
   spec.add_runtime_dependency('httparty', '>=0.13.7')
   spec.add_runtime_dependency('nokogiri', '>=1.6.3.1')
