@@ -31,6 +31,16 @@ Or install it yourself as:
 
 ## Getting started
 
+You'll need a OneLogin account and a set of API credentials before you get started. 
+
+If you don't have an account you can [sign up for a free developer account here](https://www.onelogin.com/developer-signup).
+
+|||
+|---|---|
+|client_id|Required: A valid OneLogin API client_id|   
+|client_secret|Required: A valid OneLogin API client_secret|   
+|region| Optional: The location of your data. Possible values `us` or `eu`. Defaults to `us`   |   
+
 ```ruby
 require 'onelogin'
 
