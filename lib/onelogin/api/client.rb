@@ -841,6 +841,7 @@ module OneLogin
       # @param user_id [Integer] Id of the user
       # @param password [String] Set to the password value using cleartext.
       # @param password_confirmation [String] Ensure that this value matches the password value exactly.
+      # @validate_policy [Boolean] Force validation against assigned OneLogin user password policy
       #
       # @return [Boolean] if the action succeed
       #
