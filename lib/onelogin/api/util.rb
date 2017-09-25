@@ -3,7 +3,7 @@ require 'onelogin/api/util/url_builder'
 
 module OneLogin
   module Api
-    module Utils
+    module Util
       include OneLogin::Api::Util::Constants
       include OneLogin::Api::Util::UrlBuilder
     end

@@ -38,7 +38,6 @@ module OneLogin
 
         validate_config
 
-        #@url_builder = OneLogin::Api::Util::UrlBuilder.new(options)
         @user_agent = DEFAULT_USER_AGENT
       end
 
