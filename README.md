@@ -1,4 +1,4 @@
-# Onelogin Ruby SDK
+# OneLogin Ruby SDK
 
 This SDK will let you execute all the API methods, version/1, described
 at https://developers.onelogin.com/api-docs/1/getting-started/dev-overview.
@@ -62,7 +62,7 @@ http://www.rubydoc.info/github/onelogin/onelogin-ruby-sdk
 
 ### Errors and exceptions
 
-Onelogin's API can return 400, 401, 403 or 404 when there was any issue executing the action. When that happens, the methods of the SDK will include error and errorMessage in the client. Use `error` and `error_description` of the Client to retrieve them.
+OneLogin's API can return 400, 401, 403 or 404 when there was any issue executing the action. When that happens, the methods of the SDK will include error and errorMessage in the client. Use `error` and `error_description` of the Client to retrieve them.
 
 ```ruby
 users = client.get_users
