@@ -41,9 +41,8 @@ module OneLogin
       end
 
       def validate_config
-        unless @client_id && @client_secret
-          raise ArgumentError, "A valid client_id & client_secret are required to use this sdk"
-        end
+        raise ArgumentError, 'client_id & client_secret are required'
+          unless @client_id && @client_secret
       end
 
       # Clean any previous error registered at the client.
