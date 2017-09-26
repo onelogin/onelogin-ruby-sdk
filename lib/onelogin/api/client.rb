@@ -179,7 +179,7 @@ module OneLogin
       # @return [OneLoginToken] Returns the generated OAuth Token info
       #
       # @see {https://developers.onelogin.com/api-docs/1/oauth20-tokens/generate-tokens Generate Tokens documentation}
-      def get_access_token()
+      def get_access_token
         clean_error
 
         begin
@@ -580,7 +580,7 @@ module OneLogin
       # @return [Array] the custom attributes of the account
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/get-custom-attributes Get Custom Attributes documentation}
-      def get_custom_attributes()
+      def get_custom_attributes
         clean_error
         prepare_token
 
@@ -1349,7 +1349,7 @@ module OneLogin
       # @return [Array] the list of event type
       #
       # @see {https://developers.onelogin.com/api-docs/1/events/event-types Get Event Types documentation}
-      def get_event_types()
+      def get_event_types
         clean_error
         prepare_token
 
