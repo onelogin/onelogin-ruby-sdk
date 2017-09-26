@@ -1,22 +1,28 @@
-# OneLogin's Ruby SDK
+# OneLogin Ruby SDK
 
 This SDK will let you execute all the API methods, version/1, described
 at https://developers.onelogin.com/api-docs/1/getting-started/dev-overview.
 
-## Installation
-### Hosting
-#### Github
 The toolkit is hosted on github. You can download it from:
 * Lastest release: https://github.com/onelogin/onelogin-ruby-sdk/releases/latest
 * Master repo: https://github.com/onelogin/onelogin-ruby-sdk/tree/master
 
-#### rubygem
-The toolkit is hosted in rubygem, you can find the package at http://www.rubygems.org/gems/onelogin
 
-You can install it executing:
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'onelogin'
 ```
-$ gem install onelogin
-```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install onelogin
 
 
 ### Dependencies
@@ -25,43 +31,53 @@ $ gem install onelogin
 
 ## Getting started
 
-### Rubydoc
+You'll need a OneLogin account and a set of API credentials before you get started. 
 
-Rubydoc of this SDK is published at:
+If you don't have an account you can [sign up for a free developer account here](https://www.onelogin.com/developer-signup).
+
+|||
+|---|---|
+|client_id|Required: A valid OneLogin API client_id|   
+|client_secret|Required: A valid OneLogin API client_secret|   
+|region| Optional: `us` or `eu`. Defaults to `us`   |   
+
+```ruby
+require 'onelogin'
+
+client = OneLogin::Api::Client.new(
+    client_id: '', 
+    client_secret:'',
+    region: 'us'
+)
+
+# Now you can make requests 
+client.get_users
+```
+
+For all methods see Rubydoc of this SDK published at:
 http://www.rubydoc.info/github/onelogin/onelogin-ruby-sdk
 
 
-### Settings
-
-SDK settings are stored in a file named *onelogin.sdk.ini* (YAML format).
-A template can be found at *lib/onelogin/sdk* folder.
-
-The SDK has 3 settings parameters:
-* onelogin.sdk.client_id  OneLogin OAuth2 client ID
-* onelogin.sdk.client_secret  OneLogin OAuth2 client secret
-* onelogin.sdk.region  Indicates where the instance is hosted. Possible values: 'us' or 'eu'.
-
-Read more about Onelogin API credentials at:
-https://developers.onelogin.com/api-docs/1/getting-started/working-with-api-credentials
-
+## Usage
 
 ### Errors and exceptions
 
-Onelogin's API can return 400, 401, 403 or 404 when there was any issue executing the action. When that happens, the methods of the SDK will include error and errorMessage in the client. Use the get_error() and the get_error_description() to retrieve them.
-
-
-### How it works
-
-Following there is Ruby code that executes calls to any available API methods.
-
-It assumes that there are 2 users on the OneLogin instance: 'user@example.com' and other with MFA enabled 'usermfa@example.com' and some roles, custom attributes and groups defined.
+OneLogin's API can return 400, 401, 403 or 404 when there was any issue executing the action. When that happens, the methods of the SDK will include error and errorMessage in the client. Use `error` and `error_description` of the Client to retrieve them.
 
 ```ruby
-require "onelogin"
+users = client.get_users
 
-path = File.dirname(File.expand_path(__FILE__))
-client = OneLogin::Api::Client.new(path)
+if users.nil?
+    puts client.error
+    puts client.error_description
+end
+```
 
+### Authentication
+
+By default methods call internally to `get_access_token` if there is no valid access_token. You can also get tokens etc directly if needed. 
+
+```ruby
 # Get an AccessToken
 token = client.get_access_token()
 
@@ -70,10 +86,12 @@ token2 = client.regenerate_token()
 
 # Revoke an AccessToken
 token3 = client.get_access_token()
+```
 
-# By default methods call internally to getAccessToken()
-# if there is not valid access_token
 
+### Available Methods
+
+```ruby
 # Get rate limits
 rate_limits = client.get_rate_limits()
 
@@ -247,3 +265,22 @@ sent = client.send_invite_link("user@example.com")
 embed_token = "30e256c101cd0d2e731de1ec222e93c4be8a1572"
 apps = client.get_embed_apps("30e256c101cd0d2e731de1ec222e93c4be8a1572", "user@example.com")
 ```
+
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+
+To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/onelogin/onelogin-ruby-sdk. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
+## Code of Conduct
+
+Everyone interacting in the OneLogin Ruby Sdk project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/onelogin/onelogin-ruby-sdk/blob/master/CODE_OF_CONDUCT.md).

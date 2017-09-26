@@ -1,6 +1,7 @@
+require "onelogin/version"
+require "onelogin/api/util"
 require 'json'
 require "httparty"
-require "onelogin/api/version"
 require 'nokogiri'
 require 'time'
 
@@ -13,22 +14,37 @@ module OneLogin
   	# It makes the API calls to the Onelogin's platform described
     # at https://developers.onelogin.com/api-docs/1/getting-started/dev-overview.
   	# 
-  	class Client
+    class Client
+      include OneLogin::Api::Util
 
-      attr_accessor :settings, :user_agent, :error, :error_description
+      attr_accessor :client_id, :client_secret, :region
+      attr_accessor :user_agent, :error, :error_description
 
       NOKOGIRI_OPTIONS = Nokogiri::XML::ParseOptions::STRICT |
                          Nokogiri::XML::ParseOptions::NONET
 
-      DEFAULT_USER_AGENT = "onelogin-ruby-sdk v#{OneLogin::Api::VERSION}"
+      DEFAULT_USER_AGENT = "onelogin-ruby-sdk v#{OneLogin::VERSION}"
 
       # Create a new instance of the Client.
       #
-      # @param path [String] Path where the sdk config file is located.
+      # @param config [Hash] Client Id, Client Secret and Region
       #
-      def initialize(path=nil)
-        @settings = OneLogin::Api::Util::Settings.new(path)
+      def initialize(config)
+        options = Hash[config.map { |(k, v)| [k.to_sym, v] }]
+
+        @client_id = options[:client_id] 
+        @client_secret = options[:client_secret]
+        @region = options[:region] || 'us'
+
+        validate_config
+
         @user_agent = DEFAULT_USER_AGENT
+      end
+
+      def validate_config
+        unless @client_id && @client_secret
+          raise ArgumentError, "A valid client_id & client_secret are required to use this sdk"
+        end
       end
 
       # Clean any previous error registered at the client.
@@ -151,7 +167,7 @@ module OneLogin
         if bearer
           "bearer:%s" % @access_token
         else
-          "client_id:%s,client_secret:%s" % [@settings.client_id, @settings.client_secret]
+          "client_id:%s,client_secret:%s" % [@client_id, @client_secret]
         end
       end
 
@@ -170,7 +186,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::TOKEN_REQUEST_URL)
+          url = get_url(TOKEN_REQUEST_URL)
 
           authorization = get_authorization(false)
 
@@ -221,7 +237,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::TOKEN_REQUEST_URL)
+          url = get_url(TOKEN_REQUEST_URL)
 
           data = {
             'grant_type' => 'refresh_token',
@@ -271,7 +287,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::TOKEN_REVOKE_URL)
+          url = get_url(TOKEN_REVOKE_URL)
 
           authorization = get_authorization(false)
 
@@ -319,7 +335,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_RATE_URL)
+          url = get_url(GET_RATE_URL)
 
           authorization = get_authorization()
 
@@ -378,7 +394,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_USERS_URL)
+          url = get_url(GET_USERS_URL)
 
           authorization = get_authorization()
 
@@ -445,7 +461,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_USER_URL, user_id)
+          url = get_url(GET_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -490,7 +506,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_APPS_FOR_USER_URL, user_id)
+          url = get_url(GET_APPS_FOR_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -540,7 +556,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_ROLES_FOR_USER_URL, user_id)
+          url = get_url(GET_ROLES_FOR_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -586,7 +602,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_CUSTOM_ATTRIBUTES_URL)
+          url = get_url(GET_CUSTOM_ATTRIBUTES_URL)
 
           authorization = get_authorization()
 
@@ -639,7 +655,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::CREATE_USER_URL)
+          url = get_url(CREATE_USER_URL)
 
           authorization = get_authorization()
 
@@ -691,7 +707,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::UPDATE_USER_URL, user_id)
+          url = get_url(UPDATE_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -738,7 +754,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::ADD_ROLE_TO_USER_URL, user_id)
+          url = get_url(ADD_ROLE_TO_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -786,7 +802,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::DELETE_ROLE_TO_USER_URL, user_id)
+          url = get_url(DELETE_ROLE_TO_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -825,23 +841,25 @@ module OneLogin
       # @param user_id [Integer] Id of the user
       # @param password [String] Set to the password value using cleartext.
       # @param password_confirmation [String] Ensure that this value matches the password value exactly.
+      # @validate_policy [Boolean] Force validation against assigned OneLogin user password policy
       #
       # @return [Boolean] if the action succeed
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/set-password-in-cleartext Set Password by ID Using Cleartext documentation}
-      def set_password_using_clear_text(user_id, password, password_confirmation)
+      def set_password_using_clear_text(user_id, password, password_confirmation, validate_policy=false)
         clean_error()
         prepare_token()
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::SET_PW_CLEARTEXT, user_id)
+          url = get_url(SET_PW_CLEARTEXT, user_id)
 
           authorization = get_authorization()
 
           data = {
             'password' => password,
-            'password_confirmation' => password_confirmation
+            'password_confirmation' => password_confirmation,
+            'validate_policy' => validate_policy
           }
 
           headers = {
@@ -887,7 +905,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::SET_PW_SALT, user_id)
+          url = get_url(SET_PW_SALT, user_id)
 
           authorization = get_authorization()
 
@@ -941,7 +959,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::SET_CUSTOM_ATTRIBUTE_TO_USER_URL, user_id)
+          url = get_url(SET_CUSTOM_ATTRIBUTE_TO_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -988,7 +1006,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::LOG_USER_OUT_URL, user_id)
+          url = get_url(LOG_USER_OUT_URL, user_id)
 
           authorization = get_authorization()
 
@@ -1033,7 +1051,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::LOCK_USER_URL, user_id)
+          url = get_url(LOCK_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -1080,7 +1098,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::DELETE_USER_URL, user_id)
+          url = get_url(DELETE_USER_URL, user_id)
 
           authorization = get_authorization()
 
@@ -1127,7 +1145,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::SESSION_LOGIN_TOKEN_URL)
+          url = get_url(SESSION_LOGIN_TOKEN_URL)
 
           authorization = get_authorization()
 
@@ -1180,7 +1198,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_TOKEN_VERIFY_FACTOR)
+          url = get_url(GET_TOKEN_VERIFY_FACTOR)
 
           authorization = get_authorization()
 
@@ -1246,7 +1264,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_ROLES_URL)
+          url = get_url(GET_ROLES_URL)
 
           authorization = get_authorization()
 
@@ -1313,7 +1331,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_ROLE_URL, role_id)
+          url = get_url(GET_ROLE_URL, role_id)
 
           authorization = get_authorization()
 
@@ -1360,7 +1378,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_EVENT_TYPES_URL)
+          url = get_url(GET_EVENT_TYPES_URL)
 
           authorization = get_authorization()
 
@@ -1421,7 +1439,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_EVENTS_URL)
+          url = get_url(GET_EVENTS_URL)
 
           authorization = get_authorization()
 
@@ -1488,7 +1506,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_EVENT_URL, event_id)
+          url = get_url(GET_EVENT_URL, event_id)
 
           authorization = get_authorization()
 
@@ -1539,7 +1557,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::CREATE_EVENT_URL)
+          url = get_url(CREATE_EVENT_URL)
 
           authorization = get_authorization()
 
@@ -1584,7 +1602,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_GROUPS_URL)
+          url = get_url(GET_GROUPS_URL)
 
           authorization = get_authorization()
 
@@ -1650,7 +1668,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_GROUP_URL, group_id)
+          url = get_url(GET_GROUP_URL, group_id)
 
           authorization = get_authorization()
 
@@ -1703,7 +1721,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GET_SAML_ASSERTION_URL)
+          url = get_url(GET_SAML_ASSERTION_URL)
 
           authorization = get_authorization()
 
@@ -1762,7 +1780,7 @@ module OneLogin
         begin
 
           if url_endpoint.nil? || url_endpoint.empty?
-            url = @settings.get_url(OneLogin::Api::Util::Constants::GET_SAML_VERIFY_FACTOR)
+            url = get_url(GET_SAML_VERIFY_FACTOR)
           else
             url = url_endpoint
           end
@@ -1822,7 +1840,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::GENERATE_INVITE_LINK_URL)
+          url = get_url(GENERATE_INVITE_LINK_URL)
 
           authorization = get_authorization()
 
@@ -1875,7 +1893,7 @@ module OneLogin
 
         begin
 
-          url = @settings.get_url(OneLogin::Api::Util::Constants::SEND_INVITE_LINK_URL)
+          url = get_url(SEND_INVITE_LINK_URL)
 
           authorization = get_authorization()
 
@@ -1926,7 +1944,7 @@ module OneLogin
 
         begin
 
-          url = OneLogin::Api::Util::Constants::EMBED_APP_URL
+          url = EMBED_APP_URL
 
           data = {
             'token'=> token,
