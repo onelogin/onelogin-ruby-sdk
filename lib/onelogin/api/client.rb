@@ -1,5 +1,6 @@
 require 'onelogin/version'
 require 'onelogin/api/util'
+require 'onelogin/api/cursor'
 require 'json'
 require 'httparty'
 require 'nokogiri'
@@ -41,8 +42,7 @@ module OneLogin
       end
 
       def validate_config
-        raise ArgumentError, 'client_id & client_secret are required'
-          unless @client_id && @client_secret
+        raise ArgumentError, 'client_id & client_secret are required' unless @client_id && @client_secret
       end
 
       # Clean any previous error registered at the client.
@@ -161,13 +161,14 @@ module OneLogin
         nil
       end
 
-      def get_authorization(bearer=true)
+      def authorization_header(bearer=true)
         if bearer
           "bearer:%s" % @access_token
         else
           "client_id:%s,client_secret:%s" % [@client_id, @client_secret]
         end
       end
+      alias get_authorization authorization_header
 
       ############################
       # OAuth 2.0 Tokens Methods #
@@ -1392,6 +1393,14 @@ module OneLogin
         nil
       end
 
+      def request_headers
+        {
+          'Authorization' => authorization_header,
+          'Content-Type' => 'application/json',
+          'User-Agent' => @user_agent
+        }
+      end
+
       # Gets a list of Event resources. (if no limit provided, by default get 50 elements)
       #
       # @param params [Hash] Parameters to filter the result of the list
@@ -1402,62 +1411,18 @@ module OneLogin
       def get_events(params={})
         clean_error
         prepare_token
-        limit = 50
 
-        limit = params[:limit] || 50
-        params.delete(:limit) if limit > 50
+        options = {
+          model: OneLogin::Api::Models::Event,
+          headers: request_headers,
+          params: params
+        }
 
-        begin
+        Cursor.new(get_url(GET_EVENTS_URL), options)
 
-          url = get_url(GET_EVENTS_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
-          events = []
-          response = nil
-          after_cursor = nil
-          while response.nil? || events.length > limit || !after_cursor.nil?
-            response = HTTParty.get(
-              url,
-              headers: headers,
-              query: params
-            )
-            if response.code == 200
-              json_data = JSON.parse(response.body)
-              if json_data && json_data['data']
-                json_data['data'].each do |event_data|
-                  if events.length < limit
-                    events << OneLogin::Api::Models::Event.new(event_data)
-                  else
-                    return events
-                  end
-                end
-              end
-
-              after_cursor = get_after_cursor(response)
-              unless after_cursor.nil?
-                params['after_cursor'] = after_cursor
-              end
-            else
-              @error = response.code.to_s
-              @error_description = extract_error_message_from_response(response)
-              break
-            end
-          end
-
-          return events
-        rescue Exception => e
-          @error = '500'
-          @error_description = e.message
-        end
-
-        nil
+      rescue Exception => e
+        @error = '500'
+        @error_description = e.message
       end
 
       # Gets Event by ID.
