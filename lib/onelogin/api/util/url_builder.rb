@@ -8,7 +8,7 @@ module OneLogin
         # @param base [String] Base of the endpoint
         # @param obj_id [String, nil] Id of the referenced object
         #
-        def get_url(base, obj_id=nil)
+        def url_for(base, obj_id=nil)
           if obj_id.nil? || obj_id.to_s.empty?
             base % [@region]
           else
