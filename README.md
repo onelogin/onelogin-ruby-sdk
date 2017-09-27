@@ -98,6 +98,12 @@ client.get_users.each do |user|
     puts user.firstname
 end
 
+# List the first name of all users starting with the 2nd user
+# `each` accepts a start param to skip first x results
+client.get_users.each(1) do |user|
+    puts user.firstname
+end
+
 # List the first 5 users with the name of Joe
 client.get_users(firstname: 'Joe').take(5).each do |user|
     puts "#{user.firstname} #{user.lastname}"
@@ -138,6 +144,11 @@ query_parameters = {
     limit: 3
 }
 users_filtered_limited = client.get_users(query_parameters)
+
+# Only return the firstname and email fields for each user
+client.get_users(fields: 'email,firstname').each do |user|
+    puts "#{user.firstname} - #{user.email}"
+end
 
 # Get User by id
 user = client.get_user(users_filtered.first.id)
