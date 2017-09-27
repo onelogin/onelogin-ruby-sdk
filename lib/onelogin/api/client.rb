@@ -1487,7 +1487,7 @@ module OneLogin
               app_data[children.name] = children.content
             end
           end
-          apps << OneLogin::Api::Models::App.new(app_data)
+          apps << OneLogin::Api::Models::EmbedApp.new(app_data)
         end
 
         apps
