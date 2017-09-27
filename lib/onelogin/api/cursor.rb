@@ -20,7 +20,6 @@ class Cursor
     @params = options[:params] || {}
 
     @collection = []
-    @pagable = true
     @after_cursor = options.fetch(:after_cursor, nil)
   end
 
