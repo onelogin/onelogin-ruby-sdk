@@ -161,14 +161,22 @@ module OneLogin
         nil
       end
 
-      def authorization_header(bearer=true)
+      def authorization_header(bearer = true)
         if bearer
-          "bearer:%s" % @access_token
+          "bearer:#{@access_token}"
         else
-          "client_id:%s,client_secret:%s" % [@client_id, @client_secret]
+          "client_id:#{@client_id},client_secret:#{@client_secret}"
         end
       end
       alias get_authorization authorization_header
+
+      def request_headers
+        {
+          'Authorization' => authorization_header,
+          'Content-Type' => 'application/json',
+          'User-Agent' => @user_agent
+        }
+      end
 
       ############################
       # OAuth 2.0 Tokens Methods #
@@ -377,56 +385,18 @@ module OneLogin
       # @return [Array] list of User objects
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/get-users Get Users documentation}
-      def get_users(params={})
+      def get_users(params = {})
         clean_error
         prepare_token
 
-        limit = params[:limit] || 50
-        params.delete(:limit) if limit > 50
-
         begin
-
-          url = get_url(GET_USERS_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
+          options = {
+            model: OneLogin::Api::Models::User,
+            headers: request_headers
           }
 
-          users = []
-          response = nil
-          after_cursor = nil
-          while response.nil? || users.length > limit || !after_cursor.nil?
-            response = HTTParty.get(
-              url,
-              headers: headers,
-              query: params
-            )
-            if response.code == 200
-              json_data = JSON.parse(response.body)
-              if json_data && json_data['data']
-                json_data['data'].each do |user_data|
-                  if users.length < limit
-                    users << OneLogin::Api::Models::User.new(user_data)
-                  else
-                    return users
-                  end
-                end
-              end
+          return Cursor.new(get_url(GET_USERS_URL), options)
 
-              after_cursor = get_after_cursor(response)
-                params[:after_cursor] = after_cursor unless after_cursor.nil?
-            else
-              @error = response.code.to_s
-              @error_description = extract_error_message_from_response(response)
-              break
-            end
-          end
-
-          return users
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -492,36 +462,13 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_APPS_FOR_USER_URL, user_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
+          options = {
+            model: OneLogin::Api::Models::App,
+            headers: request_headers
           }
 
-          response = HTTParty.get(
-            url,
-            headers: headers
-          )
+          return Cursor.new(get_url(GET_APPS_FOR_USER_URL, user_id), options)
 
-          apps = []
-          if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              json_data['data'].each do |app_data|
-                apps << OneLogin::Api::Models::App.new(app_data)
-              end
-            end
-          else
-            @error = response.code.to_s
-            @error_description = extract_error_message_from_response(response)
-          end
-
-          return apps
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -1355,50 +1302,19 @@ module OneLogin
         prepare_token
 
         begin
+        options = {
+          model: OneLogin::Api::Models::EventType,
+          headers: request_headers
+        }
 
-          url = get_url(GET_EVENT_TYPES_URL)
+        return Cursor.new(get_url(GET_EVENT_TYPES_URL), options)
 
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
-          event_types = []
-          response = HTTParty.get(
-            url,
-            headers: headers
-          )
-          if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              json_data['data'].each do |event_type_data|
-                event_types << OneLogin::Api::Models::EventType.new(event_type_data)
-              end
-            end
-
-          else
-            @error = response.code.to_s
-            @error_description = extract_error_message_from_response(response)
-          end
-
-          return event_types
         rescue Exception => e
           @error = '500'
           @error_description = e.message
         end
 
         nil
-      end
-
-      def request_headers
-        {
-          'Authorization' => authorization_header,
-          'Content-Type' => 'application/json',
-          'User-Agent' => @user_agent
-        }
       end
 
       # Gets a list of Event resources. (if no limit provided, by default get 50 elements)
@@ -1412,17 +1328,21 @@ module OneLogin
         clean_error
         prepare_token
 
+        begin
         options = {
           model: OneLogin::Api::Models::Event,
           headers: request_headers,
           params: params
         }
 
-        Cursor.new(get_url(GET_EVENTS_URL), options)
+        return Cursor.new(get_url(GET_EVENTS_URL), options)
 
-      rescue Exception => e
-        @error = '500'
-        @error_description = e.message
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
       end
 
       # Gets Event by ID.
@@ -1528,58 +1448,17 @@ module OneLogin
       # @return [Array] the list of groups
       #
       # @see {https://developers.onelogin.com/api-docs/1/groups/get-groups Get Groups documentation}
-      def get_groups(params={})
+      def get_groups(params = {})
         clean_error
         prepare_token
 
-        limit = params[:limit] || 50
-        params.delete(:limit) if limit > 50
-
         begin
+        options = {
+          model: OneLogin::Api::Models::Group,
+          headers: request_headers
+        }
 
-          url = get_url(GET_GROUPS_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
-          groups = []
-          response = nil
-          after_cursor = nil
-          while response.nil? || groups.length > limit || !after_cursor.nil?
-            response = HTTParty.get(
-              url,
-              headers: headers,
-              query: params
-            )
-            if response.code == 200
-              json_data = JSON.parse(response.body)
-              if json_data && json_data['data']
-                json_data['data'].each do |group_data|
-                  if groups.length < limit
-                    groups << OneLogin::Api::Models::Group.new(group_data)
-                  else
-                    return groups
-                  end
-                end
-              end
-
-              after_cursor = get_after_cursor(response)
-              unless after_cursor.nil?
-                params['after_cursor'] = after_cursor
-              end
-            else
-              @error = response.code.to_s
-              @error_description = extract_error_message_from_response(response)
-              break
-            end
-          end
-
-          return groups
+        return Cursor.new(get_url(GET_GROUPS_URL), options)
 
         rescue Exception => e
           @error = '500'

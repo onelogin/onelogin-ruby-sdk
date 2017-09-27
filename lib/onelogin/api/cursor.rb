@@ -20,6 +20,7 @@ class Cursor
     @params = options[:params] || {}
 
     @collection = []
+    @pagable = true
     @after_cursor = options.fetch(:after_cursor, nil)
   end
 
@@ -56,18 +57,18 @@ class Cursor
 
     json = response.parsed_response
 
-    @last_response_empty = json['data'].empty?
     @collection += json['data']
-    @after_cursor = after_cursor(json) unless last?
+    @after_cursor = after_cursor(json)
+    @last_cursor_empty = @after_cursor.nil?
   end
 
   def after_cursor(json)
-    return unless json && json.key?('pagination')
+    return unless json['pagination']
 
     json['pagination'].fetch('after_cursor', nil)
   end
 
   def last?
-    @last_response_empty
+    @last_cursor_empty
   end
 end
