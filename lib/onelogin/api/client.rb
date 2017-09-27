@@ -326,7 +326,8 @@ module OneLogin
         begin
           options = {
             model: OneLogin::Api::Models::User,
-            headers: authorized_headers
+            headers: authorized_headers,
+            params: params
           }
 
           return Cursor.new(url_for(GET_USERS_URL), options)
@@ -987,7 +988,8 @@ module OneLogin
         begin
           options = {
             model: OneLogin::Api::Models::Role,
-            headers: authorized_headers
+            headers: authorized_headers,
+            params: params
           }
 
           return Cursor.new(url_for(GET_ROLES_URL), options)
@@ -1185,7 +1187,8 @@ module OneLogin
         begin
         options = {
           model: OneLogin::Api::Models::Group,
-          headers: authorized_headers
+          headers: authorized_headers,
+          params: params
         }
 
         return Cursor.new(url_for(GET_GROUPS_URL), options)
