@@ -6,6 +6,9 @@
 class Cursor
   include Enumerable
 
+  # Maximum items that will be fetched
+  MAX_RESULTS = 1000
+
   # Create a new instance of the Cursor.
   #
   # @param url [String] The url of the API endpoint
@@ -18,6 +21,10 @@ class Cursor
     @model = options[:model]
     @headers = options[:headers] || {}
     @params = options[:params] || {}
+    @max_results = @params[:max_results] || @MAX_RESULTS
+
+    # Remove this param to prevent errors from the API
+    @params.delete(:max_results) if @params[:max_results]
 
     @collection = []
     @after_cursor = options.fetch(:after_cursor, nil)
@@ -56,7 +63,12 @@ class Cursor
 
     json = response.parsed_response
 
-    @collection += json['data']
+    @collection += if results_remaining < json['data'].size
+      json['data'].slice(0, results_remaining)
+    else
+      json['data']
+    end
+
     @after_cursor = after_cursor(json)
     @last_cursor_empty = @after_cursor.nil?
   end
@@ -67,7 +79,11 @@ class Cursor
     json['pagination'].fetch('after_cursor', nil)
   end
 
+  def results_remaining
+    @max_results - @collection.size
+  end
+
   def last?
-    @last_cursor_empty
+    @last_cursor_empty || @collection.size >= @max_results
   end
 end

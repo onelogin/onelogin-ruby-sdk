@@ -89,7 +89,12 @@ token3 = client.get_access_token
 ```
 
 ### Paging
-All OneLogin API endpoints that support paging are returned as enumerations to save you keeping track of the paging cursor. User `take` to limit the results or get all results by enumerating.
+All OneLogin API endpoints that support paging are returned as enumerations to save you keeping track of the paging cursor.
+
+User `take` to limit the results or get all results by enumerating.
+
+For safety where some collections (e.g. `get_events`) have large numbers of resources there is a
+limit of 1000 total results returned. You can override this with the `max_results` param.
 
 e.g.
 ```ruby
@@ -114,6 +119,11 @@ client.get_events.take(10).map{|event| event.id }
 
 # Get all roles
 client.get_roles.to_a
+
+# Get more than 1000 events
+client.get_events(max_results:5000).each do |event|
+    puts event.id
+end
 ```
 
 ### Available Methods
