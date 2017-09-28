@@ -40,6 +40,7 @@ If you don't have an account you can [sign up for a free developer account here]
 |client_id|Required: A valid OneLogin API client_id|
 |client_secret|Required: A valid OneLogin API client_secret|
 |region| Optional: `us` or `eu`. Defaults to `us`   |
+|max_results| Optional: Defaults to 1000  |
 
 ```ruby
 require 'onelogin'
@@ -93,9 +94,6 @@ All OneLogin API endpoints that support paging are returned as enumerations to s
 
 User `take` to limit the results or get all results by enumerating.
 
-For safety where some collections (e.g. `get_events`) have large numbers of resources there is a
-limit of 1000 total results returned. You can override this with the `max_results` param.
-
 e.g.
 ```ruby
 # List the first name of all users
@@ -119,12 +117,22 @@ client.get_events.take(10).map{|event| event.id }
 
 # Get all roles
 client.get_roles.to_a
-
-# Get more than 1000 events
-client.get_events(max_results:5000).each do |event|
-    puts event.id
-end
 ```
+
+For safety where some collections (e.g. `get_events`) have large numbers of resources there is a
+limit of 1000 total results returned. You can override this with the `max_results` param during Client initialization.
+
+```
+client = OneLogin::Api::Client.new(
+    client_id: '',
+    client_secret:'',
+    max_results: 50000
+)
+
+client.get_events.map {|event| event.id}
+```
+
+
 
 ### Available Methods
 

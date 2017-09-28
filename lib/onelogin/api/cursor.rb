@@ -6,25 +6,19 @@
 class Cursor
   include Enumerable
 
-  # Maximum items that will be fetched
-  MAX_RESULTS = 1000
-
   # Create a new instance of the Cursor.
   #
   # @param url [String] The url of the API endpoint
   # @param options [Hash] Configuation options
   #
-  def initialize(url, options={})
+  def initialize(url, options = {})
     @url = url
     @options = options
 
     @model = options[:model]
     @headers = options[:headers] || {}
     @params = options[:params] || {}
-    @max_results = @params[:max_results] || @MAX_RESULTS
-
-    # Remove this param to prevent errors from the API
-    @params.delete(:max_results) if @params[:max_results]
+    @max_results = options[:max_results]
 
     @collection = []
     @after_cursor = options.fetch(:after_cursor, nil)
@@ -83,7 +77,13 @@ class Cursor
     @max_results - @collection.size
   end
 
+  def fetch_completed?
+    return false unless @max_results
+
+    @collection.size >= @max_results
+  end
+
   def last?
-    @last_cursor_empty || @collection.size >= @max_results
+    @last_cursor_empty || fetch_completed?
   end
 end

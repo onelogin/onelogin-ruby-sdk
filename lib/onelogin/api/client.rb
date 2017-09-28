@@ -35,6 +35,7 @@ module OneLogin
         @client_id = options[:client_id]
         @client_secret = options[:client_secret]
         @region = options[:region] || 'us'
+        @max_results = options[:max_results] || 1000
 
         validate_config
 
@@ -327,6 +328,7 @@ module OneLogin
           options = {
             model: OneLogin::Api::Models::User,
             headers: authorized_headers,
+            max_results: @max_results,
             params: params
           }
 
@@ -989,6 +991,7 @@ module OneLogin
           options = {
             model: OneLogin::Api::Models::Role,
             headers: authorized_headers,
+            max_results: @max_results,
             params: params
           }
 
@@ -1082,6 +1085,7 @@ module OneLogin
         options = {
           model: OneLogin::Api::Models::Event,
           headers: authorized_headers,
+          max_results: @max_results,
           params: params
         }
 
@@ -1185,13 +1189,14 @@ module OneLogin
         prepare_token
 
         begin
-        options = {
-          model: OneLogin::Api::Models::Group,
-          headers: authorized_headers,
-          params: params
-        }
+          options = {
+            model: OneLogin::Api::Models::Group,
+            headers: authorized_headers,
+            max_results: @max_results,
+            params: params
+          }
 
-        return Cursor.new(url_for(GET_GROUPS_URL), options)
+          return Cursor.new(url_for(GET_GROUPS_URL), options)
 
         rescue Exception => e
           @error = '500'
