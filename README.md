@@ -40,6 +40,7 @@ If you don't have an account you can [sign up for a free developer account here]
 |client_id|Required: A valid OneLogin API client_id|
 |client_secret|Required: A valid OneLogin API client_secret|
 |region| Optional: `us` or `eu`. Defaults to `us`   |
+|max_results| Optional: Defaults to 1000  |
 
 ```ruby
 require 'onelogin'
@@ -88,6 +89,50 @@ token2 = client.regenerate_token
 token3 = client.get_access_token
 ```
 
+### Paging
+All OneLogin API endpoints that support paging are returned as enumerations to save you keeping track of the paging cursor.
+
+User `take` to limit the results or get all results by enumerating.
+
+e.g.
+```ruby
+# List the first name of all users
+client.get_users.each do |user|
+    puts user.firstname
+end
+
+# List the first name of all users starting with the 2nd user
+# `each` accepts a start param to skip first x results
+client.get_users.each(1) do |user|
+    puts user.firstname
+end
+
+# List the first 5 users with the name of Joe
+client.get_users(firstname: 'Joe').take(5).each do |user|
+    puts "#{user.firstname} #{user.lastname}"
+end
+
+# Get 10 event ids
+client.get_events.take(10).map{|event| event.id }
+
+# Get all roles
+client.get_roles.to_a
+```
+
+For safety where some collections (e.g. `get_events`) have large numbers of resources there is a
+limit of 1000 total results returned. You can override this with the `max_results` param during Client initialization.
+
+```
+client = OneLogin::Api::Client.new(
+    client_id: '',
+    client_secret:'',
+    max_results: 50000
+)
+
+client.get_events.map {|event| event.id}
+```
+
+
 
 ### Available Methods
 
@@ -118,9 +163,14 @@ query_parameters = {
 }
 users_filtered_limited = client.get_users(query_parameters)
 
+# Only return the firstname and email fields for each user
+client.get_users(fields: 'email,firstname').each do |user|
+    puts "#{user.firstname} - #{user.email}"
+end
+
 # Get User by id
-user = client.get_user(users_filtered[0].id)
-user_mfa = client.get_user(users_filtered2[0].id)
+user = client.get_user(users_filtered.first.id)
+user_mfa = client.get_user(users_filtered2.first.id)
 
 # Update User with specific id
 user = client.get_user(user.id)
@@ -133,13 +183,11 @@ user = client.get_user(user.id)
 roles = client.get_roles
 
 # Get Role
-role = client.get_role(roles[0].id)
-role2 = client.get_role(roles[1].id)
+role = client.get_role(1234)
 
 # Assign & Remove Roles On Users
 role_ids = [
-    role.id,
-    role2.id
+    1234, 5678
 ]
 result = client.assign_role_to_user(user.id, role_ids)
 role_ids.pop
@@ -243,7 +291,7 @@ events = client.get_events(query_events_params)
 groups = client.get_groups
 
 # Get Group
-group = client.get_group(groups[0].id)
+group = client.get_group(groups.first.id)
 
 # Get SAMLResponse directly
 app_id = "000000"

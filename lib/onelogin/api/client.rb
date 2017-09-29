@@ -1,5 +1,6 @@
 require 'onelogin/version'
 require 'onelogin/api/util'
+require 'onelogin/api/cursor'
 require 'json'
 require 'httparty'
 require 'nokogiri'
@@ -34,6 +35,7 @@ module OneLogin
         @client_id = options[:client_id]
         @client_secret = options[:client_secret]
         @region = options[:region] || 'us'
+        @max_results = options[:max_results] || 1000
 
         validate_config
 
@@ -41,9 +43,7 @@ module OneLogin
       end
 
       def validate_config
-        unless @client_id && @client_secret
-          raise ArgumentError, "A valid client_id & client_secret are required to use this sdk"
-        end
+        raise ArgumentError, 'client_id & client_secret are required' unless @client_id && @client_secret
       end
 
       # Clean any previous error registered at the client.
@@ -67,48 +67,13 @@ module OneLogin
         message
       end
 
-      def get_after_cursor(response)
-        content = JSON.parse(response.body)
-        if content && content.has_key?('pagination') && content['pagination'].has_key?('after_cursor')
-          content['pagination']['after_cursor']
-        end
-      end
-
-      def get_before_cursor(response)
-        content = JSON.parse(response.body)
-        if content && content.has_key?('pagination') && content['pagination'].has_key?('before_cursor')
-          content['pagination']['before_cursor']
-        end
-      end
-
-      def retrieve_apps_from_xml(xml_content)
-        doc = Nokogiri::XML(xml_content) do |config|
-          config.options = NOKOGIRI_OPTIONS
-        end
-
-        node_list = doc.xpath("/apps/app")
-        attributes = ['id', 'icon', 'name', 'provisioned', 'extension_required', 'personal', 'login_id']
-        apps = []
-        node_list.each do |node|
-          app_data = {}
-          node.children.each do |children|
-            if attributes.include? children.name
-              app_data[children.name] = children.content
-            end
-          end
-          apps << OneLogin::Api::Models::App.new(app_data)
-        end
-
-        apps
-      end
-
       def expired?
         Time.now.utc > @expiration
       end
 
       def prepare_token
         if @access_token.nil?
-          get_access_token
+          access_token
         elsif expired?
           regenerate_token
         end
@@ -162,12 +127,23 @@ module OneLogin
         nil
       end
 
-      def get_authorization(bearer=true)
-        if bearer
-          "bearer:%s" % @access_token
+      def headers
+        {
+          'Content-Type' => 'application/json',
+          'User-Agent' => @user_agent
+        }
+      end
+
+      def authorized_headers(bearer = true)
+        authorization = if bearer
+          "bearer:#{@access_token}"
         else
-          "client_id:%s,client_secret:%s" % [@client_id, @client_secret]
+          "client_id:#{@client_id},client_secret:#{@client_secret}"
         end
+
+        headers.merge({
+          'Authorization' => authorization
+        })
       end
 
       ############################
@@ -180,28 +156,19 @@ module OneLogin
       # @return [OneLoginToken] Returns the generated OAuth Token info
       #
       # @see {https://developers.onelogin.com/api-docs/1/oauth20-tokens/generate-tokens Generate Tokens documentation}
-      def get_access_token()
+      def access_token
         clean_error
 
         begin
-
-          url = get_url(TOKEN_REQUEST_URL)
-
-          authorization = get_authorization(false)
+          url = url_for(TOKEN_REQUEST_URL)
 
           data = {
             'grant_type' => 'client_credentials'
           }
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers(false),
             body: data.to_json
           )
 
@@ -235,18 +202,12 @@ module OneLogin
         clean_error
 
         begin
-
-          url = get_url(TOKEN_REQUEST_URL)
+          url = url_for(TOKEN_REQUEST_URL)
 
           data = {
             'grant_type' => 'refresh_token',
             'access_token' => @access_token,
             'refresh_token' => @refresh_token
-          }
-
-          headers = {
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
           }
 
           response = HTTParty.post(
@@ -285,24 +246,15 @@ module OneLogin
         clean_error
 
         begin
-
-          url = get_url(TOKEN_REVOKE_URL)
-
-          authorization = get_authorization(false)
+          url = url_for(TOKEN_REVOKE_URL)
 
           data = {
-            'access_token' => @access_token
-          }
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
+            access_token: @access_token
           }
 
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers(false),
             body: data.to_json
           )
 
@@ -333,20 +285,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_RATE_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(GET_RATE_URL)
 
           response = HTTParty.get(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           if response.code == 200
@@ -377,56 +320,20 @@ module OneLogin
       # @return [Array] list of User objects
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/get-users Get Users documentation}
-      def get_users(params={})
+      def get_users(params = {})
         clean_error
         prepare_token
 
-        limit = params[:limit] || 50
-        params.delete(:limit) if limit > 50
-
         begin
-
-          url = get_url(GET_USERS_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
+          options = {
+            model: OneLogin::Api::Models::User,
+            headers: authorized_headers,
+            max_results: @max_results,
+            params: params
           }
 
-          users = []
-          response = nil
-          after_cursor = nil
-          while response.nil? || users.length > limit || !after_cursor.nil?
-            response = HTTParty.get(
-              url,
-              headers: headers,
-              query: params
-            )
-            if response.code == 200
-              json_data = JSON.parse(response.body)
-              if json_data && json_data['data']
-                json_data['data'].each do |user_data|
-                  if users.length < limit
-                    users << OneLogin::Api::Models::User.new(user_data)
-                  else
-                    return users
-                  end
-                end
-              end
+          return Cursor.new(url_for(GET_USERS_URL), options)
 
-              after_cursor = get_after_cursor(response)
-                params[:after_cursor] = after_cursor unless after_cursor.nil?
-            else
-              @error = response.code.to_s
-              @error_description = extract_error_message_from_response(response)
-              break
-            end
-          end
-
-          return users
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -448,19 +355,11 @@ module OneLogin
 
         begin
 
-          url = get_url(GET_USER_URL, user_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(GET_USER_URL, user_id)
 
           response = HTTParty.get(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           if response.code == 200
@@ -492,36 +391,13 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_APPS_FOR_USER_URL, user_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
+          options = {
+            model: OneLogin::Api::Models::App,
+            headers: authorized_headers
           }
 
-          response = HTTParty.get(
-            url,
-            headers: headers
-          )
+          return Cursor.new(url_for(GET_APPS_FOR_USER_URL, user_id), options)
 
-          apps = []
-          if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              json_data['data'].each do |app_data|
-                apps << OneLogin::Api::Models::App.new(app_data)
-              end
-            end
-          else
-            @error = response.code.to_s
-            @error_description = extract_error_message_from_response(response)
-          end
-
-          return apps
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -542,20 +418,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_ROLES_FOR_USER_URL, user_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(GET_ROLES_FOR_USER_URL, user_id)
 
           response = HTTParty.get(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           role_ids = []
@@ -581,25 +448,16 @@ module OneLogin
       # @return [Array] the custom attributes of the account
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/get-custom-attributes Get Custom Attributes documentation}
-      def get_custom_attributes()
+      def get_custom_attributes
         clean_error
         prepare_token
 
         begin
-
-          url = get_url(GET_CUSTOM_ATTRIBUTES_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(GET_CUSTOM_ATTRIBUTES_URL)
 
           response = HTTParty.get(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           custom_attributes = []
@@ -639,20 +497,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(CREATE_USER_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(CREATE_USER_URL)
 
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: user_params.to_json
           )
 
@@ -691,20 +540,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(UPDATE_USER_URL, user_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(UPDATE_USER_URL, user_id)
 
           response = HTTParty.put(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: user_params.to_json
           )
 
@@ -738,24 +578,15 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(ADD_ROLE_TO_USER_URL, user_id)
-
-          authorization = get_authorization
+          url = url_for(ADD_ROLE_TO_USER_URL, user_id)
 
           data = {
             'role_id_array' => role_ids
           }
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.put(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -786,24 +617,15 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(DELETE_ROLE_TO_USER_URL, user_id)
-
-          authorization = get_authorization
+          url = url_for(DELETE_ROLE_TO_USER_URL, user_id)
 
           data = {
             'role_id_array' => role_ids
           }
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.put(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -836,10 +658,7 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(SET_PW_CLEARTEXT, user_id)
-
-          authorization = get_authorization
+          url = url_for(SET_PW_CLEARTEXT, user_id)
 
           data = {
             'password' => password,
@@ -847,15 +666,9 @@ module OneLogin
             'validate_policy' => validate_policy
           }
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.put(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -889,10 +702,7 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(SET_PW_SALT, user_id)
-
-          authorization = get_authorization
+          url = url_for(SET_PW_SALT, user_id)
 
           data = {
             'password' => password,
@@ -904,15 +714,9 @@ module OneLogin
             data['password_salt'] = password_salt
           end
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.put(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -943,24 +747,15 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(SET_CUSTOM_ATTRIBUTE_TO_USER_URL, user_id)
-
-          authorization = get_authorization
+          url = url_for(SET_CUSTOM_ATTRIBUTE_TO_USER_URL, user_id)
 
           data = {
             'custom_attributes' => custom_attributes
           }
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.put(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -990,20 +785,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(LOG_USER_OUT_URL, user_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(LOG_USER_OUT_URL, user_id)
 
           response = HTTParty.put(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           if response.code == 200
@@ -1035,24 +821,15 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(LOCK_USER_URL, user_id)
-
-          authorization = get_authorization
+          url = url_for(LOCK_USER_URL, user_id)
 
           data = {
             'locked_until' => minutes
           }
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.put(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -1082,20 +859,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(DELETE_USER_URL, user_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(DELETE_USER_URL, user_id)
 
           response = HTTParty.delete(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           if response.code == 200
@@ -1129,16 +897,7 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(SESSION_LOGIN_TOKEN_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(SESSION_LOGIN_TOKEN_URL)
 
           unless allowed_origin.nil? || allowed_origin.empty?
             headers['Custom-Allowed-Origin-Header-1'] = allowed_origin
@@ -1150,7 +909,7 @@ module OneLogin
 
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: query_params.to_json
           )
 
@@ -1182,10 +941,7 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_TOKEN_VERIFY_FACTOR)
-
-          authorization = get_authorization
+          url = url_for(GET_TOKEN_VERIFY_FACTOR)
 
           data = {
             'device_id'=> device_id.to_s,
@@ -1196,15 +952,9 @@ module OneLogin
             data['otp_token'] = otp_token
           end
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -1233,61 +983,20 @@ module OneLogin
       # @return [Array] list of Role objects
       #
       # @see {https://developers.onelogin.com/api-docs/1/roles/get-roles Get Roles documentation}
-      def get_roles(params={})
+      def get_roles(params = {})
         clean_error
         prepare_token
 
-        limit = params[:limit] || 50
-        params.delete(:limit) if limit > 50
-
         begin
-
-          url = get_url(GET_ROLES_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
+          options = {
+            model: OneLogin::Api::Models::Role,
+            headers: authorized_headers,
+            max_results: @max_results,
+            params: params
           }
 
-          roles = []
-          response = nil
-          after_cursor = nil
-          while response.nil? || roles.length > limit || !after_cursor.nil?
-            response = HTTParty.get(
-              url,
-              headers: headers,
-              query: params
-            )
-            if response.code == 200
-              json_data = JSON.parse(response.body)
-              if json_data && json_data['data']
-                json_data['data'].each do |role_data|
-                  if roles.length < limit
-                    roles << OneLogin::Api::Models::Role.new(role_data)
-                  else
-                    return roles
-                  end
-                end
-              end
+          return Cursor.new(url_for(GET_ROLES_URL), options)
 
-              after_cursor = get_after_cursor(response)
-              unless after_cursor.nil?
-                if params.nil?
-                  params = {}
-                end
-                params['after_cursor'] = after_cursor
-              end
-            else
-              @error = response.code.to_s
-              @error_description = extract_error_message_from_response(response)
-              break
-            end
-          end
-
-          return roles
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -1308,20 +1017,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_ROLE_URL, role_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(GET_ROLE_URL, role_id)
 
           response = HTTParty.get(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           if response.code == 200
@@ -1350,41 +1050,18 @@ module OneLogin
       # @return [Array] the list of event type
       #
       # @see {https://developers.onelogin.com/api-docs/1/events/event-types Get Event Types documentation}
-      def get_event_types()
+      def get_event_types
         clean_error
         prepare_token
 
         begin
+        options = {
+          model: OneLogin::Api::Models::EventType,
+          headers: authorized_headers
+        }
 
-          url = get_url(GET_EVENT_TYPES_URL)
+        return Cursor.new(url_for(GET_EVENT_TYPES_URL), options)
 
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
-          event_types = []
-          response = HTTParty.get(
-            url,
-            headers: headers
-          )
-          if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              json_data['data'].each do |event_type_data|
-                event_types << OneLogin::Api::Models::EventType.new(event_type_data)
-              end
-            end
-
-          else
-            @error = response.code.to_s
-            @error_description = extract_error_message_from_response(response)
-          end
-
-          return event_types
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -1403,56 +1080,17 @@ module OneLogin
       def get_events(params={})
         clean_error
         prepare_token
-        limit = 50
-
-        limit = params[:limit] || 50
-        params.delete(:limit) if limit > 50
 
         begin
+        options = {
+          model: OneLogin::Api::Models::Event,
+          headers: authorized_headers,
+          max_results: @max_results,
+          params: params
+        }
 
-          url = get_url(GET_EVENTS_URL)
+        return Cursor.new(url_for(GET_EVENTS_URL), options)
 
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
-          events = []
-          response = nil
-          after_cursor = nil
-          while response.nil? || events.length > limit || !after_cursor.nil?
-            response = HTTParty.get(
-              url,
-              headers: headers,
-              query: params
-            )
-            if response.code == 200
-              json_data = JSON.parse(response.body)
-              if json_data && json_data['data']
-                json_data['data'].each do |event_data|
-                  if events.length < limit
-                    events << OneLogin::Api::Models::Event.new(event_data)
-                  else
-                    return events
-                  end
-                end
-              end
-
-              after_cursor = get_after_cursor(response)
-              unless after_cursor.nil?
-                params['after_cursor'] = after_cursor
-              end
-            else
-              @error = response.code.to_s
-              @error_description = extract_error_message_from_response(response)
-              break
-            end
-          end
-
-          return events
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -1473,20 +1111,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_EVENT_URL, event_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(GET_EVENT_URL, event_id)
 
           response = HTTParty.get(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           if response.code == 200
@@ -1524,20 +1153,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(CREATE_EVENT_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(CREATE_EVENT_URL)
 
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: event_params.to_json
           )
 
@@ -1564,58 +1184,19 @@ module OneLogin
       # @return [Array] the list of groups
       #
       # @see {https://developers.onelogin.com/api-docs/1/groups/get-groups Get Groups documentation}
-      def get_groups(params={})
+      def get_groups(params = {})
         clean_error
         prepare_token
 
-        limit = params[:limit] || 50
-        params.delete(:limit) if limit > 50
-
         begin
-
-          url = get_url(GET_GROUPS_URL)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
+          options = {
+            model: OneLogin::Api::Models::Group,
+            headers: authorized_headers,
+            max_results: @max_results,
+            params: params
           }
 
-          groups = []
-          response = nil
-          after_cursor = nil
-          while response.nil? || groups.length > limit || !after_cursor.nil?
-            response = HTTParty.get(
-              url,
-              headers: headers,
-              query: params
-            )
-            if response.code == 200
-              json_data = JSON.parse(response.body)
-              if json_data && json_data['data']
-                json_data['data'].each do |group_data|
-                  if groups.length < limit
-                    groups << OneLogin::Api::Models::Group.new(group_data)
-                  else
-                    return groups
-                  end
-                end
-              end
-
-              after_cursor = get_after_cursor(response)
-              unless after_cursor.nil?
-                params['after_cursor'] = after_cursor
-              end
-            else
-              @error = response.code.to_s
-              @error_description = extract_error_message_from_response(response)
-              break
-            end
-          end
-
-          return groups
+          return Cursor.new(url_for(GET_GROUPS_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1637,20 +1218,11 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_GROUP_URL, group_id)
-
-          authorization = get_authorization
-
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
+          url = url_for(GET_GROUP_URL, group_id)
 
           response = HTTParty.get(
             url,
-            headers: headers
+            headers: authorized_headers
           )
 
           if response.code == 200
@@ -1690,10 +1262,7 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GET_SAML_ASSERTION_URL)
-
-          authorization = get_authorization
+          url = url_for(GET_SAML_ASSERTION_URL)
 
           data = {
             'username_or_email'=> username_or_email,
@@ -1706,15 +1275,9 @@ module OneLogin
             data['ip_address'] = ip_address
           end
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -1750,12 +1313,10 @@ module OneLogin
         begin
 
           if url_endpoint.nil? || url_endpoint.empty?
-            url = get_url(GET_SAML_VERIFY_FACTOR)
+            url = url_for(GET_SAML_VERIFY_FACTOR)
           else
             url = url_endpoint
           end
-
-          authorization = get_authorization
 
           data = {
             'app_id'=> app_id,
@@ -1767,15 +1328,9 @@ module OneLogin
             data['otp_token'] = otp_token
           end
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -1809,24 +1364,15 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(GENERATE_INVITE_LINK_URL)
-
-          authorization = get_authorization
+          url = url_for(GENERATE_INVITE_LINK_URL)
 
           data = {
             'email'=> email
           }
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -1862,10 +1408,7 @@ module OneLogin
         prepare_token
 
         begin
-
-          url = get_url(SEND_INVITE_LINK_URL)
-
-          authorization = get_authorization
+          url = url_for(SEND_INVITE_LINK_URL)
 
           data = {
             'email'=> email
@@ -1875,15 +1418,9 @@ module OneLogin
             data['personal_email'] = personal_email
           end
 
-          headers = {
-            'Authorization' => authorization,
-            'Content-Type' => 'application/json',
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.post(
             url,
-            headers: headers,
+            headers: authorized_headers,
             body: data.to_json
           )
 
@@ -1913,22 +1450,15 @@ module OneLogin
         clean_error
 
         begin
-
-          url = EMBED_APP_URL
-
-          data = {
-            'token'=> token,
-            'email'=> email
-          }
-
-          headers = {
-            'User-Agent' => @user_agent
-          }
-
           response = HTTParty.get(
-            url,
-            headers: headers,
-            query: data
+            EMBED_APP_URL,
+            headers: {
+              'User-Agent' => @user_agent
+            },
+            query: {
+              token: token,
+              email: email
+            }
           )
 
           if response.code == 200 && !(response.body.nil? || response.body.empty?)
@@ -1945,6 +1475,27 @@ module OneLogin
         end
 
         nil
+      end
+
+      def retrieve_apps_from_xml(xml_content)
+        doc = Nokogiri::XML(xml_content) do |config|
+          config.options = NOKOGIRI_OPTIONS
+        end
+
+        node_list = doc.xpath("/apps/app")
+        attributes = ['id', 'icon', 'name', 'provisioned', 'extension_required', 'personal', 'login_id']
+        apps = []
+        node_list.each do |node|
+          app_data = {}
+          node.children.each do |children|
+            if attributes.include? children.name
+              app_data[children.name] = children.content
+            end
+          end
+          apps << OneLogin::Api::Models::EmbedApp.new(app_data)
+        end
+
+        apps
       end
 
     end
