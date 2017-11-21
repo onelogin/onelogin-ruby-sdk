@@ -1555,8 +1555,7 @@ module OneLogin
         nil
       end
 
-      # Triggers an SMS or Push notification containing a One-Time Password (OTP)
-      # that can be used to authenticate a user with the Verify Factor call.
+      # Authenticates a one-time password (OTP) code provided by a multifactor authentication (MFA) device.
       #
       # @param user_id [Integer] The id of the user.
       # @param device_id [Integer] The id of the MFA device.
