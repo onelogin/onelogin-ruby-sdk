@@ -1446,7 +1446,7 @@ module OneLogin
         prepare_token
 
         begin
-          url = url_for(ENROLL_FACTOR_URL, user_id)          
+          url = url_for(ENROLL_FACTOR_URL, user_id)
 
           data = {
             'factor_id'=> factor_id.to_i,
@@ -1567,7 +1567,7 @@ module OneLogin
       #                             MUST be provided if the needs_trigger attribute from
       #                             the proceeding calls is set to true.
       #
-      # @return [Array] OTPDevice List
+      # @return [Boolean] True if Factor is verified
       # 
       # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/verify-factor Verify an Authentication Factor documentation}
       def verify_factor(user_id, device_id, otp_token=nil, state_token=nil)
