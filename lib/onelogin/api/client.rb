@@ -972,6 +972,45 @@ module OneLogin
         nil
       end
 
+      # Post a session token to this API endpoint to start a session and set a cookie to log a user into an app.
+      #
+      # @param session_token [String] The session token
+      #
+      # @return [String] return the 'Set-Cookie' value of the HTTP Header if any
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/login-page/create-session-via-token Create Session Via API Token documentation}
+      def create_session_via_token(session_token)
+        clean_error
+
+        begin
+          url = url_for(SESSION_API_TOKEN_URL)
+
+          data = {
+            'session_token'=> session_token
+          }
+
+          response = HTTParty.post(
+            url,
+            headers: headers,
+            body: data.to_json
+          )
+
+          if response.code == 200
+            if response.headers.key?('Set-Cookie')
+              return response.headers['Set-Cookie']
+            end
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)            
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       ################
       # Role Methods #
       ################
@@ -1346,6 +1385,230 @@ module OneLogin
         end
 
         nil
+      end
+
+      #############################
+      # Multi-factor Auth Methods #
+      #############################
+
+      # Returns a list of authentication factors that are available for user enrollment via API.
+      #
+      # @param user_id [Integer] The id of the user.
+      #
+      # @return [Array] AuthFactor list
+      # 
+      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/available-factors Get Available Authentication Factors documentation} 
+      def get_factors(user_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GET_FACTORS_URL, user_id)
+
+          response = HTTParty.get(
+            url,
+            :headers => authorized_headers
+          )
+
+          factors = []
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if json_data and json_data['data'] and json_data['data']['auth_factors']
+              json_data['data']['auth_factors'].each do |factor_data|
+                factors << OneLogin::Api::Models::AuthFactor.new(factor_data)
+              end
+            end
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+          return factors
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Enroll a user with a given authentication factor.
+      #
+      # @param user_id [Integer] The id of the user.
+      # @param factor_id [Integer] The identifier of the factor to enroll the user with.
+      # @param display_name [String] A name for the users device.
+      # @param number [String] The phone number of the user in E.164 format.
+      #
+      # @return [OTPDevice] MFA device
+      # 
+      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/enroll-factor Enroll an Authentication Factor documentation}
+      def enroll_factor(user_id, factor_id, display_name, number)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(ENROLL_FACTOR_URL, user_id)          
+
+          data = {
+            'factor_id'=> factor_id.to_i,
+            'display_name'=> display_name,
+            'number'=> number
+          }
+
+          response = HTTParty.post(
+            url,
+            :headers => authorized_headers,
+            body: data.to_json
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if json_data and json_data['data']
+              return OneLogin::Api::Models::OTPDevice.new(json_data['data'][0])
+            end
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Return a list of authentication factors registered to a particular user for multifactor authentication (MFA)
+      #
+      # @param user_id [Integer] The id of the user.
+      #
+      # @return [Array] OTPDevice List
+      # 
+      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/enrolled-factors Get Enrolled Authentication Factors documentation}
+      def get_enrolled_factors(user_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GET_ENROLLED_FACTORS_URL, user_id)
+
+          response = HTTParty.get(
+            url,
+            :headers => authorized_headers
+          )
+
+          otp_devices = []
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if json_data and json_data['data'] and json_data['data']['otp_devices']
+              json_data['data']['otp_devices'].each do |otp_device_data|
+                otp_devices << OneLogin::Api::Models::OTPDevice.new(otp_device_data)
+              end
+            end
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+          return otp_devices
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Triggers an SMS or Push notification containing a One-Time Password (OTP)
+      # that can be used to authenticate a user with the Verify Factor call.
+      #
+      # @param user_id [Integer] The id of the user.
+      # @param device_id [Integer] The id of the MFA device.
+      #
+      # @return [FactorEnrollmentResponse] Info with User Id, Device Id, and OTP Device
+      # 
+      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/activate-factor Activate an Authentication Factor documentation}
+      def activate_factor(user_id, device_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(ACTIVATE_FACTOR_URL, user_id, device_id)
+
+          response = HTTParty.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if json_data && json_data['data']
+              return OneLogin::Api::Models::FactorEnrollmentResponse.new(json_data['data'][0])
+            end
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Triggers an SMS or Push notification containing a One-Time Password (OTP)
+      # that can be used to authenticate a user with the Verify Factor call.
+      #
+      # @param user_id [Integer] The id of the user.
+      # @param device_id [Integer] The id of the MFA device.
+      # @param otp_token [String] OTP code provided by the device or SMS message sent to user.
+      #                           When a device like OneLogin Protect that supports Push has
+      #                           been used you do not need to provide the otp_token.
+      # @param state_token [String] The state_token is returned after a successful request
+      #                             to Enroll a Factor or Activate a Factor.
+      #                             MUST be provided if the needs_trigger attribute from
+      #                             the proceeding calls is set to true.
+      #
+      # @return [Array] OTPDevice List
+      # 
+      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/verify-factor Verify an Authentication Factor documentation}
+      def verify_factor(user_id, device_id, otp_token=nil, state_token=nil)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(VERIFY_FACTOR_URL, user_id, device_id)
+
+          data = {
+            'user_id'=> user_id,
+            'device_id'=> device_id
+          }
+
+          unless otp_token.nil? || otp_token.empty?
+            data['otp_token'] = otp_token
+          end
+
+          unless state_token.nil? || state_token.empty?
+            data['state_token'] = state_token
+          end
+
+          response = HTTParty.post(
+            url,
+            headers: authorized_headers,
+            body: data.to_json
+          )
+
+          if response.code == 200
+            return handle_operation_response(response)
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
       end
 
       ########################
