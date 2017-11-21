@@ -1057,7 +1057,8 @@ module OneLogin
         begin
         options = {
           model: OneLogin::Api::Models::EventType,
-          headers: authorized_headers
+          headers: authorized_headers,
+          max_results: @max_results
         }
 
         return Cursor.new(url_for(GET_EVENT_TYPES_URL), options)
