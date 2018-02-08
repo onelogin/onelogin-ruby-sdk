@@ -393,7 +393,8 @@ module OneLogin
         begin
           options = {
             model: OneLogin::Api::Models::App,
-            headers: authorized_headers
+            headers: authorized_headers,
+            max_results: @max_results
           }
 
           return Cursor.new(url_for(GET_APPS_FOR_USER_URL, user_id), options)
