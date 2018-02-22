@@ -56,11 +56,12 @@ class Cursor
     )
 
     json = response.parsed_response
+    results = json['data'].flatten
 
-    @collection += if results_remaining < json['data'].size
-      json['data'].slice(0, results_remaining)
+    @collection += if results_remaining < results.size
+      results.slice(0, results_remaining)
     else
-      json['data']
+      results
     end
 
     @after_cursor = after_cursor(json)
