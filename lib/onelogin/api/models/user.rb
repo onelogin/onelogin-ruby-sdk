@@ -7,7 +7,7 @@ module OneLogin
         attr_accessor :id, :external_id, :email, :username, :firstname, :lastname, :distinguished_name,
                       :phone, :company, :department, :status, :member_of, :samaccountname, :userprincipalname,
                       :group_id, :role_ids, :custom_attributes, :openid_name, :locale_code, :comment, :directory_id,
-                      :manager_ad_id, :trusted_idp_id, :activated_at, :created_at, :updated_at,
+                      :title, :manager_ad_id, :trusted_idp_id, :activated_at, :created_at, :updated_at,
                       :password_changed_at, :invitation_sent_at, :invalid_login_attempts, :last_login, :locked_until
 
         def initialize(data)
@@ -21,6 +21,7 @@ module OneLogin
           @phone = data['phone'].to_s
           @company = data['company'].to_s
           @department = data['department'].to_s
+          @title = data['title'].to_s
           @status = data['status']
           @member_of = data['member_of'].to_s
           @samaccountname = data['samaccountname'].to_s
@@ -39,7 +40,7 @@ module OneLogin
           @password_changed_at = data['password_changed_at']? Time.iso8601(data['password_changed_at']) : nil
           @invitation_sent_at = data['invitation_sent_at']? Time.iso8601(data['invitation_sent_at']) : nil
           @invalid_login_attempts = data['invalid_login_attempts']
-          @last_login = data['last_login']? Time.iso8601(data['last_login']) : nil          
+          @last_login = data['last_login']? Time.iso8601(data['last_login']) : nil
           @locked_until = data['locked_until']? Time.iso8601(data['locked_until']) : nil
         end
 
@@ -63,6 +64,7 @@ module OneLogin
           user_data.phone = @phone
           user_data.company = @company
           user_data.department = @department
+          user_data.title = @title
           user_data.status = @status
           user_data.member_of = @member_of
           user_data.samaccountname = @samaccountname
@@ -73,7 +75,7 @@ module OneLogin
           user_data.manager_ad_id = @manager_ad_id
           user_data.trusted_idp_id = @trusted_idp_id
           return user_data
-        end       
+        end
 
         def get_user_metadata
           user_metadata = UserMetadata.new
@@ -106,6 +108,7 @@ module OneLogin
             "phone"=> self.phone,
             "company"=> self.company,
             "department"=> self.department,
+            "title"=> self.title,
             "status"=> self.status,
             "member_of"=> self.member_of,
             "samaccountname"=> self.samaccountname,
