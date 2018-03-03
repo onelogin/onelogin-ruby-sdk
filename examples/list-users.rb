@@ -11,7 +11,5 @@ client = OneLogin::Api::Client.new(
 # chunks of users as you loop through
 
 client.get_users.each do |user|
-
   puts "#{user.id} - #{user.firstname} - #{user.email}"
-
 end
