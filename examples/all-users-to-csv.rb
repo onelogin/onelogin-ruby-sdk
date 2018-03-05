@@ -28,7 +28,7 @@ CSV.open('users.csv', 'wb') do |csv|
     end
 
     # custom attributes
-    custom_attribute_names.collect do |attribute_name|
+    custom_attribute_names.each do |attribute_name|
       row << user.custom_attributes[attribute_name] unless user.custom_attributes.empty?
     end
 
