@@ -1,5 +1,14 @@
 require 'onelogin'
 
+#
+# This example shows how you can export user details from OneLogin using the Ruby SDK
+#
+# Usage:
+# 1. Set your own CLIENT_ID and CLIENT_SECRET below
+# 2. From terminal run "ruby all-users-to-csv.rb" to extract all users including
+#    any custom attributes that might have been defined for the each user
+#
+
 client = OneLogin::Api::Client.new(
     client_id: 'ONELOGIN_CLIENT_ID',
     client_secret:'ONELOGIN_CLIENT_SECRET',
