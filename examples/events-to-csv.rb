@@ -2,6 +2,18 @@ require 'onelogin'
 require 'optparse'
 require 'optparse/time'
 
+#
+# This example shows how you can export events from OneLogin using the Ruby SDK
+#
+# Usage:
+# 1. Set your own CLIENT_ID and CLIENT_SECRET below
+# 2. From terminal run "ruby events-to-csv.rb" for the last 1000 events
+# 3. Use the command line args to filter events
+#
+# e.g. "ruby events-to-csv.rb -t 5 -s 2018-01-01" for login events since Jan 1 2018
+#
+
+
 # Parse CLI arguments
 options = {}
 
