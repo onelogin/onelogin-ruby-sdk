@@ -900,17 +900,13 @@ module OneLogin
         begin
           url = url_for(SESSION_LOGIN_TOKEN_URL)
 
-          unless allowed_origin.nil? || allowed_origin.empty?
-            headers['Custom-Allowed-Origin-Header-1'] = allowed_origin
-          end
-
           if query_params.nil? || !query_params.has_key?('username_or_email') || !query_params.has_key?('password') || !query_params.has_key?('subdomain')
             raise "username_or_email, password and subdomain are required parameters"
           end
 
           response = HTTParty.post(
             url,
-            headers: authorized_headers,
+            headers: authorized_headers.merge({ 'Custom-Allowed-Origin-Header-1' => allowed_origin }),
             body: query_params.to_json
           )
 
