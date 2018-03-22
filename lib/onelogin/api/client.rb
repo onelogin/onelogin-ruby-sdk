@@ -1001,7 +1001,7 @@ module OneLogin
             end
           else
             @error = response.code.to_s
-            @error_description = extract_error_message_from_response(response)            
+            @error_description = extract_error_message_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -1396,8 +1396,8 @@ module OneLogin
       # @param user_id [Integer] The id of the user.
       #
       # @return [Array] AuthFactor list
-      # 
-      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/available-factors Get Available Authentication Factors documentation} 
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/available-factors Get Available Authentication Factors documentation}
       def get_factors(user_id)
         clean_error
         prepare_token
@@ -1439,7 +1439,7 @@ module OneLogin
       # @param number [String] The phone number of the user in E.164 format.
       #
       # @return [OTPDevice] MFA device
-      # 
+      #
       # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/enroll-factor Enroll an Authentication Factor documentation}
       def enroll_factor(user_id, factor_id, display_name, number)
         clean_error
@@ -1482,7 +1482,7 @@ module OneLogin
       # @param user_id [Integer] The id of the user.
       #
       # @return [Array] OTPDevice List
-      # 
+      #
       # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/enrolled-factors Get Enrolled Authentication Factors documentation}
       def get_enrolled_factors(user_id)
         clean_error
@@ -1524,7 +1524,7 @@ module OneLogin
       # @param device_id [Integer] The id of the MFA device.
       #
       # @return [FactorEnrollmentResponse] Info with User Id, Device Id, and OTP Device
-      # 
+      #
       # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/activate-factor Activate an Authentication Factor documentation}
       def activate_factor(user_id, device_id)
         clean_error
@@ -1533,7 +1533,7 @@ module OneLogin
         begin
           url = url_for(ACTIVATE_FACTOR_URL, user_id, device_id)
 
-          response = HTTParty.get(
+          response = HTTParty.post(
             url,
             headers: authorized_headers
           )
@@ -1568,7 +1568,7 @@ module OneLogin
       #                             the proceeding calls is set to true.
       #
       # @return [Boolean] True if Factor is verified
-      # 
+      #
       # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/verify-factor Verify an Authentication Factor documentation}
       def verify_factor(user_id, device_id, otp_token=nil, state_token=nil)
         clean_error
