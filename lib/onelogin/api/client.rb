@@ -933,7 +933,7 @@ module OneLogin
       # @return [SessionTokenInfo] if the action succeed
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/verify-factor Verify Factor documentation}
-      def get_session_token_verified(device_id, state_token, otp_token=nil)
+      def get_session_token_verified(device_id, state_token, otp_token=nil, allowed_origin='')
         clean_error
         prepare_token
 
@@ -951,7 +951,7 @@ module OneLogin
 
           response = HTTParty.post(
             url,
-            headers: authorized_headers,
+            headers: authorized_headers.merge({ 'Custom-Allowed-Origin-Header-1' => allowed_origin }),
             body: data.to_json
           )
 
