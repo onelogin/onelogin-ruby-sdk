@@ -1,0 +1,37 @@
+<h1>Dashboard</h1>
+<p>
+  You must be authenticated to see this page so if you're seeing it then
+  everything worked as expected 🎉
+</p>
+
+<p>
+  <a href="/logout">Log Out</a>
+</p>
+
+<h2>Apps</h2>
+<%@apps.each do |app|%>
+  <div class="row">
+    <span><a href="https://<%= ONELOGIN_SUBDOMAIN %>.onelogin.com/launch/<%= app.id %>"><%= app.name %></a></span>
+  </div>
+<%end%>
+
+<hr>
+
+<h2>Roles</h2>
+<%@roles.each do |role|%>
+  <div class="row">
+    <span><%= role.name %></span>
+  </div>
+<%end%>
+
+<hr>
+
+<h2>Profile</h2>
+
+<%current_user.each do |k, v|%>
+  <div class="row">
+    <span><%= k%>:</span> <%= v%>
+  </div>
+<%end%>
+
+

@@ -1,0 +1,103 @@
+<div class="login-footer">
+  This is a simple demo of how to authenticate
+  a user and handle MFA when required
+</div>
+<div class="error"></div>
+<div class="login-form">
+  <h1>Custom Login</h1>
+  <%= form_tag("/login", method: "post") do %>
+    <div>
+      <%= text_field_tag :username, nil, placeholder: 'Enter Username' %>
+    </div>
+    <div>
+      <%= password_field_tag :password, nil, placeholder: 'Enter Password' %>
+    </div>
+    <%= submit_tag("Login") %>
+  <% end %>
+</div>
+<div class="mfa-form">
+  <h1>MFA Required</h1>
+  <%= form_tag("/verify_mfa", method: "post") do %>
+    <div>
+      <%= select_tag :device_id %>
+    </div>
+    <div>
+      <%= text_field_tag :otp_token, nil, placeholder: 'Enter token' %>
+    </div>
+    <%= submit_tag("Verify Token") %>
+  <% end %>
+</div>
+
+<script type="text/javascript">
+
+  var ONELOGIN_SUBDOMAIN = "<%= ONELOGIN_SUBDOMAIN %>"
+
+  function makeCors(session_token) {
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
+    method = "POST";
+    var url = "https://" + ONELOGIN_SUBDOMAIN + ".onelogin.com/session_via_api_token";
+    xhr.open(method, url, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    body = {"session_token": session_token};
+    xhr.send(JSON.stringify(body));
+  };
+
+  $(function(){
+    $(".login-form").show();
+    $(".mfa-form").hide();
+
+    $(".login-form form").on("submit", function(event){
+      $.ajax({
+        type: "POST",
+        url: this.action,
+        data: $(this).serialize(),
+        success: function(res, status, xhr) {
+          console.log(res);
+          if(res.requires_mfa){
+            console.log('requires mfa')
+            for(var i=0; i<res.devices.length; i++){
+              $('select').append('<option value="' + res.devices[i].id + '">' + res.devices[i].type + '</option>');
+            }
+            $(".login-form").hide();
+            $(".mfa-form").show();
+
+          }else{
+            makeCors(res.session_token);
+            window.location.href = '/dashboard';
+          }
+        },
+        error: function(xhr, status, err) {
+          console.log(err);
+          $(".error").text("Login Failed").show();
+          $(".login-form form input[type=submit]").removeAttr("disabled");
+        },
+      });
+      event.preventDefault();
+    });
+
+    $(".mfa-form form").on("submit", function(event){
+      $.ajax({
+        type: "POST",
+        url: this.action,
+        data: $(this).serialize(),
+        success: function(res, status, xhr) {
+          console.log(res);
+
+          makeCors(res.session_token);
+          window.location.href = '/dashboard';
+        },
+        error: function(xhr, status, err) {
+          console.log(err);
+          $(".error").text("MFA Verification Failed").show();
+          $(".login-form").show();
+          $(".mfa-form").hide();
+          $(".login-form form input[type=submit]").removeAttr("disabled");
+          $(".mfa-form form input[type=submit]").removeAttr("disabled");
+        },
+      });
+      event.preventDefault();
+    });
+  })
+
+</script>

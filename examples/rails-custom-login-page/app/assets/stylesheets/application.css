@@ -1,0 +1,63 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+body {
+  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif
+}
+
+.alert, .error {
+  color: red;
+  text-align: center;
+}
+
+.row {
+  padding: 5px 0px;
+}
+
+.row span {
+  display: inline-block;
+  font-weight: bold;
+}
+
+.login-form, .mfa-form {
+  width: 300px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 50px;
+  background: green; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(left, orange , yellow, green, cyan, blue, violet); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(right, orange, yellow, green, cyan, blue, violet); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(right, orange, yellow, green, cyan, blue, violet); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(to right, orange , yellow, green, cyan, blue, violet); /* Standard syntax (must be last) */
+}
+
+.login-form input, .mfa-form input {
+  width: 90%;
+  padding: 5px;
+  margin: 5px;
+}
+
+.login-form h1, .mfa-form h1 {
+  color: #fff;
+}
+
+.login-footer {
+  width: 300px;
+  margin: 50px auto;
+  text-align: center;
+}
+
