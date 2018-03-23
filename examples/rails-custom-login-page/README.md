@@ -26,7 +26,7 @@ In order to run this sample you need API credentials for a OneLogin account. If 
 1. Clone this repo
 
 ```sh
-git clone git@github.com:onelogin/onelogin-ruby-sdk.git
+git clone https://github.com/onelogin/onelogin-ruby-sdk.git
 ```
 
 2. Move to the rails example and install the required gems
