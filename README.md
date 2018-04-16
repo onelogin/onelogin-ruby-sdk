@@ -323,6 +323,9 @@ enrollment_response = client.activate_factor(user_id, device_id)
 # Verify an Authentication Factor
 result = client.verify_factor(user_id, device_id, otp_token="4242342423")
 
+# Remove a Factor
+result = client.remove_factor(user_id, device_id)
+
 # Generate Invite Link
 url_link = client.generate_invite_link("user@example.com")
 

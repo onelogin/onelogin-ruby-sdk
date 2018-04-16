@@ -1604,6 +1604,41 @@ module OneLogin
         false
       end
 
+      # Remove an enrolled factor from a user.
+      #
+      # @param user_id [Integer] The id of the user.
+      # @param device_id [Integer] The device_id of the MFA device.
+      #
+      # @return [Boolean] The result of the action
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/remove-factor Remove a Factor documentation}
+      def remove_factor(user_id, device_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(REMOVE_FACTOR_URL, user_id, device_id)
+
+          response = HTTParty.delete(
+            url,
+            :headers => authorized_headers
+          )
+
+          if response.code == 200
+            return true
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            return false
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       ########################
       # Invite Links Methods #
       ########################
