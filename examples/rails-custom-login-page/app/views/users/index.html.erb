@@ -19,7 +19,7 @@
         <td><%= user.firstname %> <%= user.lastname %></td>
         <td><%= user.email %></td>
         <td><%= user.phone %></td>
-        <td><% %></td>
+        <td><%= user.custom_attributes["custom_field"] if user.custom_attributes.is_a?(Hash) %></td>
         <td><%= link_to 'Show', user_path(user.id) %></td>
         <td><%= link_to 'Edit', edit_user_path(user.id) %></td>
       </tr>
