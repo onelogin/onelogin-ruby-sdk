@@ -8,6 +8,7 @@
       <th>Name</th>
       <th>Email</th>
       <th>Phone</th>
+      <th>Custom Field</th>
       <th colspan="2"></th>
     </tr>
   </thead>
@@ -18,6 +19,7 @@
         <td><%= user.firstname %> <%= user.lastname %></td>
         <td><%= user.email %></td>
         <td><%= user.phone %></td>
+        <td><% %></td>
         <td><%= link_to 'Show', user_path(user.id) %></td>
         <td><%= link_to 'Edit', edit_user_path(user.id) %></td>
       </tr>

@@ -14,6 +14,10 @@
   <div>
     Phone: <input type="text" name="phone" value="<%= @user.phone%>">
   </div>
+  </div>
+  <div>
+    Custom Field: <input type="text" name="custom_field" value="<%= @user.custom_attributes['custom_field']%>">
+  </div>
 
   <div class="actions">
     <%= submit_tag %>

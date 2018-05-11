@@ -42,11 +42,14 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    user = api_client.update_user(params[:id], user_params)
-    puts user
+    # update the user
+    api_client.update_user(params[:id], user_params)
+
+    # update custom attributes
+    api_client.set_custom_attribute_to_user(params[:id], custom_user_params)
 
     respond_to do |format|
-      if user
+      unless api_client.error
         format.html { redirect_to user_path(params[:id]), notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else
@@ -70,11 +73,14 @@ class UsersController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_user
       @user = api_client.get_user(params[:id])
-      p @user
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.permit(:firstname, :lastname, :email, :phone)
+      params.permit(:firstname, :lastname, :email, :phone, :custom_field)
+    end
+
+    def custom_user_params
+      params.permit(:custom_field)
     end
 end
