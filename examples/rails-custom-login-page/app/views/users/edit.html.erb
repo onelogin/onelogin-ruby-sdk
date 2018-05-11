@@ -1,0 +1,23 @@
+<h1>Editing User</h1>
+
+<%= form_tag update_user_path, method: "patch", class: "edit" do %>
+
+  <div>
+    First Name: <input type="text" name="firstname" value="<%= @user.firstname%>">
+  </div>
+  <div>
+    Last Name: <input type="text" name="lastname" value="<%= @user.lastname%>">
+  </div>
+  <div>
+    Email: <input type="text" name="email" value="<%= @user.email%>">
+  </div>
+  <div>
+    Phone: <input type="text" name="phone" value="<%= @user.phone%>">
+  </div>
+
+  <div class="actions">
+    <%= submit_tag %>
+  </div>
+<% end %>
+
+<%= link_to 'Back', users_path %>

@@ -61,3 +61,15 @@ body {
   text-align: center;
 }
 
+form.edit div {
+  padding: 10px;
+}
+
+table.list {
+  width: 100%;
+}
+
+table.list tr td {
+  padding: 5px;
+  border-bottom: 1px #ccc solid;
+}
