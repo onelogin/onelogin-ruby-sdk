@@ -110,15 +110,17 @@ module OneLogin
 
       def handle_saml_endpoint_response(response)
         content = JSON.parse(response.body)
-        if content && content.has_key?('status') && content.has_key?('data') && content['status'].has_key?('message') && content['status'].has_key?('type')
+        if content && content.has_key?('status') && content['status'].has_key?('message') && content['status'].has_key?('type')
           status_type = content['status']['type']
           status_message = content['status']['message']
           saml_endpoint_response = OneLogin::Api::Models::SAMLEndpointResponse.new(status_type, status_message)
-          if status_message == 'Success'
-            saml_endpoint_response.saml_response = content['data']
-          else
-            mfa = OneLogin::Api::Models::MFA.new(content['data'][0])
-            saml_endpoint_response.mfa = mfa
+          if content.has_key?('data')
+            if status_message == 'Success'
+              saml_endpoint_response.saml_response = content['data']
+            else
+              mfa = OneLogin::Api::Models::MFA.new(content['data'][0])
+              saml_endpoint_response.mfa = mfa
+            end
           end
 
           return saml_endpoint_response
