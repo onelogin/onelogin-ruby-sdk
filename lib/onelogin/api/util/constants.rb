@@ -30,6 +30,7 @@ module OneLogin
         SET_PW_CLEARTEXT = "https://api.%s.onelogin.com/api/1/users/set_password_clear_text/%s"
         SET_PW_SALT = "https://api.%s.onelogin.com/api/1/users/set_password_using_salt/%s"
         SET_CUSTOM_ATTRIBUTE_TO_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/set_custom_attributes"
+        SET_USER_STATE_URL = "https://api.%s.onelogin.com/api/1/users/%s/set_state"
         LOG_USER_OUT_URL = "https://api.%s.onelogin.com/api/1/users/%s/logout"
         LOCK_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/lock_user"
 

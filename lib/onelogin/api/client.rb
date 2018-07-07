@@ -733,6 +733,45 @@ module OneLogin
         false
       end
 
+      # Set User State
+      #
+      # @param id [Integer] Id of the user to be modified
+      # @param state [Integer] Set to the state value. [Unapproved: 0, Approved (licensed): 1, Rejected: 2, Unlicensed: 3]
+      #
+      # @return [Boolean] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/users/set-state Set User State documentation}
+      def set_state_to_user(user_id, state)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(SET_USER_STATE_URL, user_id)
+
+          data = {
+            'state' => state
+          }
+
+          response = HTTParty.put(
+            url,
+            headers: authorized_headers,
+            body: data.to_json
+          )
+
+          if response.code == 200
+            return handle_operation_response(response)
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
       # Set Custom Attribute Value
       #
       # @param user_id [Integer] Id of the user

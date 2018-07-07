@@ -5,7 +5,7 @@ module OneLogin
       class User
 
         attr_accessor :id, :external_id, :email, :username, :firstname, :lastname, :distinguished_name,
-                      :phone, :company, :department, :status, :member_of, :samaccountname, :userprincipalname,
+                      :phone, :company, :department, :status, :state, :member_of, :samaccountname, :userprincipalname,
                       :group_id, :role_ids, :custom_attributes, :openid_name, :locale_code, :comment, :directory_id,
                       :title, :manager_ad_id, :trusted_idp_id, :activated_at, :created_at, :updated_at,
                       :password_changed_at, :invitation_sent_at, :invalid_login_attempts, :last_login, :locked_until
@@ -23,6 +23,7 @@ module OneLogin
           @department = data['department'].to_s
           @title = data['title'].to_s
           @status = data['status']
+          @state = data['state']
           @member_of = data['member_of'].to_s
           @samaccountname = data['samaccountname'].to_s
           @userprincipalname = data['userprincipalname'].to_s
@@ -66,6 +67,7 @@ module OneLogin
           user_data.department = @department
           user_data.title = @title
           user_data.status = @status
+          user_data.state = @state
           user_data.member_of = @member_of
           user_data.samaccountname = @samaccountname
           user_data.userprincipalname = @userprincipalname
@@ -110,6 +112,7 @@ module OneLogin
             "department"=> self.department,
             "title"=> self.title,
             "status"=> self.status,
+            "state"=> self.state,
             "member_of"=> self.member_of,
             "samaccountname"=> self.samaccountname,
             "invalid_login_attempts"=> self.invalid_login_attempts,
