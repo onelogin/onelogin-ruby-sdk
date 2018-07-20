@@ -38,6 +38,7 @@ module OneLogin
           @trusted_idp_id = data['trusted_idp_id']
           @activated_at = data['activated_at']? Time.iso8601(data['activated_at']) : nil
           @created_at = data['created_at']? Time.iso8601(data['created_at']) : nil
+          @updated_at = data['updated_at']? Time.iso8601(data['updated_at']) : nil
           @password_changed_at = data['password_changed_at']? Time.iso8601(data['password_changed_at']) : nil
           @invitation_sent_at = data['invitation_sent_at']? Time.iso8601(data['invitation_sent_at']) : nil
           @invalid_login_attempts = data['invalid_login_attempts']
