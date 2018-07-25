@@ -1006,44 +1006,6 @@ module OneLogin
         nil
       end
 
-      # Post a session token to this API endpoint to start a session and set a cookie to log a user into an app.
-      #
-      # @param session_token [String] The session token
-      #
-      # @return [String] return the 'Set-Cookie' value of the HTTP Header if any
-      #
-      # @see {https://developers.onelogin.com/api-docs/1/login-page/create-session-via-token Create Session Via API Token documentation}
-      def create_session_via_token(session_token)
-        clean_error
-
-        begin
-          url = url_for(SESSION_API_TOKEN_URL)
-
-          data = {
-            'session_token'=> session_token
-          }
-
-          response = HTTParty.post(
-            url,
-            headers: headers,
-            body: data.to_json
-          )
-
-          if response.code == 200
-            if response.headers.key?('Set-Cookie')
-              return response.headers['Set-Cookie']
-            end
-          else
-            @error = response.code.to_s
-            @error_description = extract_error_message_from_response(response)
-          end
-        rescue Exception => e
-          @error = '500'
-          @error_description = e.message
-        end
-
-        nil
-      end
 
       ################
       # Role Methods #

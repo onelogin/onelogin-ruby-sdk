@@ -22,7 +22,6 @@ module OneLogin
         CREATE_USER_URL = "https://api.%s.onelogin.com/api/1/users"
         SESSION_LOGIN_TOKEN_URL = "https://api.%s.onelogin.com/api/1/login/auth"
         GET_TOKEN_VERIFY_FACTOR = "https://api.%s.onelogin.com/api/1/login/verify_factor"
-        SESSION_API_TOKEN_URL = "https://admin.%s.onelogin.com/session_via_api_token"
         UPDATE_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s"
         DELETE_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s"
         ADD_ROLE_TO_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/add_roles"
