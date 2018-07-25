@@ -45,8 +45,8 @@ end.parse!
 
 # Fetch the events
 client = OneLogin::Api::Client.new(
-    client_id: 'c76cf93f9bb88503df234cdd7e432eb79e943787df93265724c2df380433e3ea',
-    client_secret: '194c8521152a06ca3f3a698502b831bf39ebfb1c5ed1b335fc2206e38cab59d9',
+    client_id: 'ONELOGIN_CLIENT_ID_GOES_HERE',
+    client_secret: 'ONELOGIN_CLIENT_SECRET_GOES_HERE',
     region: 'us'
 )
 
