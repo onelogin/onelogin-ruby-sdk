@@ -24,6 +24,12 @@ OptionParser.new do |opts|
     options[:since] = s.iso8601
   end
 
+  opts.on("-lLAST", "--LAST=LAST", Time, "Events since this many days ago") do |d|
+    now = Date.today
+    days_ago = (now - d)
+    options[:since] = days_ago.iso8601
+  end
+
   opts.on("-uUNTIL", "--UNTIL=UNTIL", Time, "Events before this date") do |u|
     options[:until] = u.iso8601
   end
@@ -39,8 +45,8 @@ end.parse!
 
 # Fetch the events
 client = OneLogin::Api::Client.new(
-    client_id: 'ONELOGIN_CLIENT_ID',
-    client_secret: 'ONELOGIN_CLIENT_SECRET',
+    client_id: 'c76cf93f9bb88503df234cdd7e432eb79e943787df93265724c2df380433e3ea',
+    client_secret: '194c8521152a06ca3f3a698502b831bf39ebfb1c5ed1b335fc2206e38cab59d9',
     region: 'us'
 )
 
@@ -68,6 +74,7 @@ CSV.open('events.csv', 'wb') do |csv|
   # fetch the events
   client.get_events(options).take(limit).each do |event|
     csv << attribute_names.map { |attribute_name| event.send(attribute_name) }
+    counter += 1
   end
 end
 
