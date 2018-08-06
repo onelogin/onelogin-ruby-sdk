@@ -5,6 +5,9 @@
 # Returns an enumerable object
 class Cursor
   include Enumerable
+  include OneLogin::Api::Util
+
+  attr_accessor :error, :error_description
 
   # Create a new instance of the Cursor.
   #
@@ -14,6 +17,8 @@ class Cursor
   def initialize(url, options = {})
     @url = url
     @options = options
+    @error = nil
+    @error_description = nil
 
     @model = options[:model]
     @headers = options[:headers] || {}
@@ -55,16 +60,21 @@ class Cursor
       query: @params
     )
 
-    json = response.parsed_response
-    results = json['data'].flatten
+    if response.code == 200
+      json = response.parsed_response
+      results = json['data'].flatten
 
-    @collection += if results_remaining < results.size
-      results.slice(0, results_remaining)
+      @collection += if results_remaining < results.size
+        results.slice(0, results_remaining)
+      else
+        results
+      end
+
+      @after_cursor = after_cursor(json)
     else
-      results
+      @error = response.code.to_s
+      @error_description = extract_error_message_from_response(response)
     end
-
-    @after_cursor = after_cursor(json)
     @last_cursor_empty = @after_cursor.nil?
   end
 
@@ -87,4 +97,5 @@ class Cursor
   def last?
     @last_cursor_empty || fetch_completed?
   end
+
 end
