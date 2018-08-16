@@ -45,13 +45,18 @@ OptionParser.new do |opts|
   opts.on("-uTYPE", "--user=TYPE", Integer, "Filter by user id") do |u|
     options[:user_id] = u
   end
+
+  # Sort direction is done by adding a + or - before the field name that you want to sort on
+  opts.on("-zTYPE", "--sort=TYPE", String, "Sort by this field") do |s|
+    options[:sort] = s
+  end
 end.parse!
 
 # Fetch the events
 client = OneLogin::Api::Client.new(
-    client_id: 'ONELOGIN_CLIENT_ID_GOES_HERE',
-    client_secret: 'ONELOGIN_CLIENT_SECRET_GOES_HERE',
-    region: 'us'
+  client_id: 'ONELOGIN_CLIENT_ID_GOES_HERE',
+  client_secret: 'ONELOGIN_CLIENT_SECRET_GOES_HERE',
+  region: 'us'
 )
 
 attribute_names = ['id', 'created_at', 'account_id', 'user_id', 'user_name', 'event_type_id',
