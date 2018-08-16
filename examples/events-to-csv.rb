@@ -41,6 +41,10 @@ OptionParser.new do |opts|
   opts.on("-tTYPE", "--type=TYPE", Integer, "Filter by event type id") do |t|
     options[:event_type_id] = t
   end
+
+  opts.on("-uTYPE", "--user=TYPE", Integer, "Filter by user id") do |u|
+    options[:user_id] = u
+  end
 end.parse!
 
 # Fetch the events
@@ -52,7 +56,7 @@ client = OneLogin::Api::Client.new(
 
 attribute_names = ['id', 'created_at', 'account_id', 'user_id', 'user_name', 'event_type_id',
                   'notes', 'ipaddr', 'actor_user_id', 'actor_user_name', 'assuming_acting_user_id',
-                  'role_id', 'role_name', 'app_id', 'group_id', 'group_name', 'otp_device_id',
+                  'role_id', 'role_name', 'app_id', 'app_name', 'group_id', 'group_name', 'otp_device_id',
                   'otp_device_name', 'policy_id', 'policy_name', 'actor_system', 'custom_message',
                   'operation_name', 'directory_sync_run_id', 'directory_id', 'resolution', 'client_id',
                   'resource_type_id', 'error_description']
