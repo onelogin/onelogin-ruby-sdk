@@ -6,7 +6,7 @@ module OneLogin
 
         attr_accessor :id, :created_at, :account_id, :user_id, :user_name, :event_type_id,
                       :notes, :ipaddr, :actor_user_id, :actor_user_name, :assuming_acting_user_id,
-                      :role_id, :role_name, :app_id, :group_id, :group_name, :otp_device_id,
+                      :role_id, :role_name, :app_id, :app_name, :group_id, :group_name, :otp_device_id,
                       :otp_device_name, :policy_id, :policy_name, :actor_system, :custom_message,
                       :operation_name, :directory_sync_run_id, :directory_id, :resolution, :client_id,
                       :resource_type_id, :error_description
@@ -26,6 +26,7 @@ module OneLogin
           @role_id = data['role_id']
           @role_name = data['role_name'].to_s
           @app_id = data['app_id']
+          @app_name = data['app_name'].to_s
           @group_id = data['group_id']
           @group_name = data['group_name'].to_s
           @otp_device_id = data['otp_device_id']
