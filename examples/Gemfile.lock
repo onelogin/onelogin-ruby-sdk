@@ -1,13 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    httparty (0.16.0)
+    httparty (0.16.2)
       multi_xml (>= 0.5.2)
     mini_portile2 (2.3.0)
     multi_xml (0.6.0)
-    nokogiri (1.8.2)
+    nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
-    onelogin (1.0.1)
+    onelogin (1.2.1)
       httparty (>= 0.13.7)
       nokogiri (>= 1.6.3.1)
 

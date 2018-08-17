@@ -24,10 +24,10 @@ OptionParser.new do |opts|
     options[:since] = s.iso8601
   end
 
-  opts.on("-lLAST", "--LAST=LAST", Time, "Events since this many days ago") do |d|
+  opts.on("-lLAST", "--LAST=LAST", Integer, "Events since this many days ago") do |d|
     now = Date.today
     days_ago = (now - d)
-    options[:since] = days_ago.iso8601
+    options[:since] = days_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
   end
 
   opts.on("-uUNTIL", "--UNTIL=UNTIL", Time, "Events before this date") do |u|
@@ -42,12 +42,12 @@ OptionParser.new do |opts|
     options[:event_type_id] = t
   end
 
-  opts.on("-uTYPE", "--user=TYPE", Integer, "Filter by user id") do |u|
+  opts.on("-uUSER", "--user=USER", Integer, "Filter by user id") do |u|
     options[:user_id] = u
   end
 
   # Sort direction is done by adding a + or - before the field name that you want to sort on
-  opts.on("-zTYPE", "--sort=TYPE", String, "Sort by this field") do |s|
+  opts.on("-zSORT", "--sort=SORT", String, "Sort by this field") do |s|
     options[:sort] = s
   end
 end.parse!
