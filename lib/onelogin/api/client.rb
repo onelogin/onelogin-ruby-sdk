@@ -18,7 +18,7 @@ module OneLogin
       include OneLogin::Api::Util
 
       attr_accessor :client_id, :client_secret, :region
-      attr_accessor :user_agent, :error, :error_description
+      attr_accessor :user_agent, :error, :error_description, :error_attribute
 
       NOKOGIRI_OPTIONS = Nokogiri::XML::ParseOptions::STRICT |
                          Nokogiri::XML::ParseOptions::NONET
@@ -51,6 +51,7 @@ module OneLogin
       def clean_error
         @error = nil
         @error_description = nil
+        @error_attribute = nil
       end
 
       def extract_error_message_from_response(response)
@@ -59,12 +60,32 @@ module OneLogin
         if content && content.has_key?('status')
           status = content['status']
           if status.has_key?('message')
-            message = status['message']
+            if status['message'].instance_of?(Hash)
+              if status['message'].has_key?('description')
+                message = status['message']['description']  
+              end
+            else
+              message = status['message']
+            end
           elsif status.has_key?('type')
             message = status['type']
           end
         end
         message
+      end
+
+      def extract_error_attribute_from_response(response)
+        attribute = nil
+        content = JSON.parse(response.body)
+        if content && content.has_key?('status')
+          status = content['status']
+          if status.has_key?('message') && status['message'].instance_of?(Hash)
+            if status['message'].has_key?('attribute')
+              attribute = status['message']['attribute']  
+            end            
+          end
+        end
+        attribute
       end
 
       def expired?
@@ -512,6 +533,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -555,6 +577,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -594,6 +617,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -633,6 +657,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -676,6 +701,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -724,6 +750,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -763,6 +790,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -802,6 +830,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -835,6 +864,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -876,6 +906,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -909,6 +940,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'
@@ -1202,6 +1234,7 @@ module OneLogin
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
           end
         rescue Exception => e
           @error = '500'

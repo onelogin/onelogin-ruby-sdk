@@ -74,6 +74,14 @@ if users.nil?
 end
 ```
 
+In some scenarios there is an attribute not provided or invalid that causes the error,
+when that happens in addition to the error_description a error_attribute is available
+with the name of the attribute that caused the issue. Accesible at the client like:
+
+```ruby
+client.error_attribute
+```
+
 ### Authentication
 
 By default methods call internally to `get_access_token` if there is no valid access_token. You can also get tokens etc directly if needed.
