@@ -37,6 +37,10 @@ module OneLogin
         @region = options[:region] || 'us'
         @max_results = options[:max_results] || 1000
 
+        if options[:proxy_host]
+          http_proxy options[:proxy_host], options[:proxy_port], options[:proxy_user], options[:proxy_pass]
+        end
+
         validate_config
 
         @user_agent = DEFAULT_USER_AGENT
@@ -62,7 +66,7 @@ module OneLogin
           if status.has_key?('message')
             if status['message'].instance_of?(Hash)
               if status['message'].has_key?('description')
-                message = status['message']['description']  
+                message = status['message']['description']
               end
             else
               message = status['message']
@@ -81,8 +85,8 @@ module OneLogin
           status = content['status']
           if status.has_key?('message') && status['message'].instance_of?(Hash)
             if status['message'].has_key?('attribute')
-              attribute = status['message']['attribute']  
-            end            
+              attribute = status['message']['attribute']
+            end
           end
         end
         attribute
