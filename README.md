@@ -320,7 +320,7 @@ enroll_factor = client.enroll_factor(user_id, auth_factors.first.id, 'My Device'
 
 # Get Enrolled Authentication Factors
 otp_devices = client.get_enrolled_factors(user_id)
- 
+
 # Activate an Authentication Factor
 device_id = 0000000
 enrollment_response = client.activate_factor(user_id, device_id)
@@ -342,6 +342,26 @@ embed_token = "30e256c101cd0d2e731de1ec222e93c4be8a1572"
 apps = client.get_embed_apps("30e256c101cd0d2e731de1ec222e93c4be8a1572", "user@example.com")
 ```
 
+## Proxy Servers
+If you're stuck behind a proxy then you can still use this SDK by providing at a minimum the
+host address of your proxy server.
+
+```ruby
+client = OneLogin::Api::Client.new(
+  client_id: 'some-client-id',
+  client_secret:'some-client-secret',
+  region: 'us',
+  proxy_host: 'https://blah.com',
+  proxy_port: '8080',
+  proxy_user: 'username',
+  proxy_pass: 'password'
+)
+```
+
+* `proxy_host` - required, the host address of your proxy server
+* `proxy_port` - optional, the port number of your proxy server
+* `proxy_user` - optional, the username for your proxy server
+* `proxy_pass` - optional, the password for your proxy server
 
 ## Development
 

@@ -19,6 +19,7 @@ class Cursor
     @headers = options[:headers] || {}
     @params = options[:params] || {}
     @max_results = options[:max_results]
+    @client = options[:client]
 
     @collection = []
     @after_cursor = options.fetch(:after_cursor, nil)
@@ -49,7 +50,7 @@ class Cursor
   def fetch_next_page
     @params = @params.merge(after_cursor: @after_cursor) if @after_cursor
 
-    response = HTTParty.get(
+    response = @client.get(
       @url,
       headers: @headers,
       query: @params
