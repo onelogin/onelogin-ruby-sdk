@@ -236,7 +236,7 @@ module OneLogin
             'refresh_token' => @refresh_token
           }
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: headers,
             body: data.to_json
@@ -276,7 +276,7 @@ module OneLogin
             access_token: @access_token
           }
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers(false),
             body: data.to_json
@@ -311,7 +311,7 @@ module OneLogin
         begin
           url = url_for(GET_RATE_URL)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             headers: authorized_headers
           )
@@ -353,7 +353,8 @@ module OneLogin
             model: OneLogin::Api::Models::User,
             headers: authorized_headers,
             max_results: @max_results,
-            params: params
+            params: params,
+            client: self.class
           }
 
           return Cursor.new(url_for(GET_USERS_URL), options)
@@ -381,7 +382,7 @@ module OneLogin
 
           url = url_for(GET_USER_URL, user_id)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             headers: authorized_headers
           )
@@ -445,7 +446,7 @@ module OneLogin
         begin
           url = url_for(GET_ROLES_FOR_USER_URL, user_id)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             headers: authorized_headers
           )
@@ -480,7 +481,7 @@ module OneLogin
         begin
           url = url_for(GET_CUSTOM_ATTRIBUTES_URL)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             headers: authorized_headers
           )
@@ -524,7 +525,7 @@ module OneLogin
         begin
           url = url_for(CREATE_USER_URL)
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers,
             body: user_params.to_json
@@ -568,7 +569,7 @@ module OneLogin
         begin
           url = url_for(UPDATE_USER_URL, user_id)
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers,
             body: user_params.to_json
@@ -611,7 +612,7 @@ module OneLogin
             'role_id_array' => role_ids
           }
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -651,7 +652,7 @@ module OneLogin
             'role_id_array' => role_ids
           }
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -695,7 +696,7 @@ module OneLogin
             'validate_policy' => validate_policy
           }
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -744,7 +745,7 @@ module OneLogin
             data['password_salt'] = password_salt
           end
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -784,7 +785,7 @@ module OneLogin
             'state' => state
           }
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -824,7 +825,7 @@ module OneLogin
             'custom_attributes' => custom_attributes
           }
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -859,7 +860,7 @@ module OneLogin
         begin
           url = url_for(LOG_USER_OUT_URL, user_id)
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers
           )
@@ -900,7 +901,7 @@ module OneLogin
             'locked_until' => minutes
           }
 
-          response = HTTParty.put(
+          response = self.class.put(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -935,7 +936,7 @@ module OneLogin
         begin
           url = url_for(DELETE_USER_URL, user_id)
 
-          response = HTTParty.delete(
+          response = self.class.delete(
             url,
             headers: authorized_headers
           )
@@ -978,7 +979,7 @@ module OneLogin
             raise "username_or_email, password and subdomain are required parameters"
           end
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers.merge({ 'Custom-Allowed-Origin-Header-1' => allowed_origin }),
             body: query_params.to_json
@@ -1023,7 +1024,7 @@ module OneLogin
             data['otp_token'] = otp_token
           end
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers.merge({ 'Custom-Allowed-Origin-Header-1' => allowed_origin }),
             body: data.to_json
@@ -1091,7 +1092,7 @@ module OneLogin
         begin
           url = url_for(GET_ROLE_URL, role_id)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             headers: authorized_headers
           )
@@ -1186,7 +1187,7 @@ module OneLogin
         begin
           url = url_for(GET_EVENT_URL, event_id)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             headers: authorized_headers
           )
@@ -1228,7 +1229,7 @@ module OneLogin
         begin
           url = url_for(CREATE_EVENT_URL)
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers,
             body: event_params.to_json
@@ -1294,7 +1295,7 @@ module OneLogin
         begin
           url = url_for(GET_GROUP_URL, group_id)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             headers: authorized_headers
           )
@@ -1349,7 +1350,7 @@ module OneLogin
             data['ip_address'] = ip_address
           end
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -1402,7 +1403,7 @@ module OneLogin
             data['otp_token'] = otp_token
           end
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -1440,7 +1441,7 @@ module OneLogin
         begin
           url = url_for(GET_FACTORS_URL, user_id)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             :headers => authorized_headers
           )
@@ -1489,7 +1490,7 @@ module OneLogin
             'number'=> number
           }
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             :headers => authorized_headers,
             body: data.to_json
@@ -1526,7 +1527,7 @@ module OneLogin
         begin
           url = url_for(GET_ENROLLED_FACTORS_URL, user_id)
 
-          response = HTTParty.get(
+          response = self.class.get(
             url,
             :headers => authorized_headers
           )
@@ -1568,7 +1569,7 @@ module OneLogin
         begin
           url = url_for(ACTIVATE_FACTOR_URL, user_id, device_id)
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers
           )
@@ -1625,7 +1626,7 @@ module OneLogin
             data['state_token'] = state_token
           end
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -1660,7 +1661,7 @@ module OneLogin
         begin
           url = url_for(REMOVE_FACTOR_URL, user_id, device_id)
 
-          response = HTTParty.delete(
+          response = self.class.delete(
             url,
             :headers => authorized_headers
           )
@@ -1702,7 +1703,7 @@ module OneLogin
             'email'=> email
           }
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -1750,7 +1751,7 @@ module OneLogin
             data['personal_email'] = personal_email
           end
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers,
             body: data.to_json
@@ -1782,7 +1783,7 @@ module OneLogin
         clean_error
 
         begin
-          response = HTTParty.get(
+          response = self.class.get(
             EMBED_APP_URL,
             headers: {
               'User-Agent' => @user_agent
