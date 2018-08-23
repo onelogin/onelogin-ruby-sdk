@@ -16,6 +16,7 @@ module OneLogin
   	#
     class Client
       include OneLogin::Api::Util
+      include HTTParty
 
       attr_accessor :client_id, :client_secret, :region
       attr_accessor :user_agent, :error, :error_description, :error_attribute
@@ -38,7 +39,7 @@ module OneLogin
         @max_results = options[:max_results] || 1000
 
         if options[:proxy_host]
-          http_proxy options[:proxy_host], options[:proxy_port], options[:proxy_user], options[:proxy_pass]
+          self.class.http_proxy options[:proxy_host], options[:proxy_port], options[:proxy_user], options[:proxy_pass]
         end
 
         validate_config
@@ -193,7 +194,7 @@ module OneLogin
             'grant_type' => 'client_credentials'
           }
 
-          response = HTTParty.post(
+          response = self.class.post(
             url,
             headers: authorized_headers(false),
             body: data.to_json

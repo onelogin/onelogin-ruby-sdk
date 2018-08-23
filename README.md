@@ -320,7 +320,7 @@ enroll_factor = client.enroll_factor(user_id, auth_factors.first.id, 'My Device'
 
 # Get Enrolled Authentication Factors
 otp_devices = client.get_enrolled_factors(user_id)
- 
+
 # Activate an Authentication Factor
 device_id = 0000000
 enrollment_response = client.activate_factor(user_id, device_id)
@@ -343,7 +343,7 @@ apps = client.get_embed_apps("30e256c101cd0d2e731de1ec222e93c4be8a1572", "user@e
 ```
 
 ## Proxy Servers
-If you're stuck behind a proxy then you can still use this SDK by providing at a minimum the 
+If you're stuck behind a proxy then you can still use this SDK by providing at a minimum the
 host address of your proxy server.
 
 ```ruby
