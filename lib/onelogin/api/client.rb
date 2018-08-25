@@ -1009,6 +1009,7 @@ module OneLogin
       # @param device_id [String] Provide the MFA device_id you are submitting for verification.
       # @param state_token [String] Provide the state_token associated with the MFA device_id you are submitting for verification.
       # @param otp_token [String] (Optional) Provide the OTP value for the MFA factor you are submitting for verification.
+      # @param allowed_origin [String] (Optional) Required for CORS requests only. Set to the Origin URI from which you are allowed to send a request using CORS.
       # @param do_not_notify [String] (Optional) When verifying MFA via Protect Push, set this to true to stop additional push notifications being sent to the OneLogin Protect device.
       #
       # @return [SessionTokenInfo] if the action succeed
