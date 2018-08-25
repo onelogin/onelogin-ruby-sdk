@@ -979,9 +979,14 @@ module OneLogin
             raise "username_or_email, password and subdomain are required parameters"
           end
 
+          headers = authorized_headers
+          if allowed_origin
+            headers = headers.merge({ 'Custom-Allowed-Origin-Header-1' => allowed_origin })
+          end
+
           response = self.class.post(
             url,
-            headers: authorized_headers.merge({ 'Custom-Allowed-Origin-Header-1' => allowed_origin }),
+            headers: headers,
             body: query_params.to_json
           )
 
@@ -1004,11 +1009,12 @@ module OneLogin
       # @param device_id [String] Provide the MFA device_id you are submitting for verification.
       # @param state_token [String] Provide the state_token associated with the MFA device_id you are submitting for verification.
       # @param otp_token [String] (Optional) Provide the OTP value for the MFA factor you are submitting for verification.
+      # @param do_not_notify [String] (Optional) When verifying MFA via Protect Push, set this to true to stop additional push notifications being sent to the OneLogin Protect device.
       #
       # @return [SessionTokenInfo] if the action succeed
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/verify-factor Verify Factor documentation}
-      def get_session_token_verified(device_id, state_token, otp_token=nil, allowed_origin='')
+      def get_session_token_verified(device_id, state_token, otp_token=nil, allowed_origin='', do_not_notify=false)
         clean_error
         prepare_token
 
@@ -1017,16 +1023,22 @@ module OneLogin
 
           data = {
             'device_id'=> device_id.to_s,
-            'state_token'=> state_token
+            'state_token'=> state_token,
+            'do_not_notify'=> do_not_notify
           }
 
           unless otp_token.nil? || otp_token.empty?
             data['otp_token'] = otp_token
           end
 
+          headers = authorized_headers
+          if allowed_origin
+            headers = headers.merge({ 'Custom-Allowed-Origin-Header-1' => allowed_origin })
+          end
+
           response = self.class.post(
             url,
-            headers: authorized_headers.merge({ 'Custom-Allowed-Origin-Header-1' => allowed_origin }),
+            headers: headers,
             body: data.to_json
           )
 
@@ -1377,11 +1389,12 @@ module OneLogin
       # @param state_token [String] Provide the state_token associated with the MFA device_id you are submitting for verification.
       # @param otp_token [String] (Optional) Provide the OTP value for the MFA factor you are submitting for verification.
       # @param url_endpoint [String] (Optional) Specify an url where return the response.
+      # @param do_not_notify [String] (Optional) When verifying MFA via Protect Push, set this to true to stop additional push notifications being sent to the OneLogin Protect device
       #
       # @return [SAMLEndpointResponse] object with an encoded SAMLResponse
       #
       # @see {https://developers.onelogin.com/api-docs/1/saml-assertions/verify-factor Verify Factor documentation}
-      def get_saml_assertion_verifying(app_id, device_id, state_token, otp_token=nil, url_endpoint=nil)
+      def get_saml_assertion_verifying(app_id, device_id, state_token, otp_token=nil, url_endpoint=nil, do_not_notify=false)
         clean_error
         prepare_token
 
@@ -1396,7 +1409,8 @@ module OneLogin
           data = {
             'app_id'=> app_id,
             'device_id'=> device_id.to_s,
-            'state_token'=> state_token
+            'state_token'=> state_token,
+            'do_not_notify'=> do_not_notify
           }
 
           unless otp_token.nil? || otp_token.empty?
