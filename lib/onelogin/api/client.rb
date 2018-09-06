@@ -353,11 +353,10 @@ module OneLogin
             model: OneLogin::Api::Models::User,
             headers: authorized_headers,
             max_results: @max_results,
-            params: params,
-            client: self.class
+            params: params
           }
 
-          return Cursor.new(url_for(GET_USERS_URL), options)
+          return Cursor.new(self.class, url_for(GET_USERS_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -422,7 +421,7 @@ module OneLogin
             max_results: @max_results
           }
 
-          return Cursor.new(url_for(GET_APPS_FOR_USER_URL, user_id), options)
+          return Cursor.new(self.class, url_for(GET_APPS_FOR_USER_URL, user_id), options)
 
         rescue Exception => e
           @error = '500'
@@ -1081,7 +1080,7 @@ module OneLogin
             params: params
           }
 
-          return Cursor.new(url_for(GET_ROLES_URL), options)
+          return Cursor.new(self.class, url_for(GET_ROLES_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1147,7 +1146,7 @@ module OneLogin
           max_results: @max_results
         }
 
-        return Cursor.new(url_for(GET_EVENT_TYPES_URL), options)
+        return Cursor.new(self.class, url_for(GET_EVENT_TYPES_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1176,7 +1175,7 @@ module OneLogin
           params: params
         }
 
-        return Cursor.new(url_for(GET_EVENTS_URL), options)
+        return Cursor.new(self.class, url_for(GET_EVENTS_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1284,7 +1283,7 @@ module OneLogin
             params: params
           }
 
-          return Cursor.new(url_for(GET_GROUPS_URL), options)
+          return Cursor.new(self.class, url_for(GET_GROUPS_URL), options)
 
         rescue Exception => e
           @error = '500'

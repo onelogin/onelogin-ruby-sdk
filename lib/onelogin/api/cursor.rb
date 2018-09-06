@@ -11,7 +11,8 @@ class Cursor
   # @param url [String] The url of the API endpoint
   # @param options [Hash] Configuation options
   #
-  def initialize(url, options = {})
+  def initialize(client, url, options = {})
+    @client = client
     @url = url
     @options = options
 
@@ -19,7 +20,6 @@ class Cursor
     @headers = options[:headers] || {}
     @params = options[:params] || {}
     @max_results = options[:max_results]
-    @client = options[:client]
 
     @collection = []
     @after_cursor = options.fetch(:after_cursor, nil)
@@ -57,6 +57,7 @@ class Cursor
     )
 
     json = response.parsed_response
+
     results = json['data'].flatten
 
     @collection += if results_remaining < results.size
