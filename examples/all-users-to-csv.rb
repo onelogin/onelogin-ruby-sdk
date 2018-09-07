@@ -12,7 +12,8 @@ require 'onelogin'
 client = OneLogin::Api::Client.new(
     client_id: 'ONELOGIN_CLIENT_ID',
     client_secret:'ONELOGIN_CLIENT_SECRET',
-    region: 'us'
+    region: 'us',
+    max_results: 50000
 )
 
 attribute_names = ['id', 'external_id', 'email', 'username', 'firstname', 'lastname', 'distinguished_name',

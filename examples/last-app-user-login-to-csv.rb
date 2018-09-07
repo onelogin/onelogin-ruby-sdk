@@ -34,7 +34,8 @@ end.parse!
 client = OneLogin::Api::Client.new(
   client_id: 'ONELOGIN_CLIENT_ID_GOES_HERE',
   client_secret: 'ONELOGIN_CLIENT_SECRET_GOES_HERE',
-  region: 'us'
+  region: 'us',
+  max_results: 50000
 )
 
 counter = 0
