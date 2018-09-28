@@ -41,6 +41,7 @@ If you don't have an account you can [sign up for a free developer account here]
 |client_secret|Required: A valid OneLogin API client_secret|
 |region| Optional: `us` or `eu`. Defaults to `us`   |
 |max_results| Optional: Defaults to 1000  |
+|timeout| Optional: Defaults to 60 (requires httparty > 0.16.2) |
 
 ```ruby
 require 'onelogin'

@@ -38,6 +38,10 @@ module OneLogin
         @region = options[:region] || 'us'
         @max_results = options[:max_results] || 1000
 
+        if options[:timeout] and defined? self.class.default_timeout
+          self.class.default_timeout options[:timeout]
+        end
+
         if options[:proxy_host]
           self.class.http_proxy options[:proxy_host], options[:proxy_port], options[:proxy_user], options[:proxy_pass]
         end
