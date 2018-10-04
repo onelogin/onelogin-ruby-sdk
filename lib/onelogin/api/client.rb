@@ -206,11 +206,16 @@ module OneLogin
 
           if response.code == 200
             json_data = JSON.parse(response.body)
-            token = OneLogin::Api::Models::OneLoginToken.new(json_data)
-            @access_token = token.access_token
-            @refresh_token = token.refresh_token
-            @expiration = token.created_at + token.expires_in
-            return token
+            if json_data.has_key?('status')
+              @error = json_data['status']['error'].to_s
+              @error_description = extract_error_message_from_response(response)
+            else
+              token = OneLogin::Api::Models::OneLoginToken.new(json_data)
+              @access_token = token.access_token
+              @refresh_token = token.refresh_token
+              @expiration = token.created_at + token.expires_in
+              return token
+            end
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -248,11 +253,16 @@ module OneLogin
 
           if response.code == 200
             json_data = JSON.parse(response.body)
-            token = OneLogin::Api::Models::OneLoginToken.new(json_data)
-            @access_token = token.access_token
-            @refresh_token = token.refresh_token
-            @expiration = token.created_at + token.expires_in
-            return token
+            if json_data.has_key?('status')
+              @error = json_data['status']['code'].to_s
+              @error_description = extract_error_message_from_response(response)
+            else
+              token = OneLogin::Api::Models::OneLoginToken.new(json_data)
+              @access_token = token.access_token
+              @refresh_token = token.refresh_token
+              @expiration = token.created_at + token.expires_in
+              return token
+            end
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
