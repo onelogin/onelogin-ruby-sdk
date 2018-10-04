@@ -7,7 +7,7 @@ module OneLogin
         attr_accessor :id, :external_id, :email, :username, :firstname, :lastname, :distinguished_name,
                       :phone, :company, :department, :status, :state, :member_of, :samaccountname, :userprincipalname,
                       :group_id, :role_ids, :custom_attributes, :openid_name, :locale_code, :comment, :directory_id,
-                      :title, :manager_ad_id, :trusted_idp_id, :activated_at, :created_at, :updated_at,
+                      :title, :manager_ad_id, :trusted_idp_id, :manager_user_id, :activated_at, :created_at, :updated_at,
                       :password_changed_at, :invitation_sent_at, :invalid_login_attempts, :last_login, :locked_until
 
         def initialize(data)
@@ -36,6 +36,7 @@ module OneLogin
           @directory_id = data['directory_id']
           @manager_ad_id = data['manager_ad_id']
           @trusted_idp_id = data['trusted_idp_id']
+          @manager_user_id = data['manager_user_id']
           @activated_at = data['activated_at']? Time.iso8601(data['activated_at']) : nil
           @created_at = data['created_at']? Time.iso8601(data['created_at']) : nil
           @updated_at = data['updated_at']? Time.iso8601(data['updated_at']) : nil
@@ -77,6 +78,7 @@ module OneLogin
           user_data.directory_id = @directory_id
           user_data.manager_ad_id = @manager_ad_id
           user_data.trusted_idp_id = @trusted_idp_id
+          user_data.manager_user_id = @manager_user_id
           return user_data
         end
 
@@ -123,7 +125,8 @@ module OneLogin
             "openid_name"=> self.openid_name,
             "directory_id"=> self.directory_id,
             "manager_ad_id"=> self.manager_ad_id,
-            "trusted_idp_id"=> self.trusted_idp_id
+            "trusted_idp_id"=> self.trusted_idp_id,
+            "manager_user_id"=> self.manager_user_id
           }
         end
       end
