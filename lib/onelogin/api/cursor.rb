@@ -1,3 +1,6 @@
+require 'onelogin/api/apiexception'
+require 'onelogin/api/util'
+
 # Cursor
 #
 # Used for paginating requests to the OneLogin API
@@ -5,6 +8,7 @@
 # Returns an enumerable object
 class Cursor
   include Enumerable
+  include OneLogin::Api::Util
 
   # Create a new instance of the Cursor.
   #
@@ -58,16 +62,22 @@ class Cursor
 
     json = response.parsed_response
 
-    results = json['data'].flatten
-
-    @collection += if results_remaining < results.size
-      results.slice(0, results_remaining)
+    if json.nil?
+      raise OneLogin::Api::ApiException.new("Response could not be parsed", 500)
+    elsif !json.key?("data") && json["status"]["error"] == true
+      raise OneLogin::Api::ApiException.new(extract_error_message_from_response(response), json["status"]["code"])
     else
-      results
-    end
+      results = json['data'].flatten
 
-    @after_cursor = after_cursor(json)
-    @last_cursor_empty = @after_cursor.nil?
+      @collection += if results_remaining < results.size
+        results.slice(0, results_remaining)
+      else
+        results
+      end
+
+      @after_cursor = after_cursor(json)
+      @last_cursor_empty = @after_cursor.nil?
+    end
   end
 
   def after_cursor(json)

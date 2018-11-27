@@ -1,6 +1,7 @@
 require 'onelogin/version'
-require 'onelogin/api/util'
+require 'onelogin/api/apiexception'
 require 'onelogin/api/cursor'
+require 'onelogin/api/util'
 require 'json'
 require 'httparty'
 require 'nokogiri'
@@ -61,40 +62,6 @@ module OneLogin
         @error = nil
         @error_description = nil
         @error_attribute = nil
-      end
-
-      def extract_error_message_from_response(response)
-        message = ''
-        content = JSON.parse(response.body)
-        if content && content.has_key?('status')
-          status = content['status']
-          if status.has_key?('message')
-            if status['message'].instance_of?(Hash)
-              if status['message'].has_key?('description')
-                message = status['message']['description']
-              end
-            else
-              message = status['message']
-            end
-          elsif status.has_key?('type')
-            message = status['type']
-          end
-        end
-        message
-      end
-
-      def extract_error_attribute_from_response(response)
-        attribute = nil
-        content = JSON.parse(response.body)
-        if content && content.has_key?('status')
-          status = content['status']
-          if status.has_key?('message') && status['message'].instance_of?(Hash)
-            if status['message'].has_key?('attribute')
-              attribute = status['message']['attribute']
-            end
-          end
-        end
-        attribute
       end
 
       def expired?
@@ -207,7 +174,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data.has_key?('status')
-              @error = json_data['status']['error'].to_s
+              @error = json_data['status']['code'].to_s
               @error_description = extract_error_message_from_response(response)
             else
               token = OneLogin::Api::Models::OneLoginToken.new(json_data)
@@ -1154,13 +1121,13 @@ module OneLogin
         prepare_token
 
         begin
-        options = {
-          model: OneLogin::Api::Models::EventType,
-          headers: authorized_headers,
-          max_results: @max_results
-        }
+          options = {
+            model: OneLogin::Api::Models::EventType,
+            headers: authorized_headers,
+            max_results: @max_results
+          }
 
-        return Cursor.new(self.class, url_for(GET_EVENT_TYPES_URL), options)
+          return Cursor.new(self.class, url_for(GET_EVENT_TYPES_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1182,14 +1149,14 @@ module OneLogin
         prepare_token
 
         begin
-        options = {
-          model: OneLogin::Api::Models::Event,
-          headers: authorized_headers,
-          max_results: @max_results,
-          params: params
-        }
+          options = {
+            model: OneLogin::Api::Models::Event,
+            headers: authorized_headers,
+            max_results: @max_results,
+            params: params
+          }
 
-        return Cursor.new(self.class, url_for(GET_EVENTS_URL), options)
+          return Cursor.new(self.class, url_for(GET_EVENTS_URL), options)
 
         rescue Exception => e
           @error = '500'
