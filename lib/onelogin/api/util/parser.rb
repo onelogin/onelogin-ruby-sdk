@@ -5,18 +5,24 @@ module OneLogin
         def extract_error_message_from_response(response)
           message = ''
           content = JSON.parse(response.body)
-          if content && content.has_key?('status')
-            status = content['status']
-            if status.has_key?('message')
-              if status['message'].instance_of?(Hash)
-                if status['message'].has_key?('description')
-                  message = status['message']['description']
+          if content
+            if content.has_key?('status')
+              status = content['status']
+              if status.has_key?('message')
+                if status['message'].instance_of?(Hash)
+                  if status['message'].has_key?('description')
+                    message = status['message']['description']
+                  end
+                else
+                  message = status['message']
                 end
-              else
-                message = status['message']
+              elsif status.has_key?('type')
+                message = status['type']
               end
-            elsif status.has_key?('type')
-              message = status['type']
+            elsif content.has_key?('message')
+              message = content['message']
+            elsif content.has_key?('name')
+              message = content['name']
             end
           end
           message
@@ -36,6 +42,14 @@ module OneLogin
           attribute
         end
 
+        def extract_status_code_from_response(response)
+          status_code = ''
+          content = JSON.parse(response.body)
+          if content && content.has_key?('statusCode')
+            status_code = content['statusCode']
+          end
+          status_code
+        end
       end
     end
   end

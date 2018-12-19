@@ -80,8 +80,12 @@ module OneLogin
         result = false
         begin
           content = JSON.parse(response.body)
-          if content && content.has_key?('status') && content['status'].has_key?('type') && content['status']['type'] == "success"
-            result = true
+          if content
+            if content.has_key?('status') && content['status'].has_key?('type') && content['status']['type'] == "success"
+              result = true
+            elsif content.has_key?('success') && content['success']
+              result = true
+            end
           end
         rescue Exception => e
           result = false
@@ -134,8 +138,9 @@ module OneLogin
       end
 
       def authorized_headers(bearer = true)
+        # Removed the ":"
         authorization = if bearer
-          "bearer:#{@access_token}"
+          "bearer #{@access_token}"
         else
           "client_id:#{@client_id},client_secret:#{@client_secret}"
         end
@@ -904,7 +909,7 @@ module OneLogin
 
       # Deletes an user
       #
-      # @param user_id [Integer] Id of the user to be logged out
+      # @param user_id [Integer] Id of the user to be removed
       #
       # @return [Boolean] if the action succeed
       #
@@ -1824,6 +1829,452 @@ module OneLogin
         end
 
         apps
+      end
+
+      #####################
+      # Privilege Methods #
+      #####################
+
+      # Gets a list of the Privileges created in an account.
+      #
+      # @return [Array] list of privilege objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/list-privileges List Privileges documentation}
+      def get_privileges()
+        clean_error
+        prepare_token
+
+        begin
+
+          url = url_for(LIST_PRIVILEGES_URL)
+
+          privileges = []
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if !json_data.empty?
+              json_data.each do |data|
+                privileges << OneLogin::Api::Models::Privilege.new(data)
+              end
+            end
+            return privileges
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Creates a Privilege
+      #
+      # @param name [string] The name of the privilege.
+      # @param version [string] The version for the privilege schema. Set to 2018-05-18.
+      # @param statements [Array] A list of statements. Statement object or a dict with the keys Effect, Action and Scope
+      #
+      # @return [Privilege] the created privilege
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/create-privilege Create Privilege documentation}
+      def create_privilege(name, version, statements)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_PRIVILEGE_URL)
+
+          statement_data = []
+          for statement in statements
+            if statement.instance_of?(OneLogin::Api::Models::Statement)
+              statement_data << {
+               'Effect' => statement.effect,
+               'Action' => statement.actions,
+               'Scope' => statement.scopes
+              }
+            elsif statement.instance_of?(Hash) && statement.has_key?('Effect') && statement.has_key?('Action') && statement.has_key?('Scope')
+              statement_data << statement
+            else
+              @error = 400.to_s
+              @error_description = "statements is invalid. Provide a list of statements. The statement should be an Statement object or dict with the keys Effect, Action and Scope"
+              return
+            end
+          end
+
+          privilege_data = {
+            'name' => name,
+            'privilege' => {
+              'Version'=> version,
+              'Statement' => statement_data
+            }
+          }
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: privilege_data.to_json
+          )
+
+          if response.code == 201
+            json_data = JSON.parse(response.body)
+            if json_data && json_data.has_key?('id')
+              return OneLogin::Api::Models::Privilege.new(json_data['id'], name, version, statements)
+            end
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Get a Privilege.
+      #
+      # @param privilege_id [string] Id of the privilege
+      #
+      # @return [Privilege] the privilege identified by the id
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/get-privilege Get Privilege documentation}
+      def get_privilege(privilege_id)
+        clean_error
+        prepare_token
+
+        begin
+
+          url = url_for(GET_PRIVILEGE_URL, privilege_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if json_data && json_data.has_key?('id')
+              return OneLogin::Api::Models::Privilege.new(json_data)
+            end
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Updates a Privilege
+      #
+      # @param privilege_id [string] The id of the privilege to be updated.
+      # @param name [string] The name of the privilege.
+      # @param version [string] The version for the privilege schema. Set to 2018-05-18.
+      # @param statements [Array] A list of statements. Statement object or a dict with the keys Effect, Action and Scope
+      #
+      #
+      # @return [Privilege] the modified privilege
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/update-privilege Update Privilege documentation}
+      def update_privilege(privilege_id, name, version, statements)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(UPDATE_PRIVILEGE_URL, privilege_id)
+
+         statement_data = []
+          for statement in statements
+            if statement.instance_of?(OneLogin::Api::Models::Statement)
+              statement_data << {
+               'Effect' => statement.effect,
+               'Action' => statement.actions,
+               'Scope' => statement.scopes
+              }
+            elsif statement.instance_of?(Hash) && statement.has_key?('Effect') && statement.has_key?('Action') && statement.has_key?('Scope')
+              statement_data << statement
+            else
+              @error = 400.to_s
+              @error_description = "statements is invalid. Provide a list of statements. The statement should be an Statement object or dict with the keys Effect, Action and Scope"
+              return
+            end
+          end
+
+          privilege_data = {
+            'name' => name,
+            'privilege' => {
+              'Version'=> version,
+              'Statement' => statement_data
+            }
+          }
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: privilege_data.to_json
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if json_data && json_data.has_key?('id')
+              return OneLogin::Api::Models::Privilege.new(json_data['id'], name, version, statements)
+            end
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Deletes a Privilege
+      #
+      # @param privilege_id [string] Id of the privilege to be removed.
+      #
+      # @return [Boolean] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/delete-privilege Delete Privilege documentation}
+      def delete_privilege(privilege_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(DELETE_PRIVILEGE_URL, privilege_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return handle_operation_response(response)
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      # Gets a list of the roles assigned to a privilege.
+      #
+      # @param privilege_id [string] Id of the privilege.
+      #
+      # @return [Array] list of Role Id
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/get-roles Get Assigned Roles documentation}
+      def get_roles_assigned_to_privilege(privilege_id)
+        clean_error
+        prepare_token
+
+        begin
+          options = {
+            headers: authorized_headers,
+            max_results: @max_results,
+            container: 'roles'
+          }
+
+          return Cursor.new(self.class, url_for(GET_ROLES_ASSIGNED_TO_PRIVILEGE_URL, privilege_id), options)
+
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Assign one or more roles to a privilege.
+      #
+      # @param privilege_id [string] Id of the privilege.
+      # @param role_ids [Array] Ids of the roles to be added.
+      #
+      # @return [Boolean] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/assign-role Assign Roles documentation}
+      def assign_roles_to_privilege(privilege_id, role_ids)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(ASSIGN_ROLES_TO_PRIVILEGE_URL, privilege_id)
+
+          data = {
+            'roles' => role_ids
+          }
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: data.to_json
+          )
+
+          if response.code == 201
+            return handle_operation_response(response)
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      # Removes one role from the privilege.
+      #
+      # @param privilege_id [string] Id of the privilege.
+      # @param role_id [Integer] Id of the role to be removed.
+      #
+      # @return [Boolean] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/remove-role Remove Role documentation}
+      def remove_role_from_privilege(privilege_id, role_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(REMOVE_ROLE_FROM_PRIVILEGE_URL, privilege_id, role_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return true
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      # Gets a list of the users assigned to a privilege.
+      #
+      # @param privilege_id [string] Id of the privilege.
+      #
+      # @return [Array] list of User Id
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/get-users Get Assigned Users documentation}
+      def get_users_assigned_to_privilege(privilege_id)
+        clean_error
+        prepare_token
+
+        begin
+          options = {
+            headers: authorized_headers,
+            max_results: @max_results,
+            container: 'users'
+          }
+
+          return Cursor.new(self.class, url_for(GET_USERS_ASSIGNED_TO_PRIVILEGE_URL, privilege_id), options)
+
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Assign one or more users to a privilege.
+      #
+      # @param privilege_id [string] Id of the privilege.
+      # @param user_ids [Array] Ids of the users to be added.
+      #
+      # @return [Boolean] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/assign-users Assign Users documentation}
+      def assign_users_to_privilege(privilege_id, user_ids)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(ASSIGN_USERS_TO_PRIVILEGE_URL, privilege_id)
+
+          data = {
+            'users' => user_ids
+          }
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: data.to_json
+          )
+
+          if response.code == 201
+            return handle_operation_response(response)
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      # Removes one user from the privilege.
+      #
+      # @param privilege_id [string] Id of the privilege.
+      # @param user_id [Integer] Id of the user to be removed.
+      #
+      # @return [Boolean] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/privileges/remove-user Remove User documentation}
+      def remove_user_from_privilege(privilege_id, user_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(REMOVE_USER_FROM_PRIVILEGE_URL, privilege_id, user_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return true
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
       end
 
     end
