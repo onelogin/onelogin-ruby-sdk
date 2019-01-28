@@ -24,6 +24,7 @@ class Cursor
     @headers = options[:headers] || {}
     @params = options[:params] || {}
     @max_results = options[:max_results]
+    @container = options[:container] || 'data'
 
     @collection = []
     @after_cursor = options.fetch(:after_cursor, nil)
@@ -64,10 +65,16 @@ class Cursor
 
     if json.nil?
       raise OneLogin::Api::ApiException.new("Response could not be parsed", 500)
-    elsif !json.key?("data") && json["status"]["error"] == true
+    elsif !json.has_key?(@container) && json.has_key?('status') && json["status"]["error"] == true
       raise OneLogin::Api::ApiException.new(extract_error_message_from_response(response), json["status"]["code"])
+    elsif !json.has_key?(@container) && json.has_key?('statusCode')
+      raise OneLogin::Api::ApiException.new(extract_error_message_from_response(response), json["statusCode"])
     else
-      results = json['data'].flatten
+
+      results = json[@container]
+      if @container == "data"
+        results = results.flatten
+      end
 
       @collection += if results_remaining < results.size
         results.slice(0, results_remaining)
@@ -81,9 +88,13 @@ class Cursor
   end
 
   def after_cursor(json)
-    return unless json['pagination']
-
-    json['pagination'].fetch('after_cursor', nil)
+    value = nil
+    if json.has_key?('pagination')
+      value = json['pagination'].fetch('after_cursor', nil)
+    elsif json.has_key?('afterCursor')
+      value = json['afterCursor']
+    end
+    value
   end
 
   def results_remaining
