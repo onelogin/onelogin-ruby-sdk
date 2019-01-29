@@ -2,21 +2,21 @@
 
 <h1>Users</h1>
 
-<table class="list">
+<table class="table">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Phone</th>
-      <th>Custom Field</th>
-      <th colspan="2"></th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Phone</th>
+      <th scope="col">Custom Field</th>
+      <th  scope="col" colspan="2"></th>
     </tr>
   </thead>
 
   <tbody>
     <% @users.each do |user| %>
       <tr>
-        <td><%= user.firstname %> <%= user.lastname %></td>
+        <td  scope="row"><%= user.firstname %> <%= user.lastname %></td>
         <td><%= user.email %></td>
         <td><%= user.phone %></td>
         <td><%= user.custom_attributes["custom_field"] if user.custom_attributes.is_a?(Hash) %></td>

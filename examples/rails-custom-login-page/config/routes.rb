@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   post 'login', to: 'sessions#new', as: 'new_session'
   get 'logout', to: 'sessions#destroy', as: 'destroy_session'
   post 'verify_mfa', to: 'sessions#verify', as: 'verify_mfa'
+  post 'forgot_password', to: 'sessions#forgot_password', as: 'forgot_password'
+  post 'reset_password', to: 'sessions#reset_password', as: 'reset_password'
 
   get 'dashboard', to: 'dashboard#index'
 
