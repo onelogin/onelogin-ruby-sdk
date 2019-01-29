@@ -24,13 +24,13 @@ OptionParser.new do |opts|
     options[:since] = s.iso8601
   end
 
-  opts.on("-lLAST", "--LAST=LAST", Integer, "Events since this many days ago") do |d|
+  opts.on("-lLAST", "--last=LAST", Integer, "Events since this many days ago") do |d|
     now = Date.today
     days_ago = (now - d)
     options[:since] = days_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
   end
 
-  opts.on("-uUNTIL", "--UNTIL=UNTIL", Time, "Events before this date") do |u|
+  opts.on("-bUNTIL", "--until=UNTIL", Time, "Events before this date") do |u|
     options[:until] = u.iso8601
   end
 

@@ -57,4 +57,31 @@ module SessionsHelper
   def current_user_id
     session[:user]['id'] if current_user
   end
+
+  def validate_user(username)
+    user = api_client.get_users(username: username).first
+
+    if user
+      session[:user_id] = user.id
+    end
+
+    user
+  end
+
+  def get_mfa_devices(user_id)
+    devices = api_client.get_enrolled_factors(user_id)
+
+    # only return devices that dont need a trigger.
+    # i.e. this sample does not support push yet
+    devices.select {|d| d.needs_trigger == true }
+  end
+
+  def verify_token(device_id, mfa_token)
+    puts "VERIFY MFA TOKEN User:#{session[:user_id]}, Device:#{device_id}, Token:#{mfa_token}"
+    api_client.verify_factor(session[:user_id], device_id, mfa_token)
+  end
+
+  def set_password(user_id, password)
+    api_client.set_password_using_clear_text(user_id, password, password)
+  end
 end

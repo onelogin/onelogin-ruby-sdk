@@ -5,8 +5,10 @@
 
 <h2>Profile</h2>
 
+<ul class="list-group">
 <%@user.instance_values.symbolize_keys.each do |k, v|%>
-  <div class="row">
-    <span><%= k%>:</span> <%= v%>
-  </div>
+  <li class="list-group-item">
+    <b><%= k%>:</b> <%= v%>
+  </li>
 <%end%>
+</ul>

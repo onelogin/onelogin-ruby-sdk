@@ -33,7 +33,7 @@ body {
   font-weight: bold;
 }
 
-.login-form, .mfa-form {
+.form {
   width: 300px;
   margin: 0 auto;
   text-align: center;
@@ -45,13 +45,13 @@ body {
   background: linear-gradient(to right, orange , yellow, green, cyan, blue, violet); /* Standard syntax (must be last) */
 }
 
-.login-form input, .mfa-form input {
+.form input {
   width: 90%;
   padding: 5px;
   margin: 5px;
 }
 
-.login-form h1, .mfa-form h1 {
+.form h1 {
   color: #fff;
 }
 
