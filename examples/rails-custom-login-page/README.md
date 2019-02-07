@@ -7,8 +7,6 @@ over the look &amp; feel.
 
 The downside to this approach is that you have to implement MFA and password resets etc yourself. However we do have the APIs for these actions available and have demonstrated how to use them in this app.
 
-![Custom Login](https://s3.amazonaws.com/onelogin-screenshots/dev_site/images/custom-login-os.gif)
-
 If you want a standards based, out of the box way to authenticate users then we recommend you use [our OpenId Connect implementation](https://github.com/onelogin/onelogin-oidc-ruby).
 
 ## Get Started
@@ -17,6 +15,9 @@ The sample tries to keep everything as simple as possible so only
 implements
 * Login - Authenticate users in a single request to OneLogin with out any redirects
 * MFA - Does MFA verification if required
+* Password Reset with user verification via MFA
+* Self sign Up / Create a new user
+* Onboard / Activate a user
 * User Apps - List apps available to a user and provides SSO links
 * User Roles - Lists a users roles
 * Logout - destroying the local session and revoking the token at OneLogin
