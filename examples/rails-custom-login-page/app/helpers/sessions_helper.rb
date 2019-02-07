@@ -8,7 +8,7 @@ module SessionsHelper
       },
       request.base_url # included for CORS session cookie request
     )
-    return nil unless response
+    return { error: api_client.error_description } unless response
 
     if response.is_a? OneLogin::Api::Models::SessionTokenMFAInfo
       session[:state_token] = response.state_token

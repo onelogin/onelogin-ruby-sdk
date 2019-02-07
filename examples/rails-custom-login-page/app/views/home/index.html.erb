@@ -20,7 +20,9 @@
           <label for="password">Password</label>
           <%= password_field_tag :password, nil, placeholder: 'Enter Password', class: 'form-control' %>
         </div>
-        <button type="submit" class="btn btn-primary">Login</button> or <a href="#" class="forgot">Forgot Password</a>
+        <button type="submit" class="btn btn-primary">Login</button>
+        <hr/>
+        <a href="#" class="forgot">Forgot Password</a> | <a href="/signup">Sign Up</a>
       <% end %>
 
       <%= form_tag("/verify_mfa", method: "post", class: 'mfa-form') do %>
@@ -37,24 +39,24 @@
 
       <%= form_tag("/forgot_password", method: "post", class: 'forgot-password-form') do %>
         <div class="form-group">
-          <label for="username">Username</label>
-          <%= text_field_tag :username, nil, placeholder: 'Enter Username', class: 'form-control' %>
+          <label for="forgot_username">Username</label>
+          <%= text_field_tag :forgot_username, nil, placeholder: 'Enter Username', class: 'form-control' %>
         </div>
         <button type="submit" class="btn btn-primary">Reset Password</button> or <a href="/">Login</a>
       <% end %>
 
       <%= form_tag("/reset_password", method: "post", class: 'reset-password-form') do %>
         <div class="form-group">
-          <label for="device_id">MFA Device</label>
-          <%= select_tag :device_id, nil, {:class => 'form-control'} %>
+          <label for="reset_device_id">MFA Device</label>
+          <%= select_tag :reset_device_id, nil, {:class => 'form-control'} %>
         </div>
         <div class="form-group">
-          <label for="otp_token">Token</label>
-          <%= text_field_tag :otp_token, nil, placeholder: 'Enter Token', class: 'form-control' %>
+          <label for="reset_otp_token">Token</label>
+          <%= text_field_tag :reset_otp_token, nil, placeholder: 'Enter Token', class: 'form-control' %>
         </div>
         <div class="form-group">
-          <label for="password">New Password</label>
-          <%= password_field_tag :password, nil, placeholder: 'Enter New Password', class: 'form-control' %>
+          <label for="new_password">New Password</label>
+          <%= password_field_tag :new_password, nil, placeholder: 'Enter New Password', class: 'form-control' %>
         </div>
         <button type="submit" class="btn btn-primary">Save Password</button>
       <% end %>
@@ -129,7 +131,8 @@
         },
         error: function(xhr, status, err) {
           console.log(err);
-          showAlert('danger','Login Failed');
+          console.log(xhr);
+          showAlert('danger', xhr.responseJSON.error);
           $(".login-form input[type=submit]").removeAttr("disabled");
         },
       });

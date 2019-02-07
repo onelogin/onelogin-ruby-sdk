@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   def new
     response = log_in(params['username'], params['password'])
-    status = response ? :ok : :unauthorized
+    status = response[:error] ? :unauthorized : :ok
 
     render json: response, status: status
   end
@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
   # available to verify token before
   # password reset is completed
   def forgot_password
-    user = validate_user(params['username'])
+    user = validate_user(params['forgot_username'])
 
     devices = get_mfa_devices(user.id)
 
@@ -28,9 +28,9 @@ class SessionsController < ApplicationController
 
   # Verify MFA token and then update password
   def reset_password
-    if verify_token(params['device_id'], params['otp_token'])
+    if verify_token(params['reset_device_id'], params['reset_otp_token'])
       status = :ok
-      response = set_password(session[:user_id], params['password'])
+      response = set_password(session[:user_id], params['new_password'])
     else
       status = :unauthorized
       response = 'Invalid token'
