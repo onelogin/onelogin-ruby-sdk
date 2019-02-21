@@ -941,6 +941,52 @@ module OneLogin
         false
       end
 
+      # Use to generate a temporary MFA token that can be used in place of other MFA tokens for a set time period.
+      # For example, use this token for account recovery.
+      #
+      # @param user_id [Integer] Id of the user
+      # @param expires_in [Integer] Set the duration of the token in seconds.
+      #                             (default: 259200 seconds = 72h) 72 hours is the max value.
+      # @param reusable [Boolean] Defines if the token reusable. (default: false) If set to true, token can be used for multiple apps, until it expires.
+      #
+      # @return [MFAToken] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/generate-mfa-token Generate MFA Token documentation}
+      def generate_mfa_token(user_id, expires_in=259200, reusable=False)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GENERATE_MFA_TOKEN_URL, user_id)
+
+          data = {
+            'expires_in' => expires_in,
+            'reusable' => reusable
+          }
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: data.to_json
+          )
+
+          if response.code == 201
+            json_data = JSON.parse(response.body)
+            if !json_data.empty?
+              return OneLogin::Api::Models::MFAToken.new(json_data)
+            end
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       # Generates a session login token in scenarios in which MFA may or may not be required.
       # A session login token expires two minutes after creation.
       #
