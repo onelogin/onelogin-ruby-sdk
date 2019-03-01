@@ -42,6 +42,11 @@ module OneLogin
           @client_id = data['client_id']
           @resource_type_id = data['resource_type_id']
           @error_description = data['error_description'].to_s
+          @proxy_ip = data['proxy_ip'].to_s
+          @risk_score = data['risk_score']
+          @risk_reasons = data['risk_reasons'].to_s
+          @risk_cookie_id = data['risk_cookie_id']
+          @browser_fingerprint = data['browser_fingerprint']
         end
       end
     end
