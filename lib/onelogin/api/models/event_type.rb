@@ -4,12 +4,12 @@ module OneLogin
 
       class EventType
 
-        attr_accessor :id, :name, :reference
+        attr_accessor :id, :name, :description
 
         def initialize(data)
           @id = data['id']
           @name = data['name'].to_s
-          @reference = data['reference'].to_s
+          @description = data['description'].to_s
         end
       end
     end
