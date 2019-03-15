@@ -105,6 +105,10 @@ class UsersController < ApplicationController
 
   private
 
+    def set_user
+      @user = api_client.get_user(params[:id])
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.permit(:firstname, :lastname, :email, :phone, :custom_field, :username, :password)

@@ -1,14 +1,17 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <%= link_to 'Edit', edit_user_path(@user.id) %> |
+      <%= link_to 'Back', users_path %>
 
-<%= link_to 'Edit', edit_user_path(@user.id) %> |
-<%= link_to 'Back', users_path %>
-
-<h2>Profile</h2>
-
-<ul class="list-group">
-<%@user.instance_values.symbolize_keys.each do |k, v|%>
-  <li class="list-group-item">
-    <b><%= k%>:</b> <%= v%>
-  </li>
-<%end%>
-</ul>
+      <h2><%= @user.firstname %> <%= @user.lastname %></h2>
+      <ul class="list-group">
+      <%@user.instance_values.symbolize_keys.each do |k, v|%>
+        <li class="list-group-item">
+          <b><%= k%>:</b> <%= v%>
+        </li>
+      <%end%>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,27 +1,33 @@
-<h1>Editing User</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <p><%= link_to 'Back', users_path %></p>
 
-<%= form_tag update_user_path, method: "patch", class: "edit" do %>
+      <h2>Edit User</h2>
 
-  <div>
-    First Name: <input type="text" name="firstname" value="<%= @user.firstname%>">
+      <%= form_tag update_user_path, method: "patch", class: "edit" do %>
+        <div class="form-group">
+          <label for="firstname">First Name</label>
+          <input type="text" name="firstname" value="<%= @user.firstname%>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="lastname">Last Name</label>
+          <input type="text" name="lastname" value="<%= @user.lastname%>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="text" name="email" value="<%= @user.email%>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">Phone</label>
+          <input type="text" name="phone" value="<%= @user.phone%>" class="form-control">
+        </div>
+        <div class="form-group">
+          <label for="email">Custom Field</label>
+          <input type="text" name="custom_field" value="<%= @user.custom_attributes['custom_field'] if @user.custom_attributes.present? %>" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+      <% end %>
+    </div>
   </div>
-  <div>
-    Last Name: <input type="text" name="lastname" value="<%= @user.lastname%>">
-  </div>
-  <div>
-    Email: <input type="text" name="email" value="<%= @user.email%>">
-  </div>
-  <div>
-    Phone: <input type="text" name="phone" value="<%= @user.phone%>">
-  </div>
-  </div>
-  <div>
-    Custom Field: <input type="text" name="custom_field" value="<%= @user.custom_attributes['custom_field']%>">
-  </div>
-
-  <div class="actions">
-    <%= submit_tag %>
-  </div>
-<% end %>
-
-<%= link_to 'Back', users_path %>
+</div>

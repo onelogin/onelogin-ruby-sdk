@@ -1,30 +1,33 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Users</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <h2>Users</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Custom Field</th>
+            <th  scope="col" colspan="2"></th>
+          </tr>
+        </thead>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Email</th>
-      <th scope="col">Phone</th>
-      <th scope="col">Custom Field</th>
-      <th  scope="col" colspan="2"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @users.each do |user| %>
-      <tr>
-        <td  scope="row"><%= user.firstname %> <%= user.lastname %></td>
-        <td><%= user.email %></td>
-        <td><%= user.phone %></td>
-        <td><%= user.custom_attributes["custom_field"] if user.custom_attributes.is_a?(Hash) %></td>
-        <td><%= link_to 'Show', user_path(user.id) %></td>
-        <td><%= link_to 'Edit', edit_user_path(user.id) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr>
+              <td  scope="row"><%= user.firstname %> <%= user.lastname %></td>
+              <td><%= user.email %></td>
+              <td><%= user.phone %></td>
+              <td><%= user.custom_attributes["custom_field"] if user.custom_attributes.is_a?(Hash) %></td>
+              <td><%= link_to 'Show', user_path(user.id) %></td>
+              <td><%= link_to 'Edit', edit_user_path(user.id) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
