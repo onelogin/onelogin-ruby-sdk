@@ -1089,6 +1089,40 @@ module OneLogin
       end
 
 
+      #########################
+      # Onelogin Apps Methods #
+      #########################
+
+      # Gets a list of OneLoginApp resources. (if no limit provided, by default get 50 elements)
+      #
+      # @param params [Hash] Parameters to filter the result of the list
+      #
+      # @return [Array] list of OneLoginApp objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/apps/get-apps Get Apps documentation}
+      def get_apps(params = {})
+        clean_error
+        prepare_token
+
+        begin
+          options = {
+            model: OneLogin::Api::Models::OneLoginApp,
+            headers: authorized_headers,
+            max_results: @max_results,
+            params: params
+          }
+
+          return Cursor.new(self.class, url_for(GET_APPS_URL), options)
+
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
       ################
       # Role Methods #
       ################
