@@ -342,7 +342,7 @@ module OneLogin
             params: params
           }
 
-          return Cursor.new(self.class, url_for(GET_USERS_URL), options)
+          return Cursor.new(self, url_for(GET_USERS_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -407,7 +407,7 @@ module OneLogin
             max_results: @max_results
           }
 
-          return Cursor.new(self.class, url_for(GET_APPS_FOR_USER_URL, user_id), options)
+          return Cursor.new(self, url_for(GET_APPS_FOR_USER_URL, user_id), options)
 
         rescue Exception => e
           @error = '500'
@@ -1112,7 +1112,7 @@ module OneLogin
             params: params
           }
 
-          return Cursor.new(self.class, url_for(GET_APPS_URL), options)
+          return Cursor.new(self, url_for(GET_APPS_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1146,7 +1146,7 @@ module OneLogin
             params: params
           }
 
-          return Cursor.new(self.class, url_for(GET_ROLES_URL), options)
+          return Cursor.new(self, url_for(GET_ROLES_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1212,7 +1212,7 @@ module OneLogin
             max_results: @max_results
           }
 
-          return Cursor.new(self.class, url_for(GET_EVENT_TYPES_URL), options)
+          return Cursor.new(self, url_for(GET_EVENT_TYPES_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1241,7 +1241,7 @@ module OneLogin
             params: params
           }
 
-          return Cursor.new(self.class, url_for(GET_EVENTS_URL), options)
+          return Cursor.new(self, url_for(GET_EVENTS_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -1349,7 +1349,7 @@ module OneLogin
             params: params
           }
 
-          return Cursor.new(self.class, url_for(GET_GROUPS_URL), options)
+          return Cursor.new(self, url_for(GET_GROUPS_URL), options)
 
         rescue Exception => e
           @error = '500'
@@ -2172,7 +2172,7 @@ module OneLogin
             container: 'roles'
           }
 
-          return Cursor.new(self.class, url_for(GET_ROLES_ASSIGNED_TO_PRIVILEGE_URL, privilege_id), options)
+          return Cursor.new(self, url_for(GET_ROLES_ASSIGNED_TO_PRIVILEGE_URL, privilege_id), options)
 
         rescue Exception => e
           @error = '500'
@@ -2274,7 +2274,7 @@ module OneLogin
             container: 'users'
           }
 
-          return Cursor.new(self.class, url_for(GET_USERS_ASSIGNED_TO_PRIVILEGE_URL, privilege_id), options)
+          return Cursor.new(self, url_for(GET_USERS_ASSIGNED_TO_PRIVILEGE_URL, privilege_id), options)
 
         rescue Exception => e
           @error = '500'
