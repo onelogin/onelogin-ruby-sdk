@@ -54,6 +54,7 @@ class Cursor
 
   def fetch_next_page
     @params = @params.merge(after_cursor: @after_cursor) if @after_cursor
+    @client.prepare_token
 
     response = @client.class.get(
       @url,
