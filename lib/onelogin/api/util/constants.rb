@@ -34,6 +34,9 @@ module OneLogin
         LOCK_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/lock_user"
         GENERATE_MFA_TOKEN_URL = "https://api.%s.onelogin.com/api/1/users/%s/mfa_token"
 
+        # Apps URL
+        GET_APPS_URL = "https://api.%s.onelogin.com/api/1/apps"
+
         # Role URLs
         GET_ROLES_URL = "https://api.%s.onelogin.com/api/1/roles"
         CREATE_ROLE_URL = "https://api.%s.onelogin.com/api/1/roles"
