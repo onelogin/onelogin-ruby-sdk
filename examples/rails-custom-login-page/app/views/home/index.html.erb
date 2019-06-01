@@ -61,6 +61,8 @@
         <button type="submit" class="btn btn-primary">Save Password</button>
       <% end %>
 
+      <form method="POST" action="" id="sp"></form>
+
     </div>
     <div class="col-sm">
     </div>
@@ -82,6 +84,17 @@
     xhr.open(method, url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     body = {"session_token": session_token};
+    xhr.onreadystatechange = function () {
+      if(xhr.readyState === 4 && xhr.status === 200) {
+        if(getUrlParameter("origin")){
+          // If there is an origin SP then redirect to it
+          redirectToSP()
+        } else{
+          // Otherwise redirect to the main dashboard
+          window.location.href = '/dashboard';
+        }
+      }
+    };
     xhr.send(JSON.stringify(body));
   };
 
@@ -92,6 +105,28 @@
   }
   function hideAlert(){
     $(".message").hide();
+  }
+
+  function getUrlParameter(sParam) {
+      var sPageURL = window.location.search.substring(1),
+          sURLVariables = sPageURL.split('&'),
+          sParameterName,
+          i;
+
+      for (i = 0; i < sURLVariables.length; i++) {
+          sParameterName = sURLVariables[i].split('=');
+
+          if (sParameterName[0] === sParam) {
+              return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+          }
+      }
+  };
+
+  function redirectToSP() {
+    var origin = getUrlParameter("origin");
+    var samlRequest = getUrlParameter("SAMLRequest");
+    var url = origin + "&SAMLRequest=" + samlRequest;
+    $("#sp").attr("action", url).submit();
   }
 
   $(function(){
@@ -126,7 +161,6 @@
 
           }else{
             makeCors(res.session_token);
-            window.location.href = '/dashboard';
           }
         },
         error: function(xhr, status, err) {
@@ -148,7 +182,6 @@
           console.log(res);
 
           makeCors(res.session_token);
-          window.location.href = '/dashboard';
         },
         error: function(xhr, status, err) {
           console.log(err);
