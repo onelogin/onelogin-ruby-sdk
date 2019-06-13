@@ -47,6 +47,8 @@ module OneLogin
           self.class.http_proxy options[:proxy_host], options[:proxy_port], options[:proxy_user], options[:proxy_pass]
         end
 
+        self.class.default_options.update(verify: false)
+
         validate_config
 
         @user_agent = DEFAULT_USER_AGENT
@@ -364,6 +366,12 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
 
           url = url_for(GET_USER_URL, user_id)
 
@@ -401,6 +409,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           options = {
             model: OneLogin::Api::Models::App,
             headers: authorized_headers,
@@ -429,6 +444,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(GET_ROLES_FOR_USER_URL, user_id)
 
           response = self.class.get(
@@ -552,6 +574,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(UPDATE_USER_URL, user_id)
 
           response = self.class.put(
@@ -591,6 +620,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(ADD_ROLE_TO_USER_URL, user_id)
 
           data = {
@@ -631,6 +667,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(DELETE_ROLE_TO_USER_URL, user_id)
 
           data = {
@@ -673,6 +716,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(SET_PW_CLEARTEXT, user_id)
 
           data = {
@@ -718,6 +768,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(SET_PW_SALT, user_id)
 
           data = {
@@ -764,6 +821,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(SET_USER_STATE_URL, user_id)
 
           data = {
@@ -804,6 +868,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(SET_CUSTOM_ATTRIBUTE_TO_USER_URL, user_id)
 
           data = {
@@ -843,6 +914,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(LOG_USER_OUT_URL, user_id)
 
           response = self.class.put(
@@ -880,6 +958,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(LOCK_USER_URL, user_id)
 
           data = {
@@ -919,6 +1004,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(DELETE_USER_URL, user_id)
 
           response = self.class.delete(
@@ -957,6 +1049,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(GENERATE_MFA_TOKEN_URL, user_id)
 
           data = {
@@ -1051,6 +1150,13 @@ module OneLogin
         prepare_token
 
         begin
+          if device_id.nil? || device_id.to_s.empty?
+            @error = '400'
+            @error_description = "device_id is required"
+            @error_attribute = "device_id"
+            return
+          end
+
           url = url_for(GET_TOKEN_VERIFY_FACTOR)
 
           data = {
@@ -1088,31 +1194,76 @@ module OneLogin
         nil
       end
 
+      ###############################
+      # Onelogin Connectors Methods #
+      ###############################
+
+      # Gets a list of Connector resources.
+      #
+      # @param params [Hash] Parameters to filter the result of the list
+      #
+      # @return [Array] list of Connector objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/connectors/list-connectors List Connectors documentation}
+      def get_connectors(params = {})
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GET_CONNECTORS_URL)
+
+          connectors = []
+          response = self.class.get(
+            url,
+            headers: authorized_headers,
+            query: params
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if !json_data.empty?
+              json_data.each do |data|
+                pp data
+                connectors << OneLogin::Api::Models::ConnectorBasic.new(data)
+              end
+            end
+            return connectors
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
 
       #########################
       # Onelogin Apps Methods #
       #########################
 
-      # Gets a list of OneLoginApp resources. (if no limit provided, by default get 50 elements)
+      # Gets a list of OneLoginAppV1 resources. (if no limit provided, by default get 50 elements)
       #
       # @param params [Hash] Parameters to filter the result of the list
       #
-      # @return [Array] list of OneLoginApp objects
+      # @return [Array] list of OneLoginAppV1 objects
       #
       # @see {https://developers.onelogin.com/api-docs/1/apps/get-apps Get Apps documentation}
-      def get_apps(params = {})
+      def get_apps_v1(params = {})
         clean_error
         prepare_token
 
         begin
           options = {
-            model: OneLogin::Api::Models::OneLoginApp,
+            model: OneLogin::Api::Models::OneLoginAppV1,
             headers: authorized_headers,
             max_results: @max_results,
             params: params
           }
 
-          return Cursor.new(self.class, url_for(GET_APPS_URL), options)
+          return Cursor.new(self.class, url_for(GET_APPS_URL_V1), options)
 
         rescue Exception => e
           @error = '500'
@@ -1122,6 +1273,223 @@ module OneLogin
         nil
       end
 
+      # Gets a list of OneLoginAppBasic resources.
+      #
+      # @param params [Hash] Parameters to filter the result of the list
+      #
+      # @return [Array] list of OneLoginAppBasic objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/apps/list-apps Get Apps documentation}
+      def get_apps(params = {})
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GET_APPS_URL)
+
+          apps = []
+          response = self.class.get(
+            url,
+            headers: authorized_headers,
+            query: params
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if !json_data.empty?
+              json_data.each do |data|
+                apps << OneLogin::Api::Models::OneLoginAppBasic.new(data)
+              end
+            end
+            return apps
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Creates an app
+      #
+      # @param app_params [Hash] App data (name, visible, policy_id, is_available, parameters, allow_assumed_signin,
+      #                                    configuration, notes, description, provisioning,
+      #                                    connector_id, auth_method, tab_id)
+      #
+      # @return [OneLoginApp] the created app
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/apps/create-app Create App documentation}
+      def create_app(app_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_APP_URL)
+
+          unless app_params.has_key?('connector_id') || app_params['connector_id'].to_s.empty?
+            @error = '400'
+            @error_description = "connector_id is required"
+            @error_attribute = "connector_id"
+            return
+          end
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: app_params.to_json
+          )
+
+          if response.code == 201
+            json_data = JSON.parse(response.body)
+            if json_data && json_data.has_key?('id')
+              return OneLogin::Api::Models::OneLoginApp.new(json_data)
+            end
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Gets a OneLoginApp resource.
+      #
+      # @return [OneLoginApp] OneLoginApp object
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/apps/get-app Get App documentation}
+      def get_app(app_id)
+        clean_error
+        prepare_token
+
+        begin
+          if app_id.nil? || app_id.to_s.empty?
+            @error = '400'
+            @error_description = "app_id is required"
+            @error_attribute = "app_id"
+            return
+          end
+
+          url = url_for(GET_APP_URL, app_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if json_data && json_data.has_key?('id')
+              return OneLogin::Api::Models::OneLoginApp.new(json_data)
+            end
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Updates an app
+      #
+      # @param app_id [Integer] Id of the app
+      # @param app_params [Hash] App data (name, visible, policy_id, is_available, parameters, allow_assumed_signin,
+      #                                    configuration, notes, description, provisioning,
+      #                                    connector_id, auth_method, tab_id)
+      #
+      # @return [User] the modified user
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/apps/update-app Update App by ID documentation}
+      def update_app(app_id, app_params)
+        clean_error
+        prepare_token
+
+        begin
+          if app_id.nil? || app_id.to_s.empty?
+            @error = '400'
+            @error_description = "app_id is required"
+            @error_attribute = "app_id"
+            return
+          end
+
+          url = url_for(UPDATE_APP_URL, app_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: app_params.to_json
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if json_data && json_data.has_key?('id')
+              return OneLogin::Api::Models::OneLoginApp.new(json_data)
+            end
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Deletes an app
+      #
+      # @param app_id [Integer] Id of the app to be removed
+      #
+      # @return [Boolean] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/apps/delete-app Delete App by ID documentation}
+      def delete_app(app_id)
+        clean_error
+        prepare_token
+
+        begin
+          if app_id.nil? || app_id.to_s.empty?
+            @error = '400'
+            @error_description = "app_id is required"
+            @error_attribute = "app_id"
+            return
+          end
+
+          url = url_for(DELETE_APP_URL, app_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return true
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
 
       ################
       # Role Methods #
@@ -1168,6 +1536,13 @@ module OneLogin
         prepare_token
 
         begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "role_id is required"
+            @error_attribute = "role_id"
+            return
+          end
+
           url = url_for(GET_ROLE_URL, role_id)
 
           response = self.class.get(
@@ -1263,6 +1638,13 @@ module OneLogin
         prepare_token
 
         begin
+          if event_id.nil? || event_id.to_s.empty?
+            @error = '400'
+            @error_description = "event_id is required"
+            @error_attribute = "event_id"
+            return
+          end
+
           url = url_for(GET_EVENT_URL, event_id)
 
           response = self.class.get(
@@ -1371,6 +1753,13 @@ module OneLogin
         prepare_token
 
         begin
+          if group_id.nil? || group_id.to_s.empty?
+            @error = '400'
+            @error_description = "group_id is required"
+            @error_attribute = "group_id"
+            return
+          end
+
           url = url_for(GET_GROUP_URL, group_id)
 
           response = self.class.get(
@@ -1465,6 +1854,19 @@ module OneLogin
         prepare_token
 
         begin
+          if app_id.nil? || app_id.to_s.empty?
+            @error = '400'
+            @error_description = "app_id is required"
+            @error_attribute = "app_id"
+            return
+          end
+
+          if device_id.nil? || device_id.to_s.empty?
+            @error = '400'
+            @error_description = "device_id is required"
+            @error_attribute = "device_id"
+            return
+          end
 
           if url_endpoint.nil? || url_endpoint.empty?
             url = url_for(GET_SAML_VERIFY_FACTOR)
@@ -1519,6 +1921,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(GET_FACTORS_URL, user_id)
 
           response = self.class.get(
@@ -1562,6 +1971,20 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
+          if factor_id.nil? || factor_id.to_s.empty?
+            @error = '400'
+            @error_description = "factor_id is required"
+            @error_attribute = "factor_id"
+            return
+          end
+
           url = url_for(ENROLL_FACTOR_URL, user_id)
 
           data = {
@@ -1605,6 +2028,13 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
           url = url_for(GET_ENROLLED_FACTORS_URL, user_id)
 
           response = self.class.get(
@@ -1647,6 +2077,20 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
+          if device_id.nil? || device_id.to_s.empty?
+            @error = '400'
+            @error_description = "device_id is required"
+            @error_attribute = "device_id"
+            return
+          end
+
           url = url_for(ACTIVATE_FACTOR_URL, user_id, device_id)
 
           response = self.class.post(
@@ -1691,6 +2135,21 @@ module OneLogin
         prepare_token
 
         begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
+          if device_id.nil? || device_id.to_s.empty?
+            @error = '400'
+            @error_description = "device_id is required"
+            @error_attribute = "device_id"
+            return
+          end
+
+
           url = url_for(VERIFY_FACTOR_URL, user_id, device_id)
 
           data = {
@@ -1739,6 +2198,21 @@ module OneLogin
         prepare_token
 
         begin
+
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
+          if device_id.nil? || device_id.to_s.empty?
+            @error = '400'
+            @error_description = "device_id is required"
+            @error_attribute = "device_id"
+            return
+          end
+
           url = url_for(REMOVE_FACTOR_URL, user_id, device_id)
 
           response = self.class.delete(
@@ -1777,6 +2251,13 @@ module OneLogin
         prepare_token
 
         begin
+          if email.nil? || email.to_s.empty?
+            @error = '400'
+            @error_description = "email is required"
+            @error_attribute = "email"
+            return
+          end
+
           url = url_for(GENERATE_INVITE_LINK_URL)
 
           data = {
@@ -1827,7 +2308,7 @@ module OneLogin
             'email'=> email
           }
 
-          unless personal_email.nil? || personal_email.empty?
+          unless personal_email.nil? || personal_email.to_s.empty?
             data['personal_email'] = personal_email
           end
 
@@ -2030,6 +2511,12 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
 
           url = url_for(GET_PRIVILEGE_URL, privilege_id)
 
@@ -2071,9 +2558,16 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
+
           url = url_for(UPDATE_PRIVILEGE_URL, privilege_id)
 
-         statement_data = []
+          statement_data = []
           for statement in statements
             if statement.instance_of?(OneLogin::Api::Models::Statement)
               statement_data << {
@@ -2133,6 +2627,13 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
+
           url = url_for(DELETE_PRIVILEGE_URL, privilege_id)
 
           response = self.class.delete(
@@ -2166,6 +2667,13 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
+
           options = {
             headers: authorized_headers,
             max_results: @max_results,
@@ -2195,6 +2703,13 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
+
           url = url_for(ASSIGN_ROLES_TO_PRIVILEGE_URL, privilege_id)
 
           data = {
@@ -2235,6 +2750,13 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
+
           url = url_for(REMOVE_ROLE_FROM_PRIVILEGE_URL, privilege_id, role_id)
 
           response = self.class.delete(
@@ -2268,6 +2790,13 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
+
           options = {
             headers: authorized_headers,
             max_results: @max_results,
@@ -2297,6 +2826,13 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
+
           url = url_for(ASSIGN_USERS_TO_PRIVILEGE_URL, privilege_id)
 
           data = {
@@ -2336,6 +2872,13 @@ module OneLogin
         prepare_token
 
         begin
+          if privilege_id.nil? || privilege_id.to_s.empty?
+            @error = '400'
+            @error_description = "privilege_id is required"
+            @error_attribute = "privilege_id"
+            return
+          end
+
           url = url_for(REMOVE_USER_FROM_PRIVILEGE_URL, privilege_id, user_id)
 
           response = self.class.delete(

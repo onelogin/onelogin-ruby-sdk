@@ -34,8 +34,21 @@ module OneLogin
         LOCK_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/lock_user"
         GENERATE_MFA_TOKEN_URL = "https://api.%s.onelogin.com/api/1/users/%s/mfa_token"
 
+        # Connectors URL
+        GET_CONNECTORS_URL = "https://api.%s.onelogin.com/api/2/connectors"
+        #GET_CONNECTOR_URL = "https://api.%s.onelogin.com/api/2/connectors/%s"
+
         # Apps URL
-        GET_APPS_URL = "https://api.%s.onelogin.com/api/1/apps"
+
+        # V1
+        GET_APPS_URL_V1 = "https://api.%s.onelogin.com/api/1/apps"
+
+        # V2
+        GET_APPS_URL = "https://api.%s.onelogin.com/api/2/apps"
+        CREATE_APP_URL = "https://api.%s.onelogin.com/api/2/apps"
+        GET_APP_URL = "https://api.%s.onelogin.com/api/2/apps/%s"
+        UPDATE_APP_URL = "https://api.%s.onelogin.com/api/2/apps/%s"
+        DELETE_APP_URL = "https://api.%s.onelogin.com/api/2/apps/%s"
 
         # Role URLs
         GET_ROLES_URL = "https://api.%s.onelogin.com/api/1/roles"

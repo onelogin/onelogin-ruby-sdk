@@ -238,8 +238,63 @@ role_ids = client.get_user_roles(user.id)
 # Generate MFA Token
 mfa_token = client.generate_mfa_token(user.id)
 
-# Get all Apps in a OneLogin account */
-apps = client.get_apps
+# Get all Connectors in a OneLogin account filtering by name*/
+apps = client.get_connectors({name:'SAML'})
+
+# Get all Apps in a OneLogin account using API v1 */
+apps_v1 = client.get_apps_v1
+
+# Get all Apps in a OneLogin account filtering by auth_method*/
+apps = client.get_apps({auth_method:6})
+
+# Create app
+app_data = {
+ name: "Created SAML App by API",
+ description:"Created SAML App by API description",
+ notes: "Created SAML App by API notes",
+ auth_method: 2,
+ policy_id: 167865,
+ allow_assumed_signin: false,
+ parameters: {
+    saml_username: {
+        user_attribute_mappings: "email",
+        label: "NameID (fka Email)",
+    }
+ },
+ connector_id: 110016,
+ visible: true,
+ configuration: {
+   saml_initiater_id: "0",
+   encrypt_assertion: "0",
+   recipient: "http://sp.example.com/acs",
+   saml_notbefore: "3",
+   saml_nameid_format_id: "0",
+   saml_issuer_type: "0",
+   saml_sign_element: "0",
+   consumer_url: "http://sp.example.com/acs",
+   validator: ".*",
+   relaystate: "",
+   logout_url: "http://sp.example.com/sls",
+   saml_encryption_method_id: "0",
+   login: "http://sp.example.com/login",
+   saml_sessionnotonorafter: "1440",
+   generate_attribute_value_tags: "0",
+   saml_notonorafter: "3",
+   audience: "http://sp.example.com/audience",
+   signature_algorithm: "SHA-256"
+ }
+}
+app = client.create_app(app_data)
+
+# Update app
+app_data[:name] = "Created SAML App by API updated"
+client.update_app(app.id, app_data)
+
+# Get app
+app = client.get_app(app.id)
+
+# Delete app
+result = client.delete_app(app.id)
 
 # Create user
 new_user_params = {
