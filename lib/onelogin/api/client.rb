@@ -1491,6 +1491,55 @@ module OneLogin
         false
       end
 
+      # Deletes an App Parameter
+      #
+      # @param app_id [Integer] Id of the app
+      # @param parameter_id [Integer] Id of the parameter to be removed
+      #
+      # @return [Boolean] if the action succeed
+      #
+      # @see {https://developers.onelogin.com/api-docs/1/apps/delete-parameter Delete an App Parameter documentation}
+      def delete_parameter_from_app(app_id, parameter_id)
+        clean_error
+        prepare_token
+
+        begin
+          if app_id.nil? || app_id.to_s.empty?
+            @error = '400'
+            @error_description = "app_id is required"
+            @error_attribute = "app_id"
+            return
+          end
+
+          if parameter_id.nil? || parameter_id.to_s.empty?
+            @error = '400'
+            @error_description = "parameter_id is required"
+            @error_attribute = "parameter_id"
+            return
+          end
+
+          url = url_for(DELETE_APP_PARAMETER_URL, app_id, parameter_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return true
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
       ################
       # Role Methods #
       ################

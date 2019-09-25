@@ -49,6 +49,7 @@ module OneLogin
         GET_APP_URL = "https://api.%s.onelogin.com/api/2/apps/%s"
         UPDATE_APP_URL = "https://api.%s.onelogin.com/api/2/apps/%s"
         DELETE_APP_URL = "https://api.%s.onelogin.com/api/2/apps/%s"
+        DELETE_APP_PARAMETER_URL = "https://api.%s.onelogin.com/api/2/apps/%s/parameters/%s"
 
         # Role URLs
         GET_ROLES_URL = "https://api.%s.onelogin.com/api/1/roles"
