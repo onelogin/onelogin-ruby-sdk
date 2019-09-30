@@ -51,7 +51,7 @@ module OneLogin
           @role_ids
         end
 
-        def get_role_ids
+        def get_group_id
           @group_id
         end
 
