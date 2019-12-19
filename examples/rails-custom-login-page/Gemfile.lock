@@ -100,7 +100,7 @@ GEM
       httparty (>= 0.13.7)
       nokogiri (>= 1.6.3.1)
     public_suffix (3.0.2)
-    puma (3.11.3)
+    puma (3.12.2)
     rack (2.0.8)
     rack-test (0.8.3)
       rack (>= 1.0, < 3)
@@ -192,7 +192,7 @@ DEPENDENCIES
   jquery-rails
   listen (>= 3.0.5, < 3.2)
   onelogin (~> 1.0.4)
-  puma (~> 3.7)
+  puma (~> 3.12)
   rails (~> 5.1.4)
   sass-rails (~> 5.0)
   selenium-webdriver
