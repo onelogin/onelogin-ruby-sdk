@@ -1044,7 +1044,7 @@ module OneLogin
       # @return [MFAToken] if the action succeed
       #
       # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/generate-mfa-token Generate MFA Token documentation}
-      def generate_mfa_token(user_id, expires_in=259200, reusable=False)
+      def generate_mfa_token(user_id, expires_in=259200, reusable=false)
         clean_error
         prepare_token
 
