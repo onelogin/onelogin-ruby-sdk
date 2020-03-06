@@ -64,7 +64,7 @@ attribute_names = ['id', 'created_at', 'account_id', 'user_id', 'user_name', 'ev
                   'role_id', 'role_name', 'app_id', 'app_name', 'group_id', 'group_name', 'otp_device_id',
                   'otp_device_name', 'policy_id', 'policy_name', 'actor_system', 'custom_message',
                   'operation_name', 'directory_sync_run_id', 'directory_id', 'resolution', 'client_id',
-                  'resource_type_id', 'error_description']
+                  'resource_type_id', 'error_description', 'risk_score', 'risk_reasons', 'risk_cookie_id', 'browser_fingerprint']
 
 counter = 0
 limit = options[:limit] || 1000
