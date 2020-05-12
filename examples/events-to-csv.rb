@@ -24,7 +24,7 @@ OptionParser.new do |opts|
     options[:since] = s.iso8601
   end
 
-  opts.on("-lLAST", "--last=LAST", Integer, "Events since this many days ago") do |d|
+  opts.on("-dLAST", "--last=LAST", Integer, "Events since this many days ago") do |d|
     now = Date.today
     days_ago = (now - d)
     options[:since] = days_ago.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -82,7 +82,7 @@ CSV.open('events.csv', 'wb') do |csv|
 
   # fetch the events
   client.get_events(options).take(limit).each do |event|
-    csv << attribute_names.map { |attribute_name| event.send(attribute_name) }
+    csv << attribute_names.map { |attribute_name| event.send(attribute_name) if event.respond_to?(attribute_name) }
     counter += 1
   end
 end
