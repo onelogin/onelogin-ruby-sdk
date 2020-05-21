@@ -30,7 +30,7 @@ class Cursor
     @after_cursor = options.fetch(:after_cursor, nil)
   end
 
-  def each(start = 0)
+  def each(start = 0, &proc)
     return to_enum(:each, start) unless block_given?
 
     Array(@collection[start..-1]).each do |item|
@@ -46,7 +46,7 @@ class Cursor
 
       fetch_next_page
 
-      each(start, &Proc.new)
+      each(start, &proc)
     end
   end
 
