@@ -1,9 +1,9 @@
 module OneLogin
   module Api
     module Models
-      module V1
+      module V2
 
-        class UserDataV2
+        class UserData
 
           attr_accessor :id,
                         :external_id,

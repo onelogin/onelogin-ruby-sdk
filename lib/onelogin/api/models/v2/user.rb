@@ -1,9 +1,9 @@
 module OneLogin
   module Api
     module Models
-      module V1
+      module V2
 
-        class UserV2
+        class User
 
           attr_accessor :id,
                         :external_id,
@@ -84,7 +84,7 @@ module OneLogin
           end
 
           def get_user_data
-            user_data = UserDataV2.new
+            user_data = UserData.new
             user_data.id = @id
             user_data.external_id = @external_id
             user_data.email = @email

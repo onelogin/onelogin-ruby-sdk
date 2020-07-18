@@ -325,11 +325,11 @@ module OneLogin
       # User Methods #
       ################
 
-      # Gets a list of UserV2 resources.
+      # Gets a list of User resources.
       #
       # @param params [Hash] Parameters to filter the result of the list
       #
-      # @return [Array] list of UserV2 objects
+      # @return [Array] list of User objects
       #
       # @see {https://developers.onelogin.com/api-docs/2/users/get-users List Users documentation}
       def list_users(params = {})
@@ -350,7 +350,7 @@ module OneLogin
             json_data = JSON.parse(response.body)
             if !json_data.empty?
               json_data.each do |data|
-                users << OneLogin::Api::Models::V1::UserV2.new(data)
+                users << OneLogin::Api::Models::V2::User.new(data)
               end
             end
             return users
@@ -1607,7 +1607,7 @@ module OneLogin
             json_data = JSON.parse(response.body)
             if !json_data.empty?
               json_data.each do |data|
-                users << OneLogin::Api::Models::V1::UserBasic.new(data)
+                users << OneLogin::Api::Models::V2::UserBasic.new(data)
               end
             end
             return users
