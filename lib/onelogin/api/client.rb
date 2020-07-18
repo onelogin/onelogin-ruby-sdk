@@ -1265,7 +1265,7 @@ module OneLogin
             if !json_data.empty?
               json_data.each do |data|
                 pp data
-                connectors << OneLogin::Api::Models::V1::ConnectorBasic.new(data)
+                connectors << OneLogin::Api::Models::V2::ConnectorBasic.new(data)
               end
             end
             return connectors
@@ -1339,7 +1339,7 @@ module OneLogin
             json_data = JSON.parse(response.body)
             if !json_data.empty?
               json_data.each do |data|
-                apps << OneLogin::Api::Models::V1::OneLoginAppBasic.new(data)
+                apps << OneLogin::Api::Models::V2::OneLoginAppBasic.new(data)
               end
             end
             return apps
@@ -1387,7 +1387,7 @@ module OneLogin
           if response.code == 201
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::V1::OneLoginApp.new(json_data)
+              return OneLogin::Api::Models::V2::OneLoginApp.new(json_data)
             end
           else
             @error = extract_status_code_from_response(response)
@@ -1429,7 +1429,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::V1::OneLoginApp.new(json_data)
+              return OneLogin::Api::Models::V2::OneLoginApp.new(json_data)
             end
           else
             @error = extract_status_code_from_response(response)
@@ -1476,7 +1476,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::V1::OneLoginApp.new(json_data)
+              return OneLogin::Api::Models::V2::OneLoginApp.new(json_data)
             end
           else
             @error = response.code.to_s

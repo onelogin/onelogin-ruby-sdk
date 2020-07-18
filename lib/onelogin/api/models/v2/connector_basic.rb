@@ -1,7 +1,7 @@
 module OneLogin
   module Api
     module Models
-      module V1
+      module V2
 
         class ConnectorBasic
 
