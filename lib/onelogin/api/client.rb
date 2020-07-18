@@ -373,7 +373,7 @@ module OneLogin
       # @return [Array] list of User objects
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/get-users Get Users documentation}
-      def get_users(params = {})
+      def get_users_v1(params = {})
         clean_error
         prepare_token
 
