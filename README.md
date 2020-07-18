@@ -299,6 +299,9 @@ result = client.delete_app(app.id)
 # Delete parameter from app
 result = client.delete_parameter_from_app(app.id, parameter_id)
 
+# List users for a specific app
+users = client.list_app_users(app.id)
+
 # Create user
 new_user_params = {
     email: "testcreate_1@example.com",
