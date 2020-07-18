@@ -325,6 +325,47 @@ module OneLogin
       # User Methods #
       ################
 
+      # Gets a list of UserV2 resources.
+      #
+      # @param params [Hash] Parameters to filter the result of the list
+      #
+      # @return [Array] list of UserV2 objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/users/get-users List Users documentation}
+      def list_users(params = {})
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(LIST_USERS_URL)
+
+          users = []
+          response = self.class.get(
+            url,
+            headers: authorized_headers,
+            query: params
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if !json_data.empty?
+              json_data.each do |data|
+                users << OneLogin::Api::Models::UserV2.new(data)
+              end
+            end
+            return users
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       # Gets a list of User resources. (if no limit provided, by default gt 50 elements)
       #
       # @param params [Hash] Parameters to filter the result of the list

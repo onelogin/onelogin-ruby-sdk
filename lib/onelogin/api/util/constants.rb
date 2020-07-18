@@ -14,6 +14,8 @@ module OneLogin
         GET_RATE_URL = "https://api.%s.onelogin.com/auth/rate_limit"
 
         # User URLs
+
+        # V1
         GET_USERS_URL = "https://api.%s.onelogin.com/api/1/users"
         GET_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s"
         GET_APPS_FOR_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/apps"
@@ -33,6 +35,9 @@ module OneLogin
         LOG_USER_OUT_URL = "https://api.%s.onelogin.com/api/1/users/%s/logout"
         LOCK_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/lock_user"
         GENERATE_MFA_TOKEN_URL = "https://api.%s.onelogin.com/api/1/users/%s/mfa_token"
+
+        # V2
+        LIST_USERS_URL = "https://api.%s.onelogin.com/api/2/users"
 
         # Connectors URL
         GET_CONNECTORS_URL = "https://api.%s.onelogin.com/api/2/connectors"
