@@ -1540,6 +1540,48 @@ module OneLogin
         false
       end
 
+      # List users of a specific app
+      #
+      # @param app_id [Integer] Id of the app
+      # @param params [Hash] Parameters to filter the result of the list
+      #
+      # @return [Array] list of UserBasic objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/apps/list-users List App Users documentation}
+      def list_app_users(app_id, params = {})
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(LIST_APP_USERS_URL, app_id)
+
+          users = []
+          response = self.class.get(
+            url,
+            headers: authorized_headers,
+            query: params
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if !json_data.empty?
+              json_data.each do |data|
+                users << OneLogin::Api::Models::UserBasic.new(data)
+              end
+            end
+            return users
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       ################
       # Role Methods #
       ################
