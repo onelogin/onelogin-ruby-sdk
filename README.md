@@ -53,7 +53,7 @@ client = OneLogin::Api::Client.new(
 )
 
 # Now you can make requests
-client.get_users
+client.list_users
 ```
 
 For all methods see Rubydoc of this SDK published at:
@@ -67,7 +67,7 @@ http://www.rubydoc.info/github/onelogin/onelogin-ruby-sdk
 OneLogin's API can return 400, 401, 403 or 404 when there was any issue executing the action. When that happens, the methods of the SDK will include error and errorMessage in the client. Use `error` and `error_description` of the Client to retrieve them.
 
 ```ruby
-users = client.get_users
+users = client.list_users
 
 if users.nil?
     puts client.error
@@ -106,18 +106,18 @@ User `take` to limit the results or get all results by enumerating.
 e.g.
 ```ruby
 # List the first name of all users
-client.get_users.each do |user|
+client.get_users_v1.each do |user|
     puts user.firstname
 end
 
 # List the first name of all users starting with the 2nd user
 # `each` accepts a start param to skip first x results
-client.get_users.each(1) do |user|
+client.get_users_v1.each(1) do |user|
     puts user.firstname
 end
 
 # List the first 5 users with the name of Joe
-client.get_users(firstname: 'Joe').take(5).each do |user|
+client.get_users_v1(firstname: 'Joe').take(5).each do |user|
     puts "#{user.firstname} #{user.lastname}"
 end
 
@@ -152,28 +152,48 @@ rate_limits = client.get_rate_limits
 # Get Custom Attributes
 custom_global_attributes = client.get_custom_attributes
 
+# List Users with no query parameters
+users = client.list_users
+
+# List Users with query parameters
+query_parameters = {
+    email: "user@example.com"
+}
+users_filtered = client.list_users(query_parameters)
+
+query_parameters = {
+    email: "usermfa@example.com"
+}
+users_filtered2 = client.list_users(query_parameters)
+
+# List Users with limit
+query_parameters = {
+    limit: 3
+}
+users_filtered_limited = client.list_users(query_parameters)
+
 # Get Users with no query parameters
-users = client.get_users
+users = client.get_users_v1
 
 # Get Users with query parameters
 query_parameters = {
     email: "user@example.com"
 }
-users_filtered = client.get_users(query_parameters)
+users_filtered = client.get_users_v1(query_parameters)
 
 query_parameters = {
     email: "usermfa@example.com"
 }
-users_filtered2 = client.get_users(query_parameters)
+users_filtered2 = client.get_users_v1(query_parameters)
 
 # Get Users with limit
 query_parameters = {
     limit: 3
 }
-users_filtered_limited = client.get_users(query_parameters)
+users_filtered_limited = client.get_users_v1(query_parameters)
 
 # Only return the firstname and email fields for each user
-client.get_users(fields: 'email,firstname').each do |user|
+client.get_users_v1(fields: 'email,firstname').each do |user|
     puts "#{user.firstname} - #{user.email}"
 end
 
@@ -416,7 +436,7 @@ privileges = client.get_privileges()
 name = "privilege_example"
 version = "2018-05-18"
 
-statement1 = OneLogin::Api::Models::Statement.new(
+statement1 = OneLogin::Api::Models::V1::Statement.new(
     "Allow",
     [
         "users:List",
@@ -425,7 +445,7 @@ statement1 = OneLogin::Api::Models::Statement.new(
     ["*"]
 )
 
-statement2 = OneLogin::Api::Models::Statement.new(
+statement2 = OneLogin::Api::Models::V1::Statement.new(
     "Allow",
     [
         "apps:List",
@@ -442,7 +462,7 @@ privilege = client.create_privilege(name, version, statements)
 
 # Update Privilege
 name = "privilege_example_updated"
-statement2 = OneLogin::Api::Models::Statement.new(
+statement2 = OneLogin::Api::Models::V1::Statement.new(
     "Allow",
     [
         "apps:List",

@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = api_client.get_users.take(25) # only fetch the first 50 users
+    @users = api_client.get_users_v1.take(25) # only fetch the first 50 users
   end
 
   # GET /users/1
@@ -46,7 +46,7 @@ class UsersController < ApplicationController
   # POST /activate
   def activate
     # Search for a user with this email address
-    @user = api_client.get_users(email: user_params[:email]).first
+    @user = api_client.get_users_v1(email: user_params[:email]).first
 
     unless @user && verify_dob && verify_ssn
       return redirect_to onboard_path, notice: "User #{user_params[:email]} was not verified"

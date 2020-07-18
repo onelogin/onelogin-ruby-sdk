@@ -51,7 +51,7 @@ puts "Remaining RateLimit: #{remaining_before}"
 
 puts "Extracting users from OneLogin"
 
-client.get_users(user_options).each do |user|
+client.get_users_v1(user_options).each do |user|
   users[user.id] = user
   counter +=1
 end
