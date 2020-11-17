@@ -75,12 +75,17 @@
 <script type="text/javascript">
 
   var ONELOGIN_SUBDOMAIN = "<%= ONELOGIN_SUBDOMAIN %>"
+  var CUSTOM_DOMAIN = "<%= CUSTOM_DOMAIN %>"
 
   function makeCors(session_token) {
     var xhr = new XMLHttpRequest();
     xhr.withCredentials = true;
     method = "POST";
-    var url = "https://" + ONELOGIN_SUBDOMAIN + ".onelogin.com/session_via_api_token";
+    if (CUSTOM_DOMAIN) {
+      var url = "https://" + CUSTOM_DOMAIN + "/session_via_api_token";
+    } else {
+      var url = "https://" + ONELOGIN_SUBDOMAIN + ".onelogin.com/session_via_api_token";
+    }
     xhr.open(method, url, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     body = {"session_token": session_token};
