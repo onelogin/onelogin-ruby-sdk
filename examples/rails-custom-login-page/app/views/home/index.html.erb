@@ -11,6 +11,15 @@
       <div class="alert alert-danger message" role="alert">
       </div>
 
+      <% url_base = CUSTOM_DOMAIN || ONELOGIN_SUBDOMAIN + ".onelogin.com" %>
+      <% url_create_session = "https://" + url_base + "/session_via_api_token" %>
+
+      <form action="<%= url_create_session %>" method="post" class="cookie-session-post-form">
+        <input type="hidden" id="cookie_session_token" name="session_token" value="">
+        <input id="auth_token" type="hidden">
+        <button type="submit">Creating Session ...</button>
+      </form>
+
       <%= form_tag("/login", method: "post", class: 'login-form') do %>
         <div class="form-group">
           <label for="username">Username</label>
@@ -76,6 +85,7 @@
 
   var ONELOGIN_SUBDOMAIN = "<%= ONELOGIN_SUBDOMAIN %>"
   var CUSTOM_DOMAIN = "<%= CUSTOM_DOMAIN %>"
+  var COOKIE_VIA_POST_FORM = <%= COOKIE_VIA_POST_FORM %>
 
   function makeCors(session_token) {
     var xhr = new XMLHttpRequest();
@@ -102,6 +112,12 @@
     };
     xhr.send(JSON.stringify(body));
   };
+
+  function sendPostForm(session_token){
+    $(".cookie-session-post-form").show();
+    $("#cookie_session_token").val(session_token);
+    $(".cookie-session-post-form").submit();
+  }
 
   function showAlert(type, message){
     $(".message").removeClass("alert-danger").removeClass("alert-success");
@@ -137,6 +153,7 @@
   $(function(){
     hideAlert();
     $(".login-form").show();
+    $(".cookie-session-post-form").hide();
     $(".mfa-form").hide();
     $(".forgot-password-form").hide();
     $(".reset-password-form").hide();
@@ -164,8 +181,12 @@
             $(".login-form").hide();
             $(".mfa-form").show();
 
-          }else{
-            makeCors(res.session_token);
+          } else {
+            if (typeof COOKIE_VIA_POST_FORM === 'boolean' && COOKIE_VIA_POST_FORM === true) {
+              sendPostForm(res.session_token);
+            } else {
+              makeCors(res.session_token);
+            }
           }
         },
         error: function(xhr, status, err) {
@@ -186,7 +207,11 @@
         success: function(res, status, xhr) {
           console.log(res);
 
-          makeCors(res.session_token);
+          if (typeof COOKIE_VIA_POST_FORM === 'boolean' && COOKIE_VIA_POST_FORM === true) {
+            sendPostForm(res.session_token);
+          } else {
+            makeCors(res.session_token);
+          }
         },
         error: function(xhr, status, err) {
           console.log(err);

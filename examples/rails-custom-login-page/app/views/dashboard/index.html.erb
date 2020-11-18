@@ -14,8 +14,9 @@
     <div class="col-sm">
       <h2>Apps</h2>
       <ul class="list-group">
+      <% url_base = CUSTOM_DOMAIN || ONELOGIN_SUBDOMAIN + ".onelogin.com" %>
       <%@apps.each do |app|%>
-        <li class="list-group-item"><a href="https://<%= ONELOGIN_SUBDOMAIN %>.onelogin.com/launch/<%= app.id %>"><%= app.name %></a></li>
+        <li class="list-group-item"><a target="_blank" href="https://<%= url_base %>/launch/<%= app.id %>"><%= app.name %></a></li>
       <%end%>
       </ul>
     </div>
@@ -40,11 +41,3 @@
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-

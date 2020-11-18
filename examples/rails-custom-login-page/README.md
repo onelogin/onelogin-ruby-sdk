@@ -40,6 +40,11 @@ cd onelogin-ruby-sdk/examples/rails-custom-login-page && bundle install
 If you are using a custom domain instance, set it
 in order to be used for the login demo.
 
+If you want to set the cookie via post-form set
+COOKIE_VIA_POST_FORM to true, otherwise the cookie
+will be set via javascript via the makeCors method
+described later.
+
 ```yaml
 development:
   secret_key_base: xxx
@@ -48,6 +53,7 @@ development:
   ONELOGIN_REGION: us
   ONELOGIN_SUBDOMAIN: xxx
   CUSTOM_DOMAIN: xxx
+  COOKIE_VIA_POST_FORM: true
 ```
 4. Run the sample and browse to `http://localhost:3000`
 ```sh
