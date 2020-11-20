@@ -104,7 +104,7 @@ GEM
       httparty (>= 0.13.7)
       nokogiri (>= 1.6.3.1)
     public_suffix (3.0.2)
-    puma (3.12.2)
+    puma (3.12.6)
     rack (2.0.8)
     rack-test (0.8.3)
       rack (>= 1.0, < 3)
