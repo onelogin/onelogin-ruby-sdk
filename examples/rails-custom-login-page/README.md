@@ -37,6 +37,14 @@ cd onelogin-ruby-sdk/examples/rails-custom-login-page && bundle install
 
 3. Rename `config/secrets.yml.sample` to `config/secrets.yml` and update with your OneLogin API credentials, region and subdomain.
 
+If you are using a custom domain instance, set it
+in order to be used for the login demo.
+
+If you want to set the cookie via post-form set
+COOKIE_VIA_POST_FORM to true, otherwise the cookie
+will be set via javascript via the makeCors method
+described later.
+
 ```yaml
 development:
   secret_key_base: xxx
@@ -44,6 +52,8 @@ development:
   ONELOGIN_CLIENT_SECRET: xxx
   ONELOGIN_REGION: us
   ONELOGIN_SUBDOMAIN: xxx
+  CUSTOM_DOMAIN: xxx
+  COOKIE_VIA_POST_FORM: true
 ```
 4. Run the sample and browse to `http://localhost:3000`
 ```sh
@@ -96,6 +106,7 @@ function makeCors(session_token) {
   xhr.withCredentials = true;
   method = "POST";
   var url = "https://" + ONELOGIN_SUBDOMAIN + ".onelogin.com/session_via_api_token";
+  // var url = "https://" + CUSTOM_DOMAIN + "/session_via_api_token";
   xhr.open(method, url, true);
   xhr.setRequestHeader("Content-Type", "application/json");
   body = {"session_token": session_token};
@@ -103,3 +114,24 @@ function makeCors(session_token) {
 };
 ```
 
+### Make form-based request to establish SSO session
+```html
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <body>
+        <p>Auth API Test</p>
+        <form action=
+         "https://{onelogin_instance}/session_via_api_token" method="POST">
+            <input type="hidden" name="session_token" value="{your session token value}">
+            <input type="submit" placeholder="GO">
+            <input id="auth_token" type="hidden">
+        </form>
+    </body>
+</html>
+
+where onelogin_instance is a custom domain or
+{subdomain}.onelogin.com
+```
