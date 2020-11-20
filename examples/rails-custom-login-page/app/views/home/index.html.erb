@@ -83,9 +83,9 @@
 
 <script type="text/javascript">
 
-  var ONELOGIN_SUBDOMAIN = "<%= ONELOGIN_SUBDOMAIN %>"
-  var CUSTOM_DOMAIN = "<%= CUSTOM_DOMAIN %>"
-  var COOKIE_VIA_POST_FORM = <%= COOKIE_VIA_POST_FORM %>
+  var ONELOGIN_SUBDOMAIN = "<%= ONELOGIN_SUBDOMAIN %>";
+  var CUSTOM_DOMAIN = "<%= CUSTOM_DOMAIN %>";
+  var COOKIE_VIA_POST_FORM = <%= COOKIE_VIA_POST_FORM || false %>;
 
   function makeCors(session_token) {
     var xhr = new XMLHttpRequest();
