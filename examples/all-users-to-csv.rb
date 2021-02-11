@@ -28,7 +28,7 @@ CSV.open('users.csv', 'wb') do |csv|
   # header row
   csv << attribute_names + custom_attribute_names
 
-  client.get_users.each do |user|
+  client.get_users_v1.each do |user|
 
     row = []
 

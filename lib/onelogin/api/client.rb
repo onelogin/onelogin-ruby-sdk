@@ -100,9 +100,9 @@ module OneLogin
         content = JSON.parse(response.body)
         if content && content.has_key?('status') && content['status'].has_key?('message') && content.has_key?('data')
           if content['status']['message'] == "Success"
-            return OneLogin::Api::Models::SessionTokenInfo.new(content['data'][0])
+            return OneLogin::Api::Models::V1::SessionTokenInfo.new(content['data'][0])
           elsif content['status']['message'] == "MFA is required for this user"
-            return OneLogin::Api::Models::SessionTokenMFAInfo.new(content['data'][0])
+            return OneLogin::Api::Models::V1::SessionTokenMFAInfo.new(content['data'][0])
           else
             raise "Status Message type not reognized: %s" % content['status']['message']
           end
@@ -116,12 +116,12 @@ module OneLogin
         if content && content.has_key?('status') && content['status'].has_key?('message') && content['status'].has_key?('type')
           status_type = content['status']['type']
           status_message = content['status']['message']
-          saml_endpoint_response = OneLogin::Api::Models::SAMLEndpointResponse.new(status_type, status_message)
+          saml_endpoint_response = OneLogin::Api::Models::V1::SAMLEndpointResponse.new(status_type, status_message)
           if content.has_key?('data')
             if status_message == 'Success'
               saml_endpoint_response.saml_response = content['data']
             else
-              mfa = OneLogin::Api::Models::MFA.new(content['data'][0])
+              mfa = OneLogin::Api::Models::V1::MFA.new(content['data'][0])
               saml_endpoint_response.mfa = mfa
             end
           end
@@ -184,7 +184,7 @@ module OneLogin
               @error = json_data['status']['code'].to_s
               @error_description = extract_error_message_from_response(response)
             else
-              token = OneLogin::Api::Models::OneLoginToken.new(json_data)
+              token = OneLogin::Api::Models::V1::OneLoginToken.new(json_data)
               @access_token = token.access_token
               @refresh_token = token.refresh_token
               @expiration = token.created_at + token.expires_in
@@ -231,7 +231,7 @@ module OneLogin
               @error = json_data['status']['code'].to_s
               @error_description = extract_error_message_from_response(response)
             else
-              token = OneLogin::Api::Models::OneLoginToken.new(json_data)
+              token = OneLogin::Api::Models::V1::OneLoginToken.new(json_data)
               @access_token = token.access_token
               @refresh_token = token.refresh_token
               @expiration = token.created_at + token.expires_in
@@ -307,7 +307,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data['data']
-              return OneLogin::Api::Models::RateLimit.new(json_data['data'])
+              return OneLogin::Api::Models::V1::RateLimit.new(json_data['data'])
             end
           else
             @error = response.code.to_s
@@ -325,6 +325,47 @@ module OneLogin
       # User Methods #
       ################
 
+      # Gets a list of User resources.
+      #
+      # @param params [Hash] Parameters to filter the result of the list
+      #
+      # @return [Array] list of User objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/users/get-users List Users documentation}
+      def list_users(params = {})
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(LIST_USERS_URL)
+
+          users = []
+          response = self.class.get(
+            url,
+            headers: authorized_headers,
+            query: params
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if !json_data.empty?
+              json_data.each do |data|
+                users << OneLogin::Api::Models::V2::User.new(data)
+              end
+            end
+            return users
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       # Gets a list of User resources. (if no limit provided, by default gt 50 elements)
       #
       # @param params [Hash] Parameters to filter the result of the list
@@ -332,13 +373,13 @@ module OneLogin
       # @return [Array] list of User objects
       #
       # @see {https://developers.onelogin.com/api-docs/1/users/get-users Get Users documentation}
-      def get_users(params = {})
+      def get_users_v1(params = {})
         clean_error
         prepare_token
 
         begin
           options = {
-            model: OneLogin::Api::Models::User,
+            model: OneLogin::Api::Models::V1::User,
             headers: authorized_headers,
             max_results: @max_results,
             params: params
@@ -383,7 +424,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data['data']
-              return OneLogin::Api::Models::User.new(json_data['data'][0])
+              return OneLogin::Api::Models::V1::User.new(json_data['data'][0])
             end
           else
             @error = response.code.to_s
@@ -417,7 +458,7 @@ module OneLogin
           end
 
           options = {
-            model: OneLogin::Api::Models::App,
+            model: OneLogin::Api::Models::V1::App,
             headers: authorized_headers,
             max_results: @max_results
           }
@@ -541,7 +582,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data['data']
-              return OneLogin::Api::Models::User.new(json_data['data'][0])
+              return OneLogin::Api::Models::V1::User.new(json_data['data'][0])
             end
           else
             @error = response.code.to_s
@@ -592,7 +633,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data['data']
-              return OneLogin::Api::Models::User.new(json_data['data'][0])
+              return OneLogin::Api::Models::V1::User.new(json_data['data'][0])
             end
           else
             @error = response.code.to_s
@@ -1072,7 +1113,7 @@ module OneLogin
           if response.code == 201
             json_data = JSON.parse(response.body)
             if !json_data.empty?
-              return OneLogin::Api::Models::MFAToken.new(json_data)
+              return OneLogin::Api::Models::V1::MFAToken.new(json_data)
             end
           else
             @error = extract_status_code_from_response(response)
@@ -1224,7 +1265,7 @@ module OneLogin
             if !json_data.empty?
               json_data.each do |data|
                 pp data
-                connectors << OneLogin::Api::Models::ConnectorBasic.new(data)
+                connectors << OneLogin::Api::Models::V2::ConnectorBasic.new(data)
               end
             end
             return connectors
@@ -1244,11 +1285,11 @@ module OneLogin
       # Onelogin Apps Methods #
       #########################
 
-      # Gets a list of OneLoginAppV1 resources. (if no limit provided, by default get 50 elements)
+      # Gets a list of OneLoginApp resources. (if no limit provided, by default get 50 elements)
       #
       # @param params [Hash] Parameters to filter the result of the list
       #
-      # @return [Array] list of OneLoginAppV1 objects
+      # @return [Array] list of OneLoginApp objects
       #
       # @see {https://developers.onelogin.com/api-docs/1/apps/get-apps Get Apps documentation}
       def get_apps_v1(params = {})
@@ -1257,7 +1298,7 @@ module OneLogin
 
         begin
           options = {
-            model: OneLogin::Api::Models::OneLoginAppV1,
+            model: OneLogin::Api::Models::V1::OneLoginApp,
             headers: authorized_headers,
             max_results: @max_results,
             params: params
@@ -1298,7 +1339,7 @@ module OneLogin
             json_data = JSON.parse(response.body)
             if !json_data.empty?
               json_data.each do |data|
-                apps << OneLogin::Api::Models::OneLoginAppBasic.new(data)
+                apps << OneLogin::Api::Models::V2::OneLoginAppBasic.new(data)
               end
             end
             return apps
@@ -1346,7 +1387,7 @@ module OneLogin
           if response.code == 201
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::OneLoginApp.new(json_data)
+              return OneLogin::Api::Models::V2::OneLoginApp.new(json_data)
             end
           else
             @error = extract_status_code_from_response(response)
@@ -1388,7 +1429,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::OneLoginApp.new(json_data)
+              return OneLogin::Api::Models::V2::OneLoginApp.new(json_data)
             end
           else
             @error = extract_status_code_from_response(response)
@@ -1435,7 +1476,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::OneLoginApp.new(json_data)
+              return OneLogin::Api::Models::V2::OneLoginApp.new(json_data)
             end
           else
             @error = response.code.to_s
@@ -1540,6 +1581,48 @@ module OneLogin
         false
       end
 
+      # List users of a specific app
+      #
+      # @param app_id [Integer] Id of the app
+      # @param params [Hash] Parameters to filter the result of the list
+      #
+      # @return [Array] list of UserBasic objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/apps/list-users List App Users documentation}
+      def list_app_users(app_id, params = {})
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(LIST_APP_USERS_URL, app_id)
+
+          users = []
+          response = self.class.get(
+            url,
+            headers: authorized_headers,
+            query: params
+          )
+
+          if response.code == 200
+            json_data = JSON.parse(response.body)
+            if !json_data.empty?
+              json_data.each do |data|
+                users << OneLogin::Api::Models::V2::UserBasic.new(data)
+              end
+            end
+            return users
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       ################
       # Role Methods #
       ################
@@ -1557,7 +1640,7 @@ module OneLogin
 
         begin
           options = {
-            model: OneLogin::Api::Models::Role,
+            model: OneLogin::Api::Models::V1::Role,
             headers: authorized_headers,
             max_results: @max_results,
             params: params
@@ -1602,7 +1685,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data['data']
-              return OneLogin::Api::Models::Role.new(json_data['data'][0])
+              return OneLogin::Api::Models::V1::Role.new(json_data['data'][0])
             end
           else
             @error = response.code.to_s
@@ -1631,7 +1714,7 @@ module OneLogin
 
         begin
           options = {
-            model: OneLogin::Api::Models::EventType,
+            model: OneLogin::Api::Models::V1::EventType,
             headers: authorized_headers,
             max_results: @max_results
           }
@@ -1659,7 +1742,7 @@ module OneLogin
 
         begin
           options = {
-            model: OneLogin::Api::Models::Event,
+            model: OneLogin::Api::Models::V1::Event,
             headers: authorized_headers,
             max_results: @max_results,
             params: params
@@ -1704,7 +1787,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data['data']
-              return OneLogin::Api::Models::Event.new(json_data['data'][0])
+              return OneLogin::Api::Models::V1::Event.new(json_data['data'][0])
             end
           else
             @error = response.code.to_s
@@ -1774,7 +1857,7 @@ module OneLogin
 
         begin
           options = {
-            model: OneLogin::Api::Models::Group,
+            model: OneLogin::Api::Models::V1::Group,
             headers: authorized_headers,
             max_results: @max_results,
             params: params
@@ -1819,7 +1902,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data['data']
-              return OneLogin::Api::Models::Group.new(json_data['data'][0])
+              return OneLogin::Api::Models::V1::Group.new(json_data['data'][0])
             end
           else
             @error = response.code.to_s
@@ -1989,7 +2072,7 @@ module OneLogin
             json_data = JSON.parse(response.body)
             if json_data and json_data['data'] and json_data['data']['auth_factors']
               json_data['data']['auth_factors'].each do |factor_data|
-                factors << OneLogin::Api::Models::AuthFactor.new(factor_data)
+                factors << OneLogin::Api::Models::V1::AuthFactor.new(factor_data)
               end
             end
           else
@@ -2051,7 +2134,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data and json_data['data']
-              return OneLogin::Api::Models::OTPDevice.new(json_data['data'][0])
+              return OneLogin::Api::Models::V1::OTPDevice.new(json_data['data'][0])
             end
           else
             @error = response.code.to_s
@@ -2096,7 +2179,7 @@ module OneLogin
             json_data = JSON.parse(response.body)
             if json_data and json_data['data'] and json_data['data']['otp_devices']
               json_data['data']['otp_devices'].each do |otp_device_data|
-                otp_devices << OneLogin::Api::Models::OTPDevice.new(otp_device_data)
+                otp_devices << OneLogin::Api::Models::V1::OTPDevice.new(otp_device_data)
               end
             end
           else
@@ -2150,7 +2233,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data['data']
-              return OneLogin::Api::Models::FactorEnrollmentResponse.new(json_data['data'][0])
+              return OneLogin::Api::Models::V1::FactorEnrollmentResponse.new(json_data['data'][0])
             end
           else
             @error = response.code.to_s
@@ -2435,7 +2518,7 @@ module OneLogin
               app_data[children.name] = children.content
             end
           end
-          apps << OneLogin::Api::Models::EmbedApp.new(app_data)
+          apps << OneLogin::Api::Models::V1::EmbedApp.new(app_data)
         end
 
         apps
@@ -2468,7 +2551,7 @@ module OneLogin
             json_data = JSON.parse(response.body)
             if !json_data.empty?
               json_data.each do |data|
-                privileges << OneLogin::Api::Models::Privilege.new(data)
+                privileges << OneLogin::Api::Models::V1::Privilege.new(data)
               end
             end
             return privileges
@@ -2502,7 +2585,7 @@ module OneLogin
 
           statement_data = []
           for statement in statements
-            if statement.instance_of?(OneLogin::Api::Models::Statement)
+            if statement.instance_of?(OneLogin::Api::Models::V1::Statement)
               statement_data << {
                'Effect' => statement.effect,
                'Action' => statement.actions,
@@ -2534,7 +2617,7 @@ module OneLogin
           if response.code == 201
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::Privilege.new(json_data['id'], name, version, statements)
+              return OneLogin::Api::Models::V1::Privilege.new(json_data['id'], name, version, statements)
             end
           else
             @error = extract_status_code_from_response(response)
@@ -2577,7 +2660,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::Privilege.new(json_data)
+              return OneLogin::Api::Models::V1::Privilege.new(json_data)
             end
           else
             @error = extract_status_code_from_response(response)
@@ -2618,7 +2701,7 @@ module OneLogin
 
           statement_data = []
           for statement in statements
-            if statement.instance_of?(OneLogin::Api::Models::Statement)
+            if statement.instance_of?(OneLogin::Api::Models::V1::Statement)
               statement_data << {
                'Effect' => statement.effect,
                'Action' => statement.actions,
@@ -2650,7 +2733,7 @@ module OneLogin
           if response.code == 200
             json_data = JSON.parse(response.body)
             if json_data && json_data.has_key?('id')
-              return OneLogin::Api::Models::Privilege.new(json_data['id'], name, version, statements)
+              return OneLogin::Api::Models::V1::Privilege.new(json_data['id'], name, version, statements)
             end
           else
             @error = extract_status_code_from_response(response)

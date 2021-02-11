@@ -10,6 +10,6 @@ client = OneLogin::Api::Client.new(
 # the sdk uses a cursor to keep requesting
 # chunks of users as you loop through
 
-client.get_users.each do |user|
+client.get_users_v1.each do |user|
   puts "#{user.id} - #{user.firstname} - #{user.email}"
 end

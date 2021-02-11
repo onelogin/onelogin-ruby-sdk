@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe OneLogin::Api::Models::EmbedApp do
+RSpec.describe OneLogin::Api::Models::V1::EmbedApp do
 
   before(:all) do
     @app_data = {
@@ -17,7 +17,7 @@ RSpec.describe OneLogin::Api::Models::EmbedApp do
   context 'with data retrieved from the API' do
 
     it 'initializes the model' do
-      embed_app = OneLogin::Api::Models::EmbedApp.new(@app_data)
+      embed_app = OneLogin::Api::Models::V1::EmbedApp.new(@app_data)
 
       expect(embed_app.id).to eq(1234)
       expect(embed_app.icon).to eq('https://some.img')
@@ -33,7 +33,7 @@ RSpec.describe OneLogin::Api::Models::EmbedApp do
   context 'with truthy values' do
 
     it 'returns true' do
-      embed_app = OneLogin::Api::Models::EmbedApp.new({
+      embed_app = OneLogin::Api::Models::V1::EmbedApp.new({
         'id'=>'1234',
         'icon'=>'https://some.img',
         'name'=>'Demo App',
@@ -52,7 +52,7 @@ RSpec.describe OneLogin::Api::Models::EmbedApp do
   context 'with falsey values' do
 
     it 'returns false' do
-      embed_app = OneLogin::Api::Models::EmbedApp.new({
+      embed_app = OneLogin::Api::Models::V1::EmbedApp.new({
         'id'=>'1234',
         'icon'=>'https://some.img',
         'name'=>'Demo App',

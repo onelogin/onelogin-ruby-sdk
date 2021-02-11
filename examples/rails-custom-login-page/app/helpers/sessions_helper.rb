@@ -10,7 +10,7 @@ module SessionsHelper
     )
     return { error: api_client.error_description } unless response
 
-    if response.is_a? OneLogin::Api::Models::SessionTokenMFAInfo
+    if response.is_a? OneLogin::Api::Models::V1::SessionTokenMFAInfo
       session[:state_token] = response.state_token
       {
         requires_mfa: true,
@@ -59,7 +59,7 @@ module SessionsHelper
   end
 
   def validate_user(username)
-    user = api_client.get_users(username: username).first
+    user = api_client.get_users_v1(username: username).first
 
     if user
       session[:user_id] = user.id
