@@ -1,10 +1,10 @@
 require "spec_helper"
 # require 'onelogin/api/util/string_utils'
 
-RSpec.describe OneLogin::Api::Util::StringUtils do
+RSpec.describe OneLogin::Api::Util::Utils do
   include OneLogin::Api::Util
   
-  context 'stringutils' do
+  context 'utils' do
     it 'str2bool' do
       expect(str2bool(nil)).to be nil
       expect(str2bool(true)).to be true
@@ -34,6 +34,4 @@ RSpec.describe OneLogin::Api::Util::StringUtils do
         expect(str2int(9)).to eq(9)
     end    
   end
-   
-
 end

@@ -3,7 +3,7 @@ require 'date'
 module OneLogin
     module Api
       module Util
-        module StringUtils
+        module Utils
 
             def str2bool(s)
               if s == nil
