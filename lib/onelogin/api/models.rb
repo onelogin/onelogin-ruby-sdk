@@ -1,6 +1,6 @@
 require 'onelogin/api/models/app'
 require 'onelogin/api/models/auth_factor'
-require 'onelogin/api/models/connector_basic'
+require 'onelogin/api/models/connector'
 require 'onelogin/api/models/device'
 require 'onelogin/api/models/event'
 require 'onelogin/api/models/event_type'
