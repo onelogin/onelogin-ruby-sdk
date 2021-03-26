@@ -1,3 +1,4 @@
+require 'onelogin/api/util/utils.rb'
 module OneLogin
   module Api
     module Models
