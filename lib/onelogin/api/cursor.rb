@@ -66,6 +66,8 @@ class Cursor
 
     if json.nil?
       raise OneLogin::Api::ApiException.new("Response could not be parsed", 500)
+    elsif json.is_a?(String)
+      raise OneLogin::Api::ApiException.new(response.message, response.code)
     elsif !json.has_key?(@container) && json.has_key?('status') && json["status"]["error"] == true
       raise OneLogin::Api::ApiException.new(extract_error_message_from_response(response), json["status"]["code"])
     elsif !json.has_key?(@container) && json.has_key?('statusCode')
