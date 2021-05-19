@@ -3,13 +3,15 @@ GEM
   specs:
     httparty (0.16.2)
       multi_xml (>= 0.5.2)
-    mini_portile2 (2.4.0)
+    mini_portile2 (2.5.1)
     multi_xml (0.6.0)
-    nokogiri (1.10.4)
-      mini_portile2 (~> 2.4.0)
+    nokogiri (1.11.4)
+      mini_portile2 (~> 2.5.0)
+      racc (~> 1.4)
     onelogin (1.2.1)
       httparty (>= 0.13.7)
       nokogiri (>= 1.6.3.1)
+    racc (1.5.2)
 
 PLATFORMS
   ruby
