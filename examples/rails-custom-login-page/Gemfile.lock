@@ -170,7 +170,7 @@ GEM
     turbolinks (5.1.0)
       turbolinks-source (~> 5.1)
     turbolinks-source (5.1.0)
-    tzinfo (1.2.5)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     uglifier (4.1.8)
       execjs (>= 0.3.0, < 3)
@@ -195,7 +195,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   jquery-rails
   listen (>= 3.0.5, < 3.2)
-  onelogin (~> 1.5.0)
+  onelogin (~> 1.6.0)
   puma (~> 3.12)
   rails (~> 5.1.4)
   sass-rails (~> 5.0)
