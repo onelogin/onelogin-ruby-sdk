@@ -1,0 +1,22 @@
+# OneLogin::Registration
+
+## Properties
+
+| Name | Type | Description | Notes |
+| ---- | ---- | ----------- | ----- |
+| **id** | **String** | Registration identifier. | [optional] |
+| **status** | **String** | pending registration has not been completed successfully. accepted registration has successfully completed. | [optional] |
+| **device_id** | **String** | Device id to be used with Verify the Factor. | [optional] |
+
+## Example
+
+```ruby
+require 'onelogin'
+
+instance = OneLogin::Registration.new(
+  id: null,
+  status: null,
+  device_id: null
+)
+```
+
