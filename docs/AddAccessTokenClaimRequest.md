@@ -1,4 +1,4 @@
-# OpenapiClient::AddAccessTokenClaimRequest
+# OneLogin::AddAccessTokenClaimRequest
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::AddAccessTokenClaimRequest.new(
+instance = OneLogin::AddAccessTokenClaimRequest.new(
   name: null,
   user_attribute_mappings: null,
   user_attribute_macros: null

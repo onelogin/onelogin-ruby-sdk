@@ -1,4 +1,4 @@
-# OpenapiClient::GetRiskScoreRequest
+# OneLogin::GetRiskScoreRequest
 
 ## Properties
 
@@ -15,9 +15,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GetRiskScoreRequest.new(
+instance = OneLogin::GetRiskScoreRequest.new(
   ip: null,
   user_agent: null,
   user: null,

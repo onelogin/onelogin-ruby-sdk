@@ -1,4 +1,4 @@
-# OpenapiClient::Registration
+# OneLogin::Registration
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Registration.new(
+instance = OneLogin::Registration.new(
   id: null,
   status: null,
   device_id: null

@@ -1,4 +1,4 @@
-# OpenapiClient::AuthMethod
+# OneLogin::AuthMethod
 
 ## Properties
 
@@ -8,8 +8,8 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::AuthMethod.new()
+instance = OneLogin::AuthMethod.new()
 ```
 

@@ -1,4 +1,4 @@
-# OpenapiClient::GenerateToken200Response
+# OneLogin::GenerateToken200Response
 
 ## Properties
 
@@ -14,9 +14,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GenerateToken200Response.new(
+instance = OneLogin::GenerateToken200Response.new(
   access_token: null,
   created_at: null,
   expires_in: null,

@@ -1,4 +1,4 @@
-# OpenapiClient::ErrorStatusErrorsInner
+# OneLogin::ErrorStatusErrorsInner
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::ErrorStatusErrorsInner.new(
+instance = OneLogin::ErrorStatusErrorsInner.new(
   field: null,
   message: null
 )

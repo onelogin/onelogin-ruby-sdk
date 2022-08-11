@@ -1,4 +1,4 @@
-# OpenapiClient::ListAuthorizationServers200ResponseInner
+# OneLogin::ListAuthorizationServers200ResponseInner
 
 ## Properties
 
@@ -12,9 +12,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::ListAuthorizationServers200ResponseInner.new(
+instance = OneLogin::ListAuthorizationServers200ResponseInner.new(
   id: null,
   name: null,
   configuration: null,

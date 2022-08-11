@@ -1,4 +1,4 @@
-# OpenapiClient::ActivateFactorRequest
+# OneLogin::ActivateFactorRequest
 
 ## Properties
 
@@ -12,9 +12,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::ActivateFactorRequest.new(
+instance = OneLogin::ActivateFactorRequest.new(
   device_id: null,
   expires_in: null,
   redirect_to: null,

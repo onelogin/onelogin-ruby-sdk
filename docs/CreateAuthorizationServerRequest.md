@@ -1,4 +1,4 @@
-# OpenapiClient::CreateAuthorizationServerRequest
+# OneLogin::CreateAuthorizationServerRequest
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::CreateAuthorizationServerRequest.new(
+instance = OneLogin::CreateAuthorizationServerRequest.new(
   name: null,
   description: null,
   configuration: null

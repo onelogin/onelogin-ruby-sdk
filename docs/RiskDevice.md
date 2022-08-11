@@ -1,4 +1,4 @@
-# OpenapiClient::RiskDevice
+# OneLogin::RiskDevice
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::RiskDevice.new(
+instance = OneLogin::RiskDevice.new(
   id: null
 )
 ```

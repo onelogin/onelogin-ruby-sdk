@@ -1,4 +1,4 @@
-# OpenapiClient::Hook
+# OneLogin::Hook
 
 ## Properties
 
@@ -23,9 +23,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Hook.new(
+instance = OneLogin::Hook.new(
   id: null,
   type: null,
   disabled: null,

@@ -1,4 +1,4 @@
-# OpenapiClient::TrackEventRequest
+# OneLogin::TrackEventRequest
 
 ## Properties
 
@@ -17,9 +17,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::TrackEventRequest.new(
+instance = OneLogin::TrackEventRequest.new(
   verb: null,
   ip: null,
   user_agent: null,

@@ -1,4 +1,4 @@
-# OpenapiClient::Action
+# OneLogin::Action
 
 ## Properties
 
@@ -13,9 +13,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Action.new(
+instance = OneLogin::Action.new(
   action: null,
   value: null,
   expression: null,

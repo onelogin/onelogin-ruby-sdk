@@ -1,4 +1,4 @@
-# OpenapiClient::Session
+# OneLogin::Session
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Session.new(
+instance = OneLogin::Session.new(
   id: null
 )
 ```

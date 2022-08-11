@@ -1,4 +1,4 @@
-# OpenapiClient::HookStatus
+# OneLogin::HookStatus
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::HookStatus.new(
+instance = OneLogin::HookStatus.new(
   name: null,
   message: null
 )

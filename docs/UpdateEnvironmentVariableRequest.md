@@ -1,4 +1,4 @@
-# OpenapiClient::UpdateEnvironmentVariableRequest
+# OneLogin::UpdateEnvironmentVariableRequest
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::UpdateEnvironmentVariableRequest.new(
+instance = OneLogin::UpdateEnvironmentVariableRequest.new(
   value: null
 )
 ```

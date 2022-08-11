@@ -1,4 +1,4 @@
-# OpenapiClient::Rule
+# OneLogin::Rule
 
 ## Properties
 
@@ -15,9 +15,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Rule.new(
+instance = OneLogin::Rule.new(
   id: null,
   name: null,
   match: null,

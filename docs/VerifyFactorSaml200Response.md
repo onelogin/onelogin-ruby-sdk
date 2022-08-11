@@ -1,4 +1,4 @@
-# OpenapiClient::VerifyFactorSaml200Response
+# OneLogin::VerifyFactorSaml200Response
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::VerifyFactorSaml200Response.new(
+instance = OneLogin::VerifyFactorSaml200Response.new(
   data: null,
   message: null
 )

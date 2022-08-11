@@ -1,4 +1,4 @@
-# OpenapiClient::AddClientAppRequest
+# OneLogin::AddClientAppRequest
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::AddClientAppRequest.new(
+instance = OneLogin::AddClientAppRequest.new(
   app_id: null,
   scopes: null
 )

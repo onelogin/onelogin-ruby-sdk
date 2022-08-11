@@ -1,4 +1,4 @@
-# OpenapiClient::AuthServerConfiguration
+# OneLogin::AuthServerConfiguration
 
 ## Properties
 
@@ -12,9 +12,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::AuthServerConfiguration.new(
+instance = OneLogin::AuthServerConfiguration.new(
   audiences: null,
   refresh_token_expiration_minutes: null,
   resource_identifier: null,

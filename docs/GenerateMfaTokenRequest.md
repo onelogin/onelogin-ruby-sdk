@@ -1,4 +1,4 @@
-# OpenapiClient::GenerateMfaTokenRequest
+# OneLogin::GenerateMfaTokenRequest
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GenerateMfaTokenRequest.new(
+instance = OneLogin::GenerateMfaTokenRequest.new(
   expires_in: null,
   reusable: null
 )

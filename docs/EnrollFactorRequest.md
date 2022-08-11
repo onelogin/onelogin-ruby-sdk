@@ -1,4 +1,4 @@
-# OpenapiClient::EnrollFactorRequest
+# OneLogin::EnrollFactorRequest
 
 ## Properties
 
@@ -14,9 +14,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::EnrollFactorRequest.new(
+instance = OneLogin::EnrollFactorRequest.new(
   factor_id: null,
   display_name: null,
   expires_in: null,

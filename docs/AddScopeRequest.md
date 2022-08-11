@@ -1,4 +1,4 @@
-# OpenapiClient::AddScopeRequest
+# OneLogin::AddScopeRequest
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::AddScopeRequest.new(
+instance = OneLogin::AddScopeRequest.new(
   value: null,
   description: null
 )

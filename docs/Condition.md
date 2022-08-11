@@ -1,4 +1,4 @@
-# OpenapiClient::Condition
+# OneLogin::Condition
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Condition.new(
+instance = OneLogin::Condition.new(
   source: null,
   operator: null,
   value: null

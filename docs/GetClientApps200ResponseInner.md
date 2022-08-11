@@ -1,4 +1,4 @@
-# OpenapiClient::GetClientApps200ResponseInner
+# OneLogin::GetClientApps200ResponseInner
 
 ## Properties
 
@@ -12,9 +12,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GetClientApps200ResponseInner.new(
+instance = OneLogin::GetClientApps200ResponseInner.new(
   scopes: null,
   app_id: null,
   name: null,

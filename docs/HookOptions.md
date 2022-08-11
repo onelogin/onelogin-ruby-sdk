@@ -1,4 +1,4 @@
-# OpenapiClient::HookOptions
+# OneLogin::HookOptions
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::HookOptions.new(
+instance = OneLogin::HookOptions.new(
   risk_enabled: null,
   location_enabled: null,
   mfa_device_info_enabled: null

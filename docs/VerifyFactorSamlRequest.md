@@ -1,4 +1,4 @@
-# OpenapiClient::VerifyFactorSamlRequest
+# OneLogin::VerifyFactorSamlRequest
 
 ## Properties
 
@@ -13,9 +13,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::VerifyFactorSamlRequest.new(
+instance = OneLogin::VerifyFactorSamlRequest.new(
   app_id: null,
   device_id: null,
   state_token: null,

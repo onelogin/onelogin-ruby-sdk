@@ -1,4 +1,4 @@
-# OpenapiClient::Status
+# OneLogin::Status
 
 ## Properties
 
@@ -12,9 +12,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Status.new(
+instance = OneLogin::Status.new(
   error: null,
   code: null,
   type: null,

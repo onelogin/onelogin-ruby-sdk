@@ -1,4 +1,4 @@
-# OpenapiClient::Role
+# OneLogin::Role
 
 ## Properties
 
@@ -13,9 +13,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Role.new(
+instance = OneLogin::Role.new(
   id: null,
   name: null,
   apps: null,

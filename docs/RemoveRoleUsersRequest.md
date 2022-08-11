@@ -1,4 +1,4 @@
-# OpenapiClient::RemoveRoleUsersRequest
+# OneLogin::RemoveRoleUsersRequest
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::RemoveRoleUsersRequest.new(
+instance = OneLogin::RemoveRoleUsersRequest.new(
   user_id: null
 )
 ```

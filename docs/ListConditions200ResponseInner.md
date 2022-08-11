@@ -1,4 +1,4 @@
-# OpenapiClient::ListConditions200ResponseInner
+# OneLogin::ListConditions200ResponseInner
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::ListConditions200ResponseInner.new(
+instance = OneLogin::ListConditions200ResponseInner.new(
   name: null,
   value: null
 )

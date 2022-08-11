@@ -1,4 +1,4 @@
-# OpenapiClient::GetRateLimit200Response
+# OneLogin::GetRateLimit200Response
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GetRateLimit200Response.new(
+instance = OneLogin::GetRateLimit200Response.new(
   status: null,
   data: null
 )

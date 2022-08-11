@@ -1,4 +1,4 @@
-# OpenapiClient::Mapping
+# OneLogin::Mapping
 
 ## Properties
 
@@ -15,9 +15,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Mapping.new(
+instance = OneLogin::Mapping.new(
   id: null,
   name: null,
   enabled: null,

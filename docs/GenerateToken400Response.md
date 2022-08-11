@@ -1,4 +1,4 @@
-# OpenapiClient::GenerateToken400Response
+# OneLogin::GenerateToken400Response
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GenerateToken400Response.new(
+instance = OneLogin::GenerateToken400Response.new(
   status: null
 )
 ```

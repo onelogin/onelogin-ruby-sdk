@@ -1,4 +1,4 @@
-# OpenapiClient::SchemaProvisioning
+# OneLogin::SchemaProvisioning
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::SchemaProvisioning.new(
+instance = OneLogin::SchemaProvisioning.new(
   enabled: null
 )
 ```

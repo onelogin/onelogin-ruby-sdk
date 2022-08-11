@@ -1,4 +1,4 @@
-# OpenapiClient::RiskRule
+# OneLogin::RiskRule
 
 ## Properties
 
@@ -15,9 +15,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::RiskRule.new(
+instance = OneLogin::RiskRule.new(
   id: null,
   name: null,
   description: null,

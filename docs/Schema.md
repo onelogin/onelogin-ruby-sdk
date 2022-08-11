@@ -1,4 +1,4 @@
-# OpenapiClient::Schema
+# OneLogin::Schema
 
 ## Properties
 
@@ -28,9 +28,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Schema.new(
+instance = OneLogin::Schema.new(
   id: null,
   connector_id: null,
   name: null,

@@ -1,4 +1,4 @@
-# OpenapiClient::ListMappingConditions200ResponseInner
+# OneLogin::ListMappingConditions200ResponseInner
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::ListMappingConditions200ResponseInner.new(
+instance = OneLogin::ListMappingConditions200ResponseInner.new(
   name: null,
   value: null
 )

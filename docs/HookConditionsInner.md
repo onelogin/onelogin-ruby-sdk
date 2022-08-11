@@ -1,4 +1,4 @@
-# OpenapiClient::HookConditionsInner
+# OneLogin::HookConditionsInner
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::HookConditionsInner.new(
+instance = OneLogin::HookConditionsInner.new(
   source: null,
   operator: null,
   value: null

@@ -1,4 +1,4 @@
-# OpenapiClient::GetScoreInsights200ResponseScores
+# OneLogin::GetScoreInsights200ResponseScores
 
 ## Properties
 
@@ -13,9 +13,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GetScoreInsights200ResponseScores.new(
+instance = OneLogin::GetScoreInsights200ResponseScores.new(
   minimal: null,
   low: null,
   medium: null,

@@ -1,4 +1,4 @@
-# OpenapiClient::RevokeTokenRequest
+# OneLogin::RevokeTokenRequest
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::RevokeTokenRequest.new(
+instance = OneLogin::RevokeTokenRequest.new(
   access_token: null
 )
 ```

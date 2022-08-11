@@ -1,4 +1,4 @@
-# OpenapiClient::Device
+# OneLogin::Device
 
 ## Properties
 
@@ -13,9 +13,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Device.new(
+instance = OneLogin::Device.new(
   device_id: null,
   user_display_name: null,
   type_display_name: null,

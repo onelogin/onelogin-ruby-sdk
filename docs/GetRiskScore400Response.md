@@ -1,4 +1,4 @@
-# OpenapiClient::GetRiskScore400Response
+# OneLogin::GetRiskScore400Response
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GetRiskScore400Response.new(
+instance = OneLogin::GetRiskScore400Response.new(
   messages: null
 )
 ```

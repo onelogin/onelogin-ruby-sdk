@@ -1,4 +1,4 @@
-# OpenapiClient::AddRoleUsers200ResponseInner
+# OneLogin::AddRoleUsers200ResponseInner
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::AddRoleUsers200ResponseInner.new(
+instance = OneLogin::AddRoleUsers200ResponseInner.new(
   id: null
 )
 ```

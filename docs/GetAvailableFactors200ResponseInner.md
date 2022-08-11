@@ -1,4 +1,4 @@
-# OpenapiClient::GetAvailableFactors200ResponseInner
+# OneLogin::GetAvailableFactors200ResponseInner
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GetAvailableFactors200ResponseInner.new(
+instance = OneLogin::GetAvailableFactors200ResponseInner.new(
   factor_id: null,
   name: null,
   auth_factor_name: null

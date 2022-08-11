@@ -1,4 +1,4 @@
-# OpenapiClient::Connector
+# OneLogin::Connector
 
 ## Properties
 
@@ -13,9 +13,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Connector.new(
+instance = OneLogin::Connector.new(
   id: null,
   name: null,
   auth_method: null,

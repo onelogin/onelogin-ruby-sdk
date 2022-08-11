@@ -1,4 +1,4 @@
-# OpenapiClient::RuleId
+# OneLogin::RuleId
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::RuleId.new(
+instance = OneLogin::RuleId.new(
   id: null
 )
 ```

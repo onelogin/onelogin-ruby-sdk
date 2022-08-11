@@ -1,4 +1,4 @@
-# OpenapiClient::GenerateMfaToken422ResponseDetails
+# OneLogin::GenerateMfaToken422ResponseDetails
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GenerateMfaToken422ResponseDetails.new(
+instance = OneLogin::GenerateMfaToken422ResponseDetails.new(
   parameters: null
 )
 ```

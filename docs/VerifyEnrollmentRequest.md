@@ -1,4 +1,4 @@
-# OpenapiClient::VerifyEnrollmentRequest
+# OneLogin::VerifyEnrollmentRequest
 
 ## Properties
 
@@ -9,9 +9,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::VerifyEnrollmentRequest.new(
+instance = OneLogin::VerifyEnrollmentRequest.new(
   otp: null
 )
 ```

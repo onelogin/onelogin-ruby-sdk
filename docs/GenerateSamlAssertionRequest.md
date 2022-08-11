@@ -1,4 +1,4 @@
-# OpenapiClient::GenerateSamlAssertionRequest
+# OneLogin::GenerateSamlAssertionRequest
 
 ## Properties
 
@@ -13,9 +13,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::GenerateSamlAssertionRequest.new(
+instance = OneLogin::GenerateSamlAssertionRequest.new(
   username_or_email: null,
   password: null,
   app_id: null,

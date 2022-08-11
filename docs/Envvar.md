@@ -1,4 +1,4 @@
-# OpenapiClient::Envvar
+# OneLogin::Envvar
 
 ## Properties
 
@@ -12,9 +12,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Envvar.new(
+instance = OneLogin::Envvar.new(
   id: null,
   name: null,
   created_at: null,

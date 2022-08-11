@@ -1,4 +1,4 @@
-# OpenapiClient::Status2Status
+# OneLogin::Status2Status
 
 ## Properties
 
@@ -12,9 +12,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::Status2Status.new(
+instance = OneLogin::Status2Status.new(
   type: null,
   code: null,
   message: null,

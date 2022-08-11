@@ -1,4 +1,4 @@
-# OpenapiClient::ListAccessTokenClaims200ResponseInner
+# OneLogin::ListAccessTokenClaims200ResponseInner
 
 ## Properties
 
@@ -17,9 +17,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::ListAccessTokenClaims200ResponseInner.new(
+instance = OneLogin::ListAccessTokenClaims200ResponseInner.new(
   id: null,
   label: null,
   user_attribute_mappings: null,

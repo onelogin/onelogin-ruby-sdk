@@ -1,4 +1,4 @@
-# OpenapiClient::FactorInnerFactorData
+# OneLogin::FactorInnerFactorData
 
 ## Properties
 
@@ -10,9 +10,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::FactorInnerFactorData.new(
+instance = OneLogin::FactorInnerFactorData.new(
   verification_token: null,
   totp_url: null
 )

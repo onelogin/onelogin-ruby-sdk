@@ -1,4 +1,4 @@
-# OpenapiClient::UpdateAuthorizationServer400Response
+# OneLogin::UpdateAuthorizationServer400Response
 
 ## Properties
 
@@ -12,9 +12,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::UpdateAuthorizationServer400Response.new(
+instance = OneLogin::UpdateAuthorizationServer400Response.new(
   field: null,
   message: null,
   status_code: null,

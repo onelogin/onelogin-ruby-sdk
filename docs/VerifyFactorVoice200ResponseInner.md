@@ -1,4 +1,4 @@
-# OpenapiClient::VerifyFactorVoice200ResponseInner
+# OneLogin::VerifyFactorVoice200ResponseInner
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::VerifyFactorVoice200ResponseInner.new(
+instance = OneLogin::VerifyFactorVoice200ResponseInner.new(
   id: null,
   status: null,
   device_id: null

@@ -1,4 +1,4 @@
-# OpenapiClient::ListScopes200ResponseInner
+# OneLogin::ListScopes200ResponseInner
 
 ## Properties
 
@@ -11,9 +11,9 @@
 ## Example
 
 ```ruby
-require 'openapi_client'
+require 'onelogin'
 
-instance = OpenapiClient::ListScopes200ResponseInner.new(
+instance = OneLogin::ListScopes200ResponseInner.new(
   id: null,
   value: null,
   description: null

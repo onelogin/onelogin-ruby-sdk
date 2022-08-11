@@ -1,4 +1,4 @@
-# OpenapiClient::DefaultApi
+# OneLogin::DefaultApi
 
 All URIs are relative to *https://onelogininc.onelogin.com*
 
@@ -117,17 +117,17 @@ All URIs are relative to *https://onelogininc.onelogin.com*
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
-activate_factor_request = OpenapiClient::ActivateFactorRequest.new # ActivateFactorRequest | 
+activate_factor_request = OneLogin::ActivateFactorRequest.new # ActivateFactorRequest | 
 
 begin
   
   api_instance.activate_factor(authorization, user_id, activate_factor_request)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->activate_factor: #{e}"
 end
 ```
@@ -145,7 +145,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->activate_factor_with_http_info: #{e}"
 end
 ```
@@ -182,18 +182,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
-add_access_token_claim_request = OpenapiClient::AddAccessTokenClaimRequest.new # AddAccessTokenClaimRequest | 
+add_access_token_claim_request = OneLogin::AddAccessTokenClaimRequest.new # AddAccessTokenClaimRequest | 
 
 begin
   
   result = api_instance.add_access_token_claim(authorization, id, add_access_token_claim_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_access_token_claim: #{e}"
 end
 ```
@@ -211,7 +211,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Id>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_access_token_claim_with_http_info: #{e}"
 end
 ```
@@ -248,18 +248,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
-add_client_app_request = OpenapiClient::AddClientAppRequest.new # AddClientAppRequest | 
+add_client_app_request = OneLogin::AddClientAppRequest.new # AddClientAppRequest | 
 
 begin
   
   result = api_instance.add_client_app(authorization, id, add_client_app_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_client_app: #{e}"
 end
 ```
@@ -277,7 +277,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <ClientApp>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_client_app_with_http_info: #{e}"
 end
 ```
@@ -314,9 +314,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
 request_body = [37] # Array<Integer> | 
@@ -325,7 +325,7 @@ begin
   
   result = api_instance.add_role_admins(authorization, role_id, request_body)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_role_admins: #{e}"
 end
 ```
@@ -343,7 +343,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<AddRoleUsers200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_role_admins_with_http_info: #{e}"
 end
 ```
@@ -380,9 +380,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
 request_body = [37] # Array<Integer> | 
@@ -391,7 +391,7 @@ begin
   
   result = api_instance.add_role_users(authorization, role_id, request_body)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_role_users: #{e}"
 end
 ```
@@ -409,7 +409,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<AddRoleUsers200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_role_users_with_http_info: #{e}"
 end
 ```
@@ -446,18 +446,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
-add_scope_request = OpenapiClient::AddScopeRequest.new # AddScopeRequest | 
+add_scope_request = OneLogin::AddScopeRequest.new # AddScopeRequest | 
 
 begin
   
   result = api_instance.add_scope(authorization, id, add_scope_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_scope: #{e}"
 end
 ```
@@ -475,7 +475,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Id>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->add_scope_with_http_info: #{e}"
 end
 ```
@@ -512,9 +512,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 request_body = [37] # Array<Integer> | The request body must contain an array of User Mapping IDs in the desired order.
 
@@ -522,7 +522,7 @@ begin
   
   result = api_instance.bulk_mapping_sort(authorization, request_body)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->bulk_mapping_sort: #{e}"
 end
 ```
@@ -540,7 +540,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => Array&lt;Integer&gt;
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->bulk_mapping_sort_with_http_info: #{e}"
 end
 ```
@@ -576,9 +576,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 request_body = [37] # Array<Integer> | The request body must contain an array of App Rule IDs in the desired order.
@@ -587,7 +587,7 @@ begin
   
   result = api_instance.bulk_sort(authorization, app_id, request_body)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->bulk_sort: #{e}"
 end
 ```
@@ -605,7 +605,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => Array&lt;Integer&gt;
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->bulk_sort_with_http_info: #{e}"
 end
 ```
@@ -642,17 +642,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-schema = OpenapiClient::Schema.new # Schema | 
+schema = OneLogin::Schema.new # Schema | 
 
 begin
   
   result = api_instance.create_app(authorization, schema)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_app: #{e}"
 end
 ```
@@ -670,7 +670,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Schema>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_app_with_http_info: #{e}"
 end
 ```
@@ -706,17 +706,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-create_authorization_server_request = OpenapiClient::CreateAuthorizationServerRequest.new # CreateAuthorizationServerRequest | 
+create_authorization_server_request = OneLogin::CreateAuthorizationServerRequest.new # CreateAuthorizationServerRequest | 
 
 begin
   
   result = api_instance.create_authorization_server(authorization, create_authorization_server_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_authorization_server: #{e}"
 end
 ```
@@ -734,7 +734,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Id>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_authorization_server_with_http_info: #{e}"
 end
 ```
@@ -770,17 +770,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-create_environment_variable_request = OpenapiClient::CreateEnvironmentVariableRequest.new({name: 'name_example', value: 'value_example'}) # CreateEnvironmentVariableRequest | 
+create_environment_variable_request = OneLogin::CreateEnvironmentVariableRequest.new({name: 'name_example', value: 'value_example'}) # CreateEnvironmentVariableRequest | 
 
 begin
   
   result = api_instance.create_environment_variable(authorization, create_environment_variable_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_environment_variable: #{e}"
 end
 ```
@@ -798,7 +798,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Envvar>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_environment_variable_with_http_info: #{e}"
 end
 ```
@@ -834,16 +834,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-hook = OpenapiClient::Hook.new({type: 'type_example', disabled: false, timeout: 37, env_vars: ['env_vars_example'], runtime: 'runtime_example', retries: 37, packages: 3.56, function: 'function_example'}) # Hook | 
+hook = OneLogin::Hook.new({type: 'type_example', disabled: false, timeout: 37, env_vars: ['env_vars_example'], runtime: 'runtime_example', retries: 37, packages: 3.56, function: 'function_example'}) # Hook | 
 
 begin
   
   api_instance.create_hook(authorization, hook)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_hook: #{e}"
 end
 ```
@@ -861,7 +861,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_hook_with_http_info: #{e}"
 end
 ```
@@ -897,17 +897,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-mapping = OpenapiClient::Mapping.new({name: 'name_example', enabled: false, match: 'all', position: 37, actions: [OpenapiClient::Action.new]}) # Mapping | 
+mapping = OneLogin::Mapping.new({name: 'name_example', enabled: false, match: 'all', position: 37, actions: [OneLogin::Action.new]}) # Mapping | 
 
 begin
   
   result = api_instance.create_mapping(authorization, mapping)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_mapping: #{e}"
 end
 ```
@@ -925,7 +925,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => Integer
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_mapping_with_http_info: #{e}"
 end
 ```
@@ -961,16 +961,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-risk_rule = OpenapiClient::RiskRule.new # RiskRule | 
+risk_rule = OneLogin::RiskRule.new # RiskRule | 
 
 begin
   
   api_instance.create_risk_rule(authorization, risk_rule)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_risk_rule: #{e}"
 end
 ```
@@ -988,7 +988,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_risk_rule_with_http_info: #{e}"
 end
 ```
@@ -1024,16 +1024,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 
 begin
   
   result = api_instance.create_roles(authorization)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_roles: #{e}"
 end
 ```
@@ -1051,7 +1051,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<CreateRoles201ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_roles_with_http_info: #{e}"
 end
 ```
@@ -1086,18 +1086,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
-rule = OpenapiClient::Rule.new # Rule | 
+rule = OneLogin::Rule.new # Rule | 
 
 begin
   
   result = api_instance.create_rule(authorization, app_id, rule)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_rule: #{e}"
 end
 ```
@@ -1115,7 +1115,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <RuleId>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_rule_with_http_info: #{e}"
 end
 ```
@@ -1152,11 +1152,11 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-user = OpenapiClient::User.new # User | 
+user = OneLogin::User.new # User | 
 opts = {
   mappings: 'async', # String | Controls how mappings will be applied to the user on creation. Defaults to async.
   validate_policy: true # Boolean | Will passwords validate against the User Policy? Defaults to true.
@@ -1166,7 +1166,7 @@ begin
   
   result = api_instance.create_user(authorization, user, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_user: #{e}"
 end
 ```
@@ -1184,7 +1184,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <User>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->create_user_with_http_info: #{e}"
 end
 ```
@@ -1222,9 +1222,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 claim_id = 56 # Integer | 
@@ -1232,7 +1232,7 @@ claim_id = 56 # Integer |
 begin
   
   api_instance.delete_access_token_claim(authorization, id, claim_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_access_token_claim: #{e}"
 end
 ```
@@ -1250,7 +1250,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_access_token_claim_with_http_info: #{e}"
 end
 ```
@@ -1287,16 +1287,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 
 begin
   
   api_instance.delete_app(authorization, app_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_app: #{e}"
 end
 ```
@@ -1314,7 +1314,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_app_with_http_info: #{e}"
 end
 ```
@@ -1350,9 +1350,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 parameter_id = 56 # Integer | 
@@ -1360,7 +1360,7 @@ parameter_id = 56 # Integer |
 begin
   
   api_instance.delete_app_parameter(authorization, app_id, parameter_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_app_parameter: #{e}"
 end
 ```
@@ -1378,7 +1378,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_app_parameter_with_http_info: #{e}"
 end
 ```
@@ -1415,16 +1415,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 
 begin
   
   api_instance.delete_authorization_server(authorization, id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_authorization_server: #{e}"
 end
 ```
@@ -1442,7 +1442,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_authorization_server_with_http_info: #{e}"
 end
 ```
@@ -1478,16 +1478,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 envvar_id = 'envvar_id_example' # String | Set to the id of the Hook Environment Variable that you want to fetch.
 
 begin
   
   api_instance.delete_environment_variable(authorization, envvar_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_environment_variable: #{e}"
 end
 ```
@@ -1505,7 +1505,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_environment_variable_with_http_info: #{e}"
 end
 ```
@@ -1541,9 +1541,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
 device_id = 56 # Integer | Set to the device_id of the MFA device.
@@ -1551,7 +1551,7 @@ device_id = 56 # Integer | Set to the device_id of the MFA device.
 begin
   
   api_instance.delete_factor(authorization, user_id, device_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_factor: #{e}"
 end
 ```
@@ -1569,7 +1569,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_factor_with_http_info: #{e}"
 end
 ```
@@ -1606,16 +1606,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 hook_id = 'hook_id_example' # String | Set to the id of the Hook that you want to return.
 
 begin
   
   api_instance.delete_hook(authorization, hook_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_hook: #{e}"
 end
 ```
@@ -1633,7 +1633,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_hook_with_http_info: #{e}"
 end
 ```
@@ -1669,16 +1669,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 mapping_id = 56 # Integer | The id of the user mapping to locate.
 
 begin
   
   api_instance.delete_mapping(authorization, mapping_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_mapping: #{e}"
 end
 ```
@@ -1696,7 +1696,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_mapping_with_http_info: #{e}"
 end
 ```
@@ -1732,9 +1732,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 risk_rule_id = 'risk_rule_id_example' # String | 
 
@@ -1742,7 +1742,7 @@ begin
   
   result = api_instance.delete_risk_rule(authorization, risk_rule_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_risk_rule: #{e}"
 end
 ```
@@ -1760,7 +1760,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <RiskRule>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_risk_rule_with_http_info: #{e}"
 end
 ```
@@ -1796,16 +1796,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
 
 begin
   
   api_instance.delete_role(authorization, role_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_role: #{e}"
 end
 ```
@@ -1823,7 +1823,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_role_with_http_info: #{e}"
 end
 ```
@@ -1859,9 +1859,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 rule_id = 56 # Integer | The id of the app rule to locate.
@@ -1869,7 +1869,7 @@ rule_id = 56 # Integer | The id of the app rule to locate.
 begin
   
   api_instance.delete_rule(authorization, app_id, rule_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_rule: #{e}"
 end
 ```
@@ -1887,7 +1887,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_rule_with_http_info: #{e}"
 end
 ```
@@ -1924,9 +1924,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 scope_id = 56 # Integer | 
@@ -1934,7 +1934,7 @@ scope_id = 56 # Integer |
 begin
   
   api_instance.delete_scope(authorization, id, scope_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_scope: #{e}"
 end
 ```
@@ -1952,7 +1952,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_scope_with_http_info: #{e}"
 end
 ```
@@ -1989,16 +1989,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user that you want to return.
 
 begin
   
   api_instance.delete_user(authorization, user_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_user: #{e}"
 end
 ```
@@ -2016,7 +2016,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->delete_user_with_http_info: #{e}"
 end
 ```
@@ -2052,9 +2052,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 mapping_id = 56 # Integer | The id of the user mapping to locate.
 request_body = [37] # Array<Integer> | Request body is a list of user IDs tested against the mapping conditions to verify that the mapping would be applied
@@ -2063,7 +2063,7 @@ begin
   
   result = api_instance.dry_run_mapping(authorization, mapping_id, request_body)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->dry_run_mapping: #{e}"
 end
 ```
@@ -2081,7 +2081,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => Array&lt;Object&gt;
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->dry_run_mapping_with_http_info: #{e}"
 end
 ```
@@ -2118,18 +2118,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
-enroll_factor_request = OpenapiClient::EnrollFactorRequest.new({factor_id: 37, display_name: 'display_name_example'}) # EnrollFactorRequest | 
+enroll_factor_request = OneLogin::EnrollFactorRequest.new({factor_id: 37, display_name: 'display_name_example'}) # EnrollFactorRequest | 
 
 begin
   
   result = api_instance.enroll_factor(authorization, user_id, enroll_factor_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->enroll_factor: #{e}"
 end
 ```
@@ -2147,7 +2147,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => Array&lt;Array&gt;
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->enroll_factor_with_http_info: #{e}"
 end
 ```
@@ -2184,17 +2184,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-generate_mfa_token_request = OpenapiClient::GenerateMfaTokenRequest.new # GenerateMfaTokenRequest | 
+generate_mfa_token_request = OneLogin::GenerateMfaTokenRequest.new # GenerateMfaTokenRequest | 
 
 begin
   
   result = api_instance.generate_mfa_token(authorization, generate_mfa_token_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->generate_mfa_token: #{e}"
 end
 ```
@@ -2212,7 +2212,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <GenerateMfaToken200Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->generate_mfa_token_with_http_info: #{e}"
 end
 ```
@@ -2248,16 +2248,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-generate_saml_assertion_request = OpenapiClient::GenerateSamlAssertionRequest.new({username_or_email: 'username_or_email_example', password: 'password_example', app_id: 'app_id_example', subdomain: 'subdomain_example'}) # GenerateSamlAssertionRequest | 
+generate_saml_assertion_request = OneLogin::GenerateSamlAssertionRequest.new({username_or_email: 'username_or_email_example', password: 'password_example', app_id: 'app_id_example', subdomain: 'subdomain_example'}) # GenerateSamlAssertionRequest | 
 
 begin
   
   api_instance.generate_saml_assertion(authorization, generate_saml_assertion_request)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->generate_saml_assertion: #{e}"
 end
 ```
@@ -2275,7 +2275,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->generate_saml_assertion_with_http_info: #{e}"
 end
 ```
@@ -2311,17 +2311,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-generate_token_request = OpenapiClient::GenerateTokenRequest.new # GenerateTokenRequest | 
+generate_token_request = OneLogin::GenerateTokenRequest.new # GenerateTokenRequest | 
 
 begin
   
   result = api_instance.generate_token(authorization, generate_token_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->generate_token: #{e}"
 end
 ```
@@ -2339,7 +2339,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <GenerateToken200Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->generate_token_with_http_info: #{e}"
 end
 ```
@@ -2375,9 +2375,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 
@@ -2385,7 +2385,7 @@ begin
   
   result = api_instance.get_app(authorization, app_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_app: #{e}"
 end
 ```
@@ -2403,7 +2403,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Schema>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_app_with_http_info: #{e}"
 end
 ```
@@ -2439,9 +2439,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 
@@ -2449,7 +2449,7 @@ begin
   
   result = api_instance.get_authorization_server(authorization, id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_authorization_server: #{e}"
 end
 ```
@@ -2467,7 +2467,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <GetAuthorizationServer200Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_authorization_server_with_http_info: #{e}"
 end
 ```
@@ -2503,9 +2503,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
 
@@ -2513,7 +2513,7 @@ begin
   
   result = api_instance.get_available_factors(authorization, user_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_available_factors: #{e}"
 end
 ```
@@ -2531,7 +2531,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<GetAvailableFactors200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_available_factors_with_http_info: #{e}"
 end
 ```
@@ -2567,9 +2567,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 
@@ -2577,7 +2577,7 @@ begin
   
   result = api_instance.get_client_apps(authorization, id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_client_apps: #{e}"
 end
 ```
@@ -2595,7 +2595,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<GetClientApps200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_client_apps_with_http_info: #{e}"
 end
 ```
@@ -2631,9 +2631,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
 
@@ -2641,7 +2641,7 @@ begin
   
   result = api_instance.get_enrolled_factors(authorization, user_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_enrolled_factors: #{e}"
 end
 ```
@@ -2659,7 +2659,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Device>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_enrolled_factors_with_http_info: #{e}"
 end
 ```
@@ -2695,9 +2695,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 envvar_id = 'envvar_id_example' # String | Set to the id of the Hook Environment Variable that you want to fetch.
 
@@ -2705,7 +2705,7 @@ begin
   
   result = api_instance.get_environment_variable(authorization, envvar_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_environment_variable: #{e}"
 end
 ```
@@ -2723,7 +2723,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Envvar>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_environment_variable_with_http_info: #{e}"
 end
 ```
@@ -2759,9 +2759,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 hook_id = 'hook_id_example' # String | Set to the id of the Hook that you want to return.
 
@@ -2769,7 +2769,7 @@ begin
   
   result = api_instance.get_hook(authorization, hook_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_hook: #{e}"
 end
 ```
@@ -2787,7 +2787,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Hook>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_hook_with_http_info: #{e}"
 end
 ```
@@ -2823,9 +2823,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 hook_id = 'hook_id_example' # String | Set to the id of the Hook that you want to return.
 opts = {
@@ -2840,7 +2840,7 @@ begin
   
   result = api_instance.get_logs(authorization, hook_id, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_logs: #{e}"
 end
 ```
@@ -2858,7 +2858,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Log>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_logs_with_http_info: #{e}"
 end
 ```
@@ -2899,9 +2899,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 mapping_id = 56 # Integer | The id of the user mapping to locate.
 
@@ -2909,7 +2909,7 @@ begin
   
   result = api_instance.get_mapping(authorization, mapping_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_mapping: #{e}"
 end
 ```
@@ -2927,7 +2927,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Mapping>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_mapping_with_http_info: #{e}"
 end
 ```
@@ -2963,16 +2963,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 
 begin
   
   result = api_instance.get_rate_limit(authorization)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_rate_limit: #{e}"
 end
 ```
@@ -2990,7 +2990,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <GetRateLimit200Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_rate_limit_with_http_info: #{e}"
 end
 ```
@@ -3025,16 +3025,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 risk_rule_id = 'risk_rule_id_example' # String | 
 
 begin
   
   api_instance.get_risk_rule(authorization, risk_rule_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_risk_rule: #{e}"
 end
 ```
@@ -3052,7 +3052,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_risk_rule_with_http_info: #{e}"
 end
 ```
@@ -3088,17 +3088,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-get_risk_score_request = OpenapiClient::GetRiskScoreRequest.new({ip: 'ip_example', user_agent: 'user_agent_example', user: OpenapiClient::RiskUser.new({id: 'id_example'})}) # GetRiskScoreRequest | 
+get_risk_score_request = OneLogin::GetRiskScoreRequest.new({ip: 'ip_example', user_agent: 'user_agent_example', user: OneLogin::RiskUser.new({id: 'id_example'})}) # GetRiskScoreRequest | 
 
 begin
   
   result = api_instance.get_risk_score(authorization, get_risk_score_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_risk_score: #{e}"
 end
 ```
@@ -3116,7 +3116,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <GetRiskScore200Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_risk_score_with_http_info: #{e}"
 end
 ```
@@ -3152,9 +3152,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
 
@@ -3162,7 +3162,7 @@ begin
   
   result = api_instance.get_role(authorization, role_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_role: #{e}"
 end
 ```
@@ -3180,7 +3180,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Role>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_role_with_http_info: #{e}"
 end
 ```
@@ -3216,9 +3216,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
 opts = {
@@ -3233,7 +3233,7 @@ begin
   
   result = api_instance.get_role_admins(authorization, role_id, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_role_admins: #{e}"
 end
 ```
@@ -3251,7 +3251,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Schema1>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_role_admins_with_http_info: #{e}"
 end
 ```
@@ -3292,9 +3292,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
 opts = {
@@ -3308,7 +3308,7 @@ begin
   
   result = api_instance.get_role_apps(authorization, role_id, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_role_apps: #{e}"
 end
 ```
@@ -3326,7 +3326,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Schema>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_role_apps_with_http_info: #{e}"
 end
 ```
@@ -3366,9 +3366,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
 opts = {
@@ -3383,7 +3383,7 @@ begin
   
   result = api_instance.get_role_users(authorization, role_id, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_role_users: #{e}"
 end
 ```
@@ -3401,7 +3401,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Schema1>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_role_users_with_http_info: #{e}"
 end
 ```
@@ -3442,9 +3442,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 rule_id = 56 # Integer | The id of the app rule to locate.
@@ -3453,7 +3453,7 @@ begin
   
   result = api_instance.get_rule(authorization, app_id, rule_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_rule: #{e}"
 end
 ```
@@ -3471,7 +3471,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Rule>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_rule_with_http_info: #{e}"
 end
 ```
@@ -3508,9 +3508,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
   before: 'before_example', # String | Optional ISO8601 formatted date string. Defaults to current date. Maximum date is 90 days ago.
@@ -3521,7 +3521,7 @@ begin
   
   result = api_instance.get_score_insights(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_score_insights: #{e}"
 end
 ```
@@ -3539,7 +3539,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <GetScoreInsights200Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_score_insights_with_http_info: #{e}"
 end
 ```
@@ -3576,9 +3576,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user that you want to return.
 
@@ -3586,7 +3586,7 @@ begin
   
   result = api_instance.get_user(authorization, user_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_user: #{e}"
 end
 ```
@@ -3604,7 +3604,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <User>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_user_with_http_info: #{e}"
 end
 ```
@@ -3640,9 +3640,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user that you want to return.
 opts = {
@@ -3653,7 +3653,7 @@ begin
   
   result = api_instance.get_user_apps(authorization, user_id, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_user_apps: #{e}"
 end
 ```
@@ -3671,7 +3671,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<GetUserApps200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->get_user_apps_with_http_info: #{e}"
 end
 ```
@@ -3708,9 +3708,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 
@@ -3718,7 +3718,7 @@ begin
   
   result = api_instance.list_access_token_claims(authorization, id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_access_token_claims: #{e}"
 end
 ```
@@ -3736,7 +3736,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListAccessTokenClaims200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_access_token_claims_with_http_info: #{e}"
 end
 ```
@@ -3772,9 +3772,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 action_value = 'action_value_example' # String | The value for the selected action.
@@ -3783,7 +3783,7 @@ begin
   
   result = api_instance.list_action_values(authorization, app_id, action_value)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_action_values: #{e}"
 end
 ```
@@ -3801,7 +3801,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListConditionValues200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_action_values_with_http_info: #{e}"
 end
 ```
@@ -3838,9 +3838,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 
@@ -3848,7 +3848,7 @@ begin
   
   result = api_instance.list_actions(authorization, app_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_actions: #{e}"
 end
 ```
@@ -3866,7 +3866,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListActions200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_actions_with_http_info: #{e}"
 end
 ```
@@ -3902,9 +3902,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 opts = {
@@ -3917,7 +3917,7 @@ begin
   
   result = api_instance.list_app_users(authorization, app_id, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_app_users: #{e}"
 end
 ```
@@ -3935,7 +3935,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListAppUsers200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_app_users_with_http_info: #{e}"
 end
 ```
@@ -3974,9 +3974,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
   limit: 56, # Integer | The total number of items returned per page. The maximum limit varies between endpoints, see the relevant endpoint documentation for the specific limit.
@@ -3984,14 +3984,14 @@ opts = {
   cursor: 'cursor_example', # String | Set to the value extracted from Before-Cursor or After-Cursor headers to return the previous or next page.
   name: 'name_example', # String | The name or partial name of the app to search for. When using a partial name you must append a wildcard `*`
   connector_id: 56, # Integer | Returns all apps based off a specific connector. See List Connectors for a complete list of Connector IDs.
-  auth_method: OpenapiClient::AuthMethod::N0 # AuthMethod | Returns all apps based of a given type.
+  auth_method: OneLogin::AuthMethod::N0 # AuthMethod | Returns all apps based of a given type.
 }
 
 begin
   
   result = api_instance.list_apps(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_apps: #{e}"
 end
 ```
@@ -4009,7 +4009,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Schema>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_apps_with_http_info: #{e}"
 end
 ```
@@ -4050,16 +4050,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 
 begin
   
   result = api_instance.list_authorization_servers(authorization)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_authorization_servers: #{e}"
 end
 ```
@@ -4077,7 +4077,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListAuthorizationServers200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_authorization_servers_with_http_info: #{e}"
 end
 ```
@@ -4112,9 +4112,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 condition_value = 'condition_value_example' # String | The value for the selected condition.
@@ -4123,7 +4123,7 @@ begin
   
   result = api_instance.list_condition_operators(authorization, app_id, condition_value)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_condition_operators: #{e}"
 end
 ```
@@ -4141,7 +4141,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListConditionOperators200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_condition_operators_with_http_info: #{e}"
 end
 ```
@@ -4178,9 +4178,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 condition_value = 'condition_value_example' # String | The value for the selected condition.
@@ -4189,7 +4189,7 @@ begin
   
   result = api_instance.list_condition_values(authorization, app_id, condition_value)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_condition_values: #{e}"
 end
 ```
@@ -4207,7 +4207,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListConditionValues200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_condition_values_with_http_info: #{e}"
 end
 ```
@@ -4244,9 +4244,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 
@@ -4254,7 +4254,7 @@ begin
   
   result = api_instance.list_conditions(authorization, app_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_conditions: #{e}"
 end
 ```
@@ -4272,7 +4272,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListConditions200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_conditions_with_http_info: #{e}"
 end
 ```
@@ -4308,23 +4308,23 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
   limit: 56, # Integer | The total number of items returned per page. The maximum limit varies between endpoints, see the relevant endpoint documentation for the specific limit.
   page: 56, # Integer | The page number of results to return.
   cursor: 'cursor_example', # String | Set to the value extracted from Before-Cursor or After-Cursor headers to return the previous or next page.
   name: 'name_example', # String | The name or partial name of the connector to search for. When using a partial name you must append a wildcard `*`
-  auth_method: OpenapiClient::AuthMethod::N0 # AuthMethod | Returns all connectors of a given type.
+  auth_method: OneLogin::AuthMethod::N0 # AuthMethod | Returns all connectors of a given type.
 }
 
 begin
   
   result = api_instance.list_connectors(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_connectors: #{e}"
 end
 ```
@@ -4342,7 +4342,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Connector>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_connectors_with_http_info: #{e}"
 end
 ```
@@ -4382,9 +4382,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
   limit: 56, # Integer | The total number of items returned per page. The maximum limit varies between endpoints, see the relevant endpoint documentation for the specific limit.
@@ -4396,7 +4396,7 @@ begin
   
   result = api_instance.list_environment_variables(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_environment_variables: #{e}"
 end
 ```
@@ -4414,7 +4414,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Envvar>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_environment_variables_with_http_info: #{e}"
 end
 ```
@@ -4452,9 +4452,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
   limit: 56, # Integer | The total number of items returned per page. The maximum limit varies between endpoints, see the relevant endpoint documentation for the specific limit.
@@ -4466,7 +4466,7 @@ begin
   
   result = api_instance.list_hooks(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_hooks: #{e}"
 end
 ```
@@ -4484,7 +4484,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Hook>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_hooks_with_http_info: #{e}"
 end
 ```
@@ -4522,9 +4522,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 action_value = 'action_value_example' # String | The value for the selected action.
 
@@ -4532,7 +4532,7 @@ begin
   
   result = api_instance.list_mapping_action_values(authorization, action_value)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_action_values: #{e}"
 end
 ```
@@ -4550,7 +4550,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListConditionValues200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_action_values_with_http_info: #{e}"
 end
 ```
@@ -4586,16 +4586,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 
 begin
   
   result = api_instance.list_mapping_actions(authorization)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_actions: #{e}"
 end
 ```
@@ -4613,7 +4613,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListActions200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_actions_with_http_info: #{e}"
 end
 ```
@@ -4648,9 +4648,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 condition_value = 'condition_value_example' # String | The value for the selected condition.
 
@@ -4658,7 +4658,7 @@ begin
   
   result = api_instance.list_mapping_condition_operators(authorization, condition_value)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_condition_operators: #{e}"
 end
 ```
@@ -4676,7 +4676,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListMappingConditionOperators200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_condition_operators_with_http_info: #{e}"
 end
 ```
@@ -4712,9 +4712,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 condition_value = 'condition_value_example' # String | The value for the selected condition.
 
@@ -4722,7 +4722,7 @@ begin
   
   result = api_instance.list_mapping_condition_values(authorization, condition_value)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_condition_values: #{e}"
 end
 ```
@@ -4740,7 +4740,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListConditionValues200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_condition_values_with_http_info: #{e}"
 end
 ```
@@ -4776,16 +4776,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 
 begin
   
   result = api_instance.list_mapping_conditions(authorization)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_conditions: #{e}"
 end
 ```
@@ -4803,7 +4803,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListMappingConditions200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mapping_conditions_with_http_info: #{e}"
 end
 ```
@@ -4838,9 +4838,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
   enabled: true, # Boolean | Defaults to true. When set to `false` will return all disabled mappings.
@@ -4854,7 +4854,7 @@ begin
   
   result = api_instance.list_mappings(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mappings: #{e}"
 end
 ```
@@ -4872,7 +4872,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Mapping>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_mappings_with_http_info: #{e}"
 end
 ```
@@ -4912,15 +4912,15 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 
 begin
   
   api_instance.list_risk_rules(authorization)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_risk_rules: #{e}"
 end
 ```
@@ -4938,7 +4938,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_risk_rules_with_http_info: #{e}"
 end
 ```
@@ -4973,9 +4973,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
   limit: 56, # Integer | The total number of items returned per page. The maximum limit varies between endpoints, see the relevant endpoint documentation for the specific limit.
@@ -4990,7 +4990,7 @@ begin
   
   result = api_instance.list_roles(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_roles: #{e}"
 end
 ```
@@ -5008,7 +5008,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Role>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_roles_with_http_info: #{e}"
 end
 ```
@@ -5049,9 +5049,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 opts = {
@@ -5066,7 +5066,7 @@ begin
   
   result = api_instance.list_rules(authorization, app_id, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_rules: #{e}"
 end
 ```
@@ -5084,7 +5084,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Rule>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_rules_with_http_info: #{e}"
 end
 ```
@@ -5125,9 +5125,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 
@@ -5135,7 +5135,7 @@ begin
   
   result = api_instance.list_scopes(authorization, id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_scopes: #{e}"
 end
 ```
@@ -5153,7 +5153,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<ListScopes200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_scopes_with_http_info: #{e}"
 end
 ```
@@ -5189,9 +5189,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
   limit: 56, # Integer | The total number of items returned per page. The maximum limit varies between endpoints, see the relevant endpoint documentation for the specific limit.
@@ -5220,7 +5220,7 @@ begin
   
   result = api_instance.list_users(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_users: #{e}"
 end
 ```
@@ -5238,7 +5238,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<User>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->list_users_with_http_info: #{e}"
 end
 ```
@@ -5293,9 +5293,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 client_app_id = 56 # Integer | 
@@ -5303,7 +5303,7 @@ client_app_id = 56 # Integer |
 begin
   
   api_instance.remove_client_app(authorization, id, client_app_id)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->remove_client_app: #{e}"
 end
 ```
@@ -5321,7 +5321,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->remove_client_app_with_http_info: #{e}"
 end
 ```
@@ -5358,17 +5358,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
-remove_role_users_request = OpenapiClient::RemoveRoleUsersRequest.new # RemoveRoleUsersRequest | 
+remove_role_users_request = OneLogin::RemoveRoleUsersRequest.new # RemoveRoleUsersRequest | 
 
 begin
   
   api_instance.remove_role_admins(authorization, role_id, remove_role_users_request)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->remove_role_admins: #{e}"
 end
 ```
@@ -5386,7 +5386,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->remove_role_admins_with_http_info: #{e}"
 end
 ```
@@ -5423,17 +5423,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
-remove_role_users_request = OpenapiClient::RemoveRoleUsersRequest.new # RemoveRoleUsersRequest | 
+remove_role_users_request = OneLogin::RemoveRoleUsersRequest.new # RemoveRoleUsersRequest | 
 
 begin
   
   api_instance.remove_role_users(authorization, role_id, remove_role_users_request)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->remove_role_users: #{e}"
 end
 ```
@@ -5451,7 +5451,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->remove_role_users_with_http_info: #{e}"
 end
 ```
@@ -5488,19 +5488,19 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 opts = {
-  revoke_token_request: OpenapiClient::RevokeTokenRequest.new # RevokeTokenRequest | 
+  revoke_token_request: OneLogin::RevokeTokenRequest.new # RevokeTokenRequest | 
 }
 
 begin
   
   result = api_instance.revoke_token(authorization, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->revoke_token: #{e}"
 end
 ```
@@ -5518,7 +5518,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <GenerateToken400Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->revoke_token_with_http_info: #{e}"
 end
 ```
@@ -5554,9 +5554,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
 request_body = [37] # Array<Integer> | 
@@ -5565,7 +5565,7 @@ begin
   
   result = api_instance.set_role_apps(authorization, role_id, request_body)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->set_role_apps: #{e}"
 end
 ```
@@ -5583,7 +5583,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<SetRoleApps200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->set_role_apps_with_http_info: #{e}"
 end
 ```
@@ -5620,16 +5620,16 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-track_event_request = OpenapiClient::TrackEventRequest.new({verb: 'verb_example', ip: 'ip_example', user_agent: 'user_agent_example', user: OpenapiClient::RiskUser.new({id: 'id_example'})}) # TrackEventRequest | 
+track_event_request = OneLogin::TrackEventRequest.new({verb: 'verb_example', ip: 'ip_example', user_agent: 'user_agent_example', user: OneLogin::RiskUser.new({id: 'id_example'})}) # TrackEventRequest | 
 
 begin
   
   api_instance.track_event(authorization, track_event_request)
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->track_event: #{e}"
 end
 ```
@@ -5647,7 +5647,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => nil
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->track_event_with_http_info: #{e}"
 end
 ```
@@ -5683,19 +5683,19 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 claim_id = 56 # Integer | 
-add_access_token_claim_request = OpenapiClient::AddAccessTokenClaimRequest.new # AddAccessTokenClaimRequest | 
+add_access_token_claim_request = OneLogin::AddAccessTokenClaimRequest.new # AddAccessTokenClaimRequest | 
 
 begin
   
   result = api_instance.update_access_token_claim(authorization, id, claim_id, add_access_token_claim_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_access_token_claim: #{e}"
 end
 ```
@@ -5713,7 +5713,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Id>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_access_token_claim_with_http_info: #{e}"
 end
 ```
@@ -5751,18 +5751,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
-schema = OpenapiClient::Schema.new # Schema | 
+schema = OneLogin::Schema.new # Schema | 
 
 begin
   
   result = api_instance.update_app(authorization, app_id, schema)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_app: #{e}"
 end
 ```
@@ -5780,7 +5780,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Schema>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_app_with_http_info: #{e}"
 end
 ```
@@ -5817,18 +5817,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
-create_authorization_server_request = OpenapiClient::CreateAuthorizationServerRequest.new # CreateAuthorizationServerRequest | 
+create_authorization_server_request = OneLogin::CreateAuthorizationServerRequest.new # CreateAuthorizationServerRequest | 
 
 begin
   
   result = api_instance.update_authorization_server(authorization, id, create_authorization_server_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_authorization_server: #{e}"
 end
 ```
@@ -5846,7 +5846,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Id>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_authorization_server_with_http_info: #{e}"
 end
 ```
@@ -5883,19 +5883,19 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 client_app_id = 56 # Integer | 
-update_client_app_request = OpenapiClient::UpdateClientAppRequest.new # UpdateClientAppRequest | 
+update_client_app_request = OneLogin::UpdateClientAppRequest.new # UpdateClientAppRequest | 
 
 begin
   
   result = api_instance.update_client_app(authorization, id, client_app_id, update_client_app_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_client_app: #{e}"
 end
 ```
@@ -5913,7 +5913,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <ClientApp>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_client_app_with_http_info: #{e}"
 end
 ```
@@ -5951,18 +5951,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 envvar_id = 'envvar_id_example' # String | Set to the id of the Hook Environment Variable that you want to fetch.
-update_environment_variable_request = OpenapiClient::UpdateEnvironmentVariableRequest.new({value: 'value_example'}) # UpdateEnvironmentVariableRequest | 
+update_environment_variable_request = OneLogin::UpdateEnvironmentVariableRequest.new({value: 'value_example'}) # UpdateEnvironmentVariableRequest | 
 
 begin
   
   result = api_instance.update_environment_variable(authorization, envvar_id, update_environment_variable_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_environment_variable: #{e}"
 end
 ```
@@ -5980,7 +5980,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Envvar>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_environment_variable_with_http_info: #{e}"
 end
 ```
@@ -6017,18 +6017,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 hook_id = 'hook_id_example' # String | Set to the id of the Hook that you want to return.
-hook = OpenapiClient::Hook.new({type: 'type_example', disabled: false, timeout: 37, env_vars: ['env_vars_example'], runtime: 'runtime_example', retries: 37, packages: 3.56, function: 'function_example'}) # Hook | 
+hook = OneLogin::Hook.new({type: 'type_example', disabled: false, timeout: 37, env_vars: ['env_vars_example'], runtime: 'runtime_example', retries: 37, packages: 3.56, function: 'function_example'}) # Hook | 
 
 begin
   
   result = api_instance.update_hook(authorization, hook_id, hook)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_hook: #{e}"
 end
 ```
@@ -6046,7 +6046,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Hook>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_hook_with_http_info: #{e}"
 end
 ```
@@ -6083,18 +6083,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 mapping_id = 56 # Integer | The id of the user mapping to locate.
-mapping = OpenapiClient::Mapping.new({name: 'name_example', enabled: false, match: 'all', position: 37, actions: [OpenapiClient::Action.new]}) # Mapping | 
+mapping = OneLogin::Mapping.new({name: 'name_example', enabled: false, match: 'all', position: 37, actions: [OneLogin::Action.new]}) # Mapping | 
 
 begin
   
   result = api_instance.update_mapping(authorization, mapping_id, mapping)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_mapping: #{e}"
 end
 ```
@@ -6112,7 +6112,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => Integer
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_mapping_with_http_info: #{e}"
 end
 ```
@@ -6149,18 +6149,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 risk_rule_id = 'risk_rule_id_example' # String | 
-risk_rule = OpenapiClient::RiskRule.new # RiskRule | 
+risk_rule = OneLogin::RiskRule.new # RiskRule | 
 
 begin
   
   result = api_instance.update_risk_rule(authorization, risk_rule_id, risk_rule)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_risk_rule: #{e}"
 end
 ```
@@ -6178,7 +6178,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <RiskRule>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_risk_rule_with_http_info: #{e}"
 end
 ```
@@ -6215,18 +6215,18 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 role_id = 56 # Integer | Set to the id of the role you want to return.
-role = OpenapiClient::Role.new({name: 'name_example'}) # Role | 
+role = OneLogin::Role.new({name: 'name_example'}) # Role | 
 
 begin
   
   result = api_instance.update_role(authorization, role_id, role)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_role: #{e}"
 end
 ```
@@ -6244,7 +6244,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <UpdateRole200Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_role_with_http_info: #{e}"
 end
 ```
@@ -6281,19 +6281,19 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 app_id = 56 # Integer | 
 rule_id = 56 # Integer | The id of the app rule to locate.
-rule = OpenapiClient::Rule.new # Rule | 
+rule = OneLogin::Rule.new # Rule | 
 
 begin
   
   result = api_instance.update_rule(authorization, app_id, rule_id, rule)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_rule: #{e}"
 end
 ```
@@ -6311,7 +6311,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <RuleId>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_rule_with_http_info: #{e}"
 end
 ```
@@ -6349,19 +6349,19 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 id = 56 # Integer | 
 scope_id = 56 # Integer | 
-add_scope_request = OpenapiClient::AddScopeRequest.new # AddScopeRequest | 
+add_scope_request = OneLogin::AddScopeRequest.new # AddScopeRequest | 
 
 begin
   
   result = api_instance.update_scope(authorization, id, scope_id, add_scope_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_scope: #{e}"
 end
 ```
@@ -6379,7 +6379,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Id>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_scope_with_http_info: #{e}"
 end
 ```
@@ -6417,12 +6417,12 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user that you want to return.
-user = OpenapiClient::User.new # User | 
+user = OneLogin::User.new # User | 
 opts = {
   mappings: 'async', # String | Controls how mappings will be applied to the user on creation. Defaults to async.
   validate_policy: true # Boolean | Will passwords validate against the User Policy? Defaults to true.
@@ -6432,7 +6432,7 @@ begin
   
   result = api_instance.update_user(authorization, user_id, user, opts)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_user: #{e}"
 end
 ```
@@ -6450,7 +6450,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <User>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->update_user_with_http_info: #{e}"
 end
 ```
@@ -6489,19 +6489,19 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
 registration_id = 56 # Integer | Set to the uuid of the registration. This was included in the response as part of the initial request in Enroll Factor.
-verify_enrollment_request = OpenapiClient::VerifyEnrollmentRequest.new # VerifyEnrollmentRequest | 
+verify_enrollment_request = OneLogin::VerifyEnrollmentRequest.new # VerifyEnrollmentRequest | 
 
 begin
   
   result = api_instance.verify_enrollment(authorization, user_id, registration_id, verify_enrollment_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_enrollment: #{e}"
 end
 ```
@@ -6519,7 +6519,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Registration>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_enrollment_with_http_info: #{e}"
 end
 ```
@@ -6557,9 +6557,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
 registration_id = 56 # Integer | Set to the uuid of the registration. This was included in the response as part of the initial request in Enroll Factor.
@@ -6568,7 +6568,7 @@ begin
   
   result = api_instance.verify_enrollment_voice_protect(authorization, user_id, registration_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_enrollment_voice_protect: #{e}"
 end
 ```
@@ -6586,7 +6586,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<Registration>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_enrollment_voice_protect_with_http_info: #{e}"
 end
 ```
@@ -6623,19 +6623,19 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
 verification_id = 56 # Integer | The verification_id is returned on activation of the factor or you can get the device_id using the Activate Factor API call.
-verify_factor_request = OpenapiClient::VerifyFactorRequest.new # VerifyFactorRequest | 
+verify_factor_request = OneLogin::VerifyFactorRequest.new # VerifyFactorRequest | 
 
 begin
   
   result = api_instance.verify_factor(authorization, user_id, verification_id, verify_factor_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_factor: #{e}"
 end
 ```
@@ -6653,7 +6653,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Status2>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_factor_with_http_info: #{e}"
 end
 ```
@@ -6691,17 +6691,17 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
-verify_factor_saml_request = OpenapiClient::VerifyFactorSamlRequest.new({app_id: 'app_id_example', device_id: 'device_id_example', state_token: 'state_token_example'}) # VerifyFactorSamlRequest | 
+verify_factor_saml_request = OneLogin::VerifyFactorSamlRequest.new({app_id: 'app_id_example', device_id: 'device_id_example', state_token: 'state_token_example'}) # VerifyFactorSamlRequest | 
 
 begin
   
   result = api_instance.verify_factor_saml(authorization, verify_factor_saml_request)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_factor_saml: #{e}"
 end
 ```
@@ -6719,7 +6719,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <VerifyFactorSaml200Response>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_factor_saml_with_http_info: #{e}"
 end
 ```
@@ -6755,9 +6755,9 @@ No authorization required
 
 ```ruby
 require 'time'
-require 'openapi_client'
+require 'onelogin'
 
-api_instance = OpenapiClient::DefaultApi.new
+api_instance = OneLogin::DefaultApi.new
 authorization = 'authorization_example' # String | 
 user_id = 56 # Integer | Set to the id of the user.
 verification_id = 56 # Integer | The verification_id is returned on activation of the factor or you can get the device_id using the Activate Factor API call.
@@ -6766,7 +6766,7 @@ begin
   
   result = api_instance.verify_factor_voice(authorization, user_id, verification_id)
   p result
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_factor_voice: #{e}"
 end
 ```
@@ -6784,7 +6784,7 @@ begin
   p status_code # => 2xx
   p headers # => { ... }
   p data # => <Array<VerifyFactorVoice200ResponseInner>>
-rescue OpenapiClient::ApiError => e
+rescue OneLogin::ApiError => e
   puts "Error when calling DefaultApi->verify_factor_voice_with_http_info: #{e}"
 end
 ```
