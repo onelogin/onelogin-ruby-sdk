@@ -2628,7 +2628,13 @@ module OneLogin
       end
 
 
-      #get smart mfa
+      # Validate a users risk and send an MFA token via Email or SMS when the risk is above an
+      #
+      # @param user_identifier, phone,email and context
+      #
+      # @return an MFA token via Email or SMS
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-mfa/validate-user to validate a users risk and send an MFA token via Email or SMS documentation}
       def get_smart_mfa(user_identifier,phone,email,context)
         clean_error
         prepare_token
@@ -2664,7 +2670,13 @@ module OneLogin
         nil
       end
 
-       #get smart mfa
+      # Gets Smart MFA Verify
+      #
+      # @param state_token and otp_token
+      #
+      # @return verify a MFA token
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-mfa/verify-token to verify a MFA token documentation}
        def get_smart_mfa_veriffy(state_token,otp_token)
         clean_error
         prepare_token
