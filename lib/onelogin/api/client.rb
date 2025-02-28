@@ -331,7 +331,7 @@ module OneLogin
       #
       # @return [Array] list of User objects
       #
-      # @see {https://developers.onelogin.com/api-docs/1/users/get-users Get Users documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/users/list-users Get Users documentation}
       def get_users(params = {})
         clean_error
         prepare_token
@@ -344,7 +344,11 @@ module OneLogin
             params: params
           }
 
-          return Cursor.new(self, url_for(GET_USERS_URL), options)
+          return self.class.get(
+            url_for(GET_USERS_URL),
+            headers: authorized_headers,
+            query: params
+          )
 
         rescue Exception => e
           @error = '500'
@@ -360,7 +364,7 @@ module OneLogin
       #
       # @return [User] the user identified by the id
       #
-      # @see {https://developers.onelogin.com/api-docs/1/users/get-user-by-id Get User by ID documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/users/get-user Get User by ID documentation}
       def get_user(user_id)
         clean_error
         prepare_token
@@ -381,10 +385,7 @@ module OneLogin
           )
 
           if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              return OneLogin::Api::Models::User.new(json_data['data'][0])
-            end
+              return response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -403,7 +404,7 @@ module OneLogin
       #
       # @return [Array] the apps of the user identified by the id
       #
-      # @see {https://developers.onelogin.com/api-docs/1/users/get-apps-for-user Get Apps for a User documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/users/get-user-apps Get Apps for a User documentation}
       def get_user_apps(user_id)
         clean_error
         prepare_token
@@ -422,7 +423,12 @@ module OneLogin
             max_results: @max_results
           }
 
-          return Cursor.new(self, url_for(GET_APPS_FOR_USER_URL, user_id), options)
+          #return Cursor.new(self, url_for(GET_APPS_FOR_USER_URL, user_id), options)
+          return self.class.get(
+            url_for(GET_APPS_FOR_USER_URL,user_id),
+            headers: authorized_headers,
+            max_results: @max_results
+          )
 
         rescue Exception => e
           @error = '500'
@@ -495,10 +501,7 @@ module OneLogin
 
           custom_attributes = []
           if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              custom_attributes = json_data['data'][0]
-            end
+            custom_attributes = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -513,6 +516,166 @@ module OneLogin
         nil
       end
 
+      # create Custom Attribute
+      #
+      # @param custom_attribute_params Custom Attribute data (name, shortname)
+      #
+      # @return [Custom Attribute] the created Custom Attribute
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/users/create-custom-attribute create custom attribute documentation}
+      def create_custom_attribute(custom_attribute_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_CUSTOM_ATTRIBUTE)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: custom_attribute_params.to_json
+          )
+          p 'custom attribute'
+          p response
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Updates an custom attribute
+      #
+      # @param custom_attribute_id [Integer] Id
+      # @param custom_attribute_params Custom Attribute data (name, shortname)
+      #
+      # @return updated custom attribute
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/users/update-custom-attribute update custom attribute documentation}
+      def update_custom_attribute(custom_attribute_id, custom_attribute_params)
+        clean_error
+        prepare_token
+
+        begin
+          if custom_attribute_id.nil? || custom_attribute_id.to_s.empty?
+            @error = '400'
+            @error_description = "custom_attribute_id is required"
+            @error_attribute = "custom_attribute_id"
+            return
+          end
+
+          url = url_for(UPDATE_CUSTOM_ATTRIBUTE, custom_attribute_id)
+          
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: custom_attribute_params.to_json
+          )
+          p response
+          if response.code == 200
+           return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # delete an custom attribute
+      #
+      # @param custom_attribute_id
+      #
+      # @return true or false for deleted custom attribute
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/users/delete-custom-attribute delete custom attribute documentation}
+      def delete_custom_attribute(custom_attribute_id)
+        clean_error
+        prepare_token
+
+        begin
+          if custom_attribute_id.nil? || custom_attribute_id.to_s.empty?
+            @error = '400'
+            @error_description = "custom_attribute_id is required"
+            @error_attribute = "custom_attribute_id"
+            return
+          end
+
+          url = url_for(DELETE_CUSTOM_ATTRIBUTE, custom_attribute_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      # Gets Custom Attribute by ID.
+      #
+      # @param custom_attribute_id [Integer] Id of the user
+      #
+      # @return [custom_attribute] the custom_attribute identified by the id
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/users/get-custom-attribute Get custom_attribute by ID documentation}
+     def get_custom_attribute(custom_attribute_id)
+      clean_error
+      prepare_token
+
+      begin
+        if custom_attribute_id.nil? || custom_attribute_id.to_s.empty?
+          @error = '400'
+          @error_description = "custom_attribute_id is required"
+          @error_attribute = "custom_attribute_id"
+          return
+        end
+
+        url = url_for(GET_CUSTOM_ATTRIBUTE, custom_attribute_id)
+
+        response = self.class.get(
+          url,
+          headers: authorized_headers
+        )
+
+        if response.code == 200
+            return response
+        else
+          @error = response.code.to_s
+          @error_description = extract_error_message_from_response(response)
+        end
+      rescue Exception => e
+        @error = '500'
+        @error_description = e.message
+      end
+
+      nil
+    end
+
       # Creates an user
       #
       # @param user_params [Hash] User data (firstname, lastname, email, username, company,
@@ -524,7 +687,7 @@ module OneLogin
       #
       # @return [User] the created user
       #
-      # @see {https://developers.onelogin.com/api-docs/1/users/create-user Create User documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/users/create-user Create User documentation}
       def create_user(user_params)
         clean_error
         prepare_token
@@ -537,12 +700,9 @@ module OneLogin
             headers: authorized_headers,
             body: user_params.to_json
           )
-
+          p response
           if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              return OneLogin::Api::Models::User.new(json_data['data'][0])
-            end
+              return response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -568,7 +728,7 @@ module OneLogin
       #
       # @return [User] the modified user
       #
-      # @see {https://developers.onelogin.com/api-docs/1/users/update-user Update User by ID documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/users/update-user Update User by ID documentation}
       def update_user(user_id, user_params)
         clean_error
         prepare_token
@@ -590,10 +750,7 @@ module OneLogin
           )
 
           if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              return OneLogin::Api::Models::User.new(json_data['data'][0])
-            end
+           return response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -998,7 +1155,7 @@ module OneLogin
       #
       # @return [Boolean] if the action succeed
       #
-      # @see {https://developers.onelogin.com/api-docs/1/users/delete-user Delete User by ID documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/users/delete-user Delete User by ID documentation}
       def delete_user(user_id)
         clean_error
         prepare_token
@@ -1018,8 +1175,8 @@ module OneLogin
             headers: authorized_headers
           )
 
-          if response.code == 200
-            return handle_operation_response(response)
+          if response.code == 204
+            return response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -1043,7 +1200,7 @@ module OneLogin
       #
       # @return [MFAToken] if the action succeed
       #
-      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/generate-mfa-token Generate MFA Token documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/generate-mfa-token Generate MFA Token documentation}
       def generate_mfa_token(user_id, expires_in=259200, reusable=false)
         clean_error
         prepare_token
@@ -1070,10 +1227,7 @@ module OneLogin
           )
 
           if response.code == 201
-            json_data = JSON.parse(response.body)
-            if !json_data.empty?
-              return OneLogin::Api::Models::MFAToken.new(json_data)
-            end
+            return response
           else
             @error = extract_status_code_from_response(response)
             @error_description = extract_error_message_from_response(response)
@@ -1204,7 +1358,7 @@ module OneLogin
       #
       # @return [Array] list of Connector objects
       #
-      # @see {https://developers.onelogin.com/api-docs/1/connectors/list-connectors List Connectors documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/connectors/list-connectors List Connectors documentation}
       def get_connectors(params = {})
         clean_error
         prepare_token
@@ -1279,7 +1433,7 @@ module OneLogin
       #
       # @return [Array] list of OneLoginAppBasic objects
       #
-      # @see {https://developers.onelogin.com/api-docs/1/apps/list-apps Get Apps documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/apps/list-apps Get Apps documentation}
       def get_apps(params = {})
         clean_error
         prepare_token
@@ -1322,7 +1476,7 @@ module OneLogin
       #
       # @return [OneLoginApp] the created app
       #
-      # @see {https://developers.onelogin.com/api-docs/1/apps/create-app Create App documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/apps/create-app Create App documentation}
       def create_app(app_params)
         clean_error
         prepare_token
@@ -1363,9 +1517,11 @@ module OneLogin
 
       # Gets a OneLoginApp resource.
       #
+      # @param app_id [Integer] Id of the app
+      #
       # @return [OneLoginApp] OneLoginApp object
       #
-      # @see {https://developers.onelogin.com/api-docs/1/apps/get-app Get App documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/apps/get-app Get App documentation}
       def get_app(app_id)
         clean_error
         prepare_token
@@ -1402,6 +1558,47 @@ module OneLogin
         nil
       end
 
+
+      # Gets a OneLoginApp users.
+      #
+      # @param app_id [Integer] Id of the app
+      #
+      # @return [OneLoginApp] OneLoginApp object
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/apps/list-users Get App documentation}
+      def get_app_users(app_id)
+        clean_error
+        prepare_token
+
+        begin
+          if app_id.nil? || app_id.to_s.empty?
+            @error = '400'
+            @error_description = "app_id is required"
+            @error_attribute = "app_id"
+            return
+          end
+
+          url = url_for(LIST_APPS_USERS_URL, app_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       # Updates an app
       #
       # @param app_id [Integer] Id of the app
@@ -1411,7 +1608,7 @@ module OneLogin
       #
       # @return [User] the modified user
       #
-      # @see {https://developers.onelogin.com/api-docs/1/apps/update-app Update App by ID documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/apps/update-app Update App by ID documentation}
       def update_app(app_id, app_params)
         clean_error
         prepare_token
@@ -1456,7 +1653,7 @@ module OneLogin
       #
       # @return [Boolean] if the action succeed
       #
-      # @see {https://developers.onelogin.com/api-docs/1/apps/delete-app Delete App by ID documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/apps/delete-app Delete App by ID documentation}
       def delete_app(app_id)
         clean_error
         prepare_token
@@ -1494,11 +1691,12 @@ module OneLogin
       # Deletes an App Parameter
       #
       # @param app_id [Integer] Id of the app
+      #
       # @param parameter_id [Integer] Id of the parameter to be removed
       #
       # @return [Boolean] if the action succeed
       #
-      # @see {https://developers.onelogin.com/api-docs/1/apps/delete-parameter Delete an App Parameter documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/apps/delete-parameter Delete an App Parameter documentation}
       def delete_parameter_from_app(app_id, parameter_id)
         clean_error
         prepare_token
@@ -1550,20 +1748,18 @@ module OneLogin
       #
       # @return [Array] list of Role objects
       #
-      # @see {https://developers.onelogin.com/api-docs/1/roles/get-roles Get Roles documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/roles/list-roles Get Roles documentation}
       def get_roles(params = {})
         clean_error
         prepare_token
 
         begin
-          options = {
-            model: OneLogin::Api::Models::Role,
-            headers: authorized_headers,
-            max_results: @max_results,
-            params: params
-          }
 
-          return Cursor.new(self, url_for(GET_ROLES_URL), options)
+          return self.class.get(
+            url_for(GET_ROLES_URL),
+            headers: authorized_headers,
+            query: params
+          )
 
         rescue Exception => e
           @error = '500'
@@ -1579,7 +1775,7 @@ module OneLogin
       #
       # @return [Role] the role identified by the id
       #
-      # @see {https://developers.onelogin.com/api-docs/1/roles/get-role-by-id Get Role by ID documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/roles/get-role Get Role by ID documentation}
       def get_role(role_id)
         clean_error
         prepare_token
@@ -1600,10 +1796,7 @@ module OneLogin
           )
 
           if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              return OneLogin::Api::Models::Role.new(json_data['data'][0])
-            end
+            return response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -1614,6 +1807,439 @@ module OneLogin
         end
 
         nil
+      end
+
+
+
+      # Create role
+      #
+      # params role_params [Hash] App data (name, apps,  users, admins)
+      #
+      # @return [Role]
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/create-role  Create Role documentation}
+      def create_role(role_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_ROLE_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: role_params.to_json
+          )
+          puts response
+          if response.code == 200
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      # Updates role
+      #
+      # params role_id [Integer]
+      # params role_params [Hash] App data (name, apps,  users, admins)
+      #
+      # @return [Role]
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/update-role  update Role documentation}
+      def update_role(role_id, role_params)
+        clean_error
+        prepare_token
+
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "custom_attribute_id is required"
+            @error_attribute = "custom_attribute_id"
+            return
+          end
+
+          url = url_for(UPDATE_ROLES_URL, role_id)
+          
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: role_params.to_json
+          )
+          p response
+          if response.code == 200
+           return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # delete role
+      #
+      # params role_id [Integer]
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/delete-role  delete Role documentation}
+      def delete_role(role_id)
+        clean_error
+        prepare_token
+
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "custom_attribute_id is required"
+            @error_attribute = "custom_attribute_id"
+            return
+          end
+
+          url = url_for(DELETE_ROLES_URL, role_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      # get role apps
+      #
+      # params role_id [Integer]
+      #
+      # @return role apps
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/get-role-apps  Get Role Apps documentation}
+      def get_role_apps(role_id)
+        clean_error
+        prepare_token
+
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "role_id is required"
+            @error_attribute = "role_id"
+            return
+          end
+
+          return self.class.get(
+            url_for(GET_APPS_ROLE_URL,role_id),
+            headers: authorized_headers,
+            max_results: @max_results
+          )
+
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # get role users
+      #
+      # params role_id [Integer], name
+      #
+      # @return role apps
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/get-role-users  Get Role Users documentation}
+      def get_role_for_users(role_id,name)
+        clean_error
+        prepare_token
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "role_id is required"
+            @error_attribute = "role_id"
+            return
+          end
+
+          url=url_for(GET_ROLE_FOR_USERS_URL,role_id)
+          url= url+"?name=#{name}"
+          return self.class.get(url,
+            headers: authorized_headers,
+            max_results: @max_results
+          )
+
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # get role for admins
+      #
+      # params role_id [Integer], name
+      #
+      # @return role apps
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/get-role-admins  Get Role Admins documentation}
+      def get_role_for_admins(role_id,name)
+        clean_error
+        prepare_token
+
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "role_id is required"
+            @error_attribute = "role_id"
+            return
+          end
+
+          url=url_for(GET_ROLE_FOR_ADMINS_URL,role_id)
+
+          url= url+"?name=#{name}"
+
+          return self.class.get(url,
+            headers: authorized_headers,
+            max_results: @max_results
+          )
+
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Set role App
+      #
+      # params role_id [Integer], apps
+      #
+      # @return this will assign applications to a role
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/set-role-apps  set Apps for a Role documentation}
+      def set_role_apps(role_id, apps)
+        clean_error
+        prepare_token
+
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "role_id is required"
+            @error_attribute = "role_id"
+            return
+          end
+
+          url = url_for(SET_APPS_ROLE_URL, role_id)
+          
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: apps.to_json
+          )
+          p response
+          if response.code == 200
+           return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Set role for  users
+      #
+      # params role_id [Integer], users array
+      #
+      # @return this will assign users to a role
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/add-role-users  set users for a Role  documentation}
+      def add_role_for_users(role_id, user_array)
+        clean_error
+        prepare_token
+
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "role_id is required"
+            @error_attribute = "role_id"
+            return
+          end
+
+          url = url_for(ADD_ROLE_FOR_USERS_URL, role_id)
+          p url
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: user_array.to_json
+          )
+
+          p response
+
+          if response.code == 200
+           return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Set role for  admins
+      #
+      # params role_id [Integer], admins array
+      #
+      # @return this will assign admins to a role
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/add-role-admins  set admins for a Role  documentation}
+      def add_role_for_admins(role_id, admin_array)
+        clean_error
+        prepare_token
+        p role_id
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "custom_attribute_id is required"
+            @error_attribute = "custom_attribute_id"
+            return
+          end
+          p admin_array
+          url = url_for(ADD_ROLE_FOR_ADMINS_URL, role_id)
+          p url
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: admin_array.to_json
+          )
+          p response
+          if response.code == 200
+           return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Remove role for users
+      #
+      # params role_id [Integer], users array
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/remove-role-users remove users for a Role  documentation}
+     
+      def remove_role_from_users(role_id, user_array)
+        clean_error
+        prepare_token
+
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "role_id is required"
+            @error_attribute = "role_id"
+            return
+          end
+
+          url = url_for(REMOVE_ROLE_FOR_USERS_URL, role_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers,
+            body: admin_array.to_json
+          )
+          if response.code == 204
+            return true
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+
+      #Remove role for admin
+      #
+      # params role_id [Integer], admin array
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/roles/remove-role-admins remove admins for a Role  documentation}
+       def remove_role_from_admins(role_id, admin_array)
+        clean_error
+        prepare_token
+
+        begin
+          if role_id.nil? || role_id.to_s.empty?
+            @error = '400'
+            @error_description = "role_id is required"
+            @error_attribute = "role_id"
+            return
+          end
+          url = url_for(REMOVE_ROLE_FOR_ADMINS_URL, role_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers,
+            body: admin_array.to_json
+          )
+
+          if response.code == 204
+            return true
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
       end
 
       #################
@@ -1847,7 +2473,7 @@ module OneLogin
       #
       # @return [SAMLEndpointResponse] object with an encoded SAMLResponse
       #
-      # @see {https://developers.onelogin.com/api-docs/1/saml-assertions/generate-saml-assertion Generate SAML Assertion documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/saml-assertions/generate-saml-assertion Generate SAML Assertion documentation}
       def get_saml_assertion(username_or_email, password, app_id, subdomain, ip_address=nil)
         clean_error
         prepare_token
@@ -1873,7 +2499,8 @@ module OneLogin
           )
 
           if response.code == 200
-            return handle_saml_endpoint_response(response)
+            return response
+            #return handle_saml_endpoint_response(response)
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -1897,7 +2524,7 @@ module OneLogin
       #
       # @return [SAMLEndpointResponse] object with an encoded SAMLResponse
       #
-      # @see {https://developers.onelogin.com/api-docs/1/saml-assertions/verify-factor Verify Factor documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/saml-assertions/verify-factor Verify Factor documentation}
       def get_saml_assertion_verifying(app_id, device_id, state_token, otp_token=nil, url_endpoint=nil, do_not_notify=false)
         clean_error
         prepare_token
@@ -1933,7 +2560,7 @@ module OneLogin
           unless otp_token.nil? || otp_token.empty?
             data['otp_token'] = otp_token
           end
-
+          
           response = self.class.post(
             url,
             headers: authorized_headers,
@@ -1941,7 +2568,8 @@ module OneLogin
           )
 
           if response.code == 200
-            return handle_saml_endpoint_response(response)
+            return response
+            #handle_saml_endpoint_response(response)
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -1955,7 +2583,7 @@ module OneLogin
       end
 
       #############################
-      # Multi-factor Auth Methods #
+      # Multi-factor Auth Methods # adubey
       #############################
 
       # Returns a list of authentication factors that are available for user enrollment via API.
@@ -1964,7 +2592,7 @@ module OneLogin
       #
       # @return [Array] AuthFactor list
       #
-      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/available-factors Get Available Authentication Factors documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/available-factors Get Available Authentication Factors documentation}
       def get_factors(user_id)
         clean_error
         prepare_token
@@ -1984,19 +2612,13 @@ module OneLogin
             :headers => authorized_headers
           )
 
-          factors = []
           if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data and json_data['data'] and json_data['data']['auth_factors']
-              json_data['data']['auth_factors'].each do |factor_data|
-                factors << OneLogin::Api::Models::AuthFactor.new(factor_data)
-              end
-            end
+            response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
-          return factors
+          return response
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -2004,6 +2626,78 @@ module OneLogin
 
         nil
       end
+
+
+      #get smart mfa
+      def get_smart_mfa(user_identifier,phone,email,context)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GET_SMART_MFA_URL)
+
+          data = {
+            'user_identifier'=> user_identifier,
+            'phone'=> phone,
+            'email'=> email,
+            'context'=> context,
+          }
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: data.to_json
+          )
+
+          if response.code == 200
+            return response
+            #return handle_saml_endpoint_response(response)
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+       #get smart mfa
+       def get_smart_mfa_veriffy(state_token,otp_token)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GET_SMART_MFA_VERIFY)
+
+          data = {
+            'state_token'=> state_token,
+            'otp_token'=> otp_token
+          }
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: data.to_json
+          )
+
+          if response.code == 200
+            return response
+            #return handle_saml_endpoint_response(response)
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+  
 
       # Enroll a user with a given authentication factor.
       #
@@ -2014,7 +2708,7 @@ module OneLogin
       #
       # @return [OTPDevice] MFA device
       #
-      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/enroll-factor Enroll an Authentication Factor documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/enroll-factor Enroll an Authentication Factor documentation}
       def enroll_factor(user_id, factor_id, display_name, number)
         clean_error
         prepare_token
@@ -2048,11 +2742,8 @@ module OneLogin
             body: data.to_json
           )
 
-          if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data and json_data['data']
-              return OneLogin::Api::Models::OTPDevice.new(json_data['data'][0])
-            end
+          if response.success?
+           return response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -2071,7 +2762,7 @@ module OneLogin
       #
       # @return [Array] OTPDevice List
       #
-      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/enrolled-factors Get Enrolled Authentication Factors documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/enrolled-factors Get Enrolled Authentication Factors documentation}
       def get_enrolled_factors(user_id)
         clean_error
         prepare_token
@@ -2091,19 +2782,54 @@ module OneLogin
             :headers => authorized_headers
           )
 
-          otp_devices = []
           if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data and json_data['data'] and json_data['data']['otp_devices']
-              json_data['data']['otp_devices'].each do |otp_device_data|
-                otp_devices << OneLogin::Api::Models::OTPDevice.new(otp_device_data)
-              end
-            end
+            response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
-          return otp_devices
+          return response
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # Return a list of authentication factors registered to a particular user for multifactor authentication (MFA)
+      #
+      # @param user_id [Integer] The id of the user.
+      #
+      # @return [Array] OTPDevice List
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/enroll-factor-verify-poll Get verify enrollment for OneLogin Voice documentation}
+      def verify_enrollement_voice_factor(user_id,registration_id)
+        clean_error
+        prepare_token
+
+        begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+
+          url = url_for(VERIFY_ENROLLMENT_VOICE_FACTOR_URL, user_id, registration_id)
+
+          response = self.class.get(
+            url,
+            :headers => authorized_headers
+          )
+
+          if response.code == 200
+            response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+          return response
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -2120,7 +2846,7 @@ module OneLogin
       #
       # @return [FactorEnrollmentResponse] Info with User Id, Device Id, and OTP Device
       #
-      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/activate-factor Activate an Authentication Factor documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/activate-factor Activate an Authentication Factor documentation}
       def activate_factor(user_id, device_id)
         clean_error
         prepare_token
@@ -2132,7 +2858,7 @@ module OneLogin
             @error_attribute = "user_id"
             return
           end
-
+          p device_id
           if device_id.nil? || device_id.to_s.empty?
             @error = '400'
             @error_description = "device_id is required"
@@ -2140,18 +2866,16 @@ module OneLogin
             return
           end
 
-          url = url_for(ACTIVATE_FACTOR_URL, user_id, device_id)
+          url = url_for(ACTIVATE_FACTOR_URL, user_id)
 
           response = self.class.post(
             url,
-            headers: authorized_headers
+            headers: authorized_headers,
+            body: device_id.to_json
           )
 
           if response.code == 200
-            json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
-              return OneLogin::Api::Models::FactorEnrollmentResponse.new(json_data['data'][0])
-            end
+            return response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
@@ -2241,7 +2965,7 @@ module OneLogin
       #
       # @return [Boolean] The result of the action
       #
-      # @see {https://developers.onelogin.com/api-docs/1/multi-factor-authentication/remove-factor Remove a Factor documentation}
+      # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/remove-factor Remove a Factor documentation}
       def remove_factor(user_id, device_id)
         clean_error
         prepare_token
@@ -2261,14 +2985,14 @@ module OneLogin
             @error_attribute = "device_id"
             return
           end
-
+p device_id
           url = url_for(REMOVE_FACTOR_URL, user_id, device_id)
-
+p url
           response = self.class.delete(
             url,
             :headers => authorized_headers
           )
-
+p response
           if response.code == 200
             return true
           else
@@ -2908,6 +3632,75 @@ module OneLogin
         false
       end
 
+      #run reports
+      #
+      # @param report_id [Integer] Id of the Report
+      #
+      # @return report results in JSON format
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/reports/run-report run a given report on the spot and return its results in JSON format documentation}
+      def run_report(report_id)
+        clean_error
+        prepare_token
+        begin
+          if report_id.nil? || report_id.to_s.empty?
+            @error = '400'
+            @error_description = "report_id is required"
+            @error_attribute = "report_id"
+            return
+          end
+
+          url=url_for(RUN_REPORTS_URL,report_id)
+
+          url= url+"?id=#{report_id}"
+          return self.class.post(url,
+            headers: authorized_headers,
+            max_results: @max_results
+          )
+
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #run reports in background
+      #
+      # @param report_id [Integer] Id of the Report
+      #
+      # @return report results in CSV format to a specified email address
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/reports/run-report run a given report in the background  documentation}
+      def run_report_background(report_id)
+        clean_error
+        prepare_token
+        begin
+          if report_id.nil? || report_id.to_s.empty?
+            @error = '400'
+            @error_description = "report_id is required"
+            @error_attribute = "report_id"
+            return
+          end
+          p "url"
+          url=url_for(RUN_BACKGROUND_REPORTS_URL,report_id)
+          p "url1"
+          url= url+"?id=#{report_id}"
+          p url
+          return self.class.post(url,
+            headers: authorized_headers,
+            max_results: @max_results
+          )
+
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
       # Removes one user from the privilege.
       #
       # @param privilege_id [string] Id of the privilege.
@@ -2947,6 +3740,2350 @@ module OneLogin
         end
 
         false
+      end
+
+      #####################
+      # Hooks Methods #
+      #####################
+
+      # Gets a list of the Hooks.
+      #
+      # @return [Array] list of Hooks objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/list-hooks List Hooks documentation}
+      def get_hooks
+        clean_error
+        prepare_token
+
+        begin
+
+          url = url_for(LIST_SMART_HOOKS_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            p "test"
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #get hook by ID 
+      #
+      # @param hook_id [Integer] Id of the hook
+      #
+      # @return [hook] the hook identified by the id
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/get-hook Get hook by ID documentation}
+      def get_hook(hook_id)
+        clean_error
+        prepare_token
+
+        begin
+          if hook_id.nil? || hook_id.to_s.empty?
+            @error = '400'
+            @error_description = "hook_id is required"
+            @error_attribute = "hook_id"
+            return
+          end
+
+          url = url_for(GET_SMART_HOOK_URL, hook_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
+      #get hook logs by ID 
+      #
+      # @param hook_id [Integer] Id of the hook
+      #
+      # @return execution output logs for a given hook
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/get-hook-logs Get execution output logs for a given hook documentation}
+      def get_hook_logs(hook_id)
+        clean_error
+        prepare_token
+
+        begin
+          if hook_id.nil? || hook_id.to_s.empty?
+            @error = '400'
+            @error_description = "hook_id is required"
+            @error_attribute = "hook_id"
+            return
+          end
+          url = url_for(GET_SMART_HOOK_LOGS_URL, hook_id)
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #create a new Hook Environment Variable
+      #
+      # @param env_hook_params
+      #
+      # @return Hook Environment Variable
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/create-environment-variable create a new Hook Environment Variable documentation}
+      def create_env_var_hook(env_hook_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_ENV_VAR_HOOK_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: env_hook_params.to_json
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end 
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get Hook Environment Variable
+      #
+      # @param env_id
+      #
+      # @return Hook Environment Variable
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/get-environment-variable Get Hook Environment Variable documentation}
+      def get_env_var_hook(env_id)
+        clean_error
+        prepare_token
+
+        begin
+          if env_id.nil? || env_id.to_s.empty?
+            @error = '400'
+            @error_description = "env_id is required"
+            @error_attribute = "env_id"
+            return
+          end
+
+          url = url_for(GET_ENV_VAR_HOOK_URL, env_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
+      #Get Hook Environment Variable List
+      #
+      # @return Hook Environment Variable List
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/list-environment-variables Get Hook Environment Variable List documentation}
+      def list_env_var_hook
+        clean_error
+        prepare_token
+
+        begin
+
+          url = url_for(LIST_ENV_VAR_HOOKS_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Delete Hook Environment Variable
+      #
+      # @param env_id
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/delete-environment-variable delete a Hook Environment Variable documentation}
+      def delete_env_var_hook(env_id)
+        clean_error
+        prepare_token
+
+        begin
+          if env_id.nil? || env_id.to_s.empty?
+            @error = '400'
+            @error_description = "env_id is required"
+            @error_attribute = "env_id"
+            return
+          end
+
+          url = url_for(DELETE_ENV_VAR_HOOK_URL, env_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      #Update Hook Environment Variable
+      #
+      # @param env_id, env_params
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/update-environment-variable update Hook Environment Variable documentation}
+      def update_env_var_hook(env_id, env_params)
+        clean_error
+        prepare_token
+
+        begin
+          if env_id.nil? || env_id.to_s.empty?
+            @error = '400'
+            @error_description = "env_id is required"
+            @error_attribute = "env_id"
+            return
+          end
+
+          url = url_for(UPDATE_ENV_VAR_HOOK_URL, env_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: env_params.to_json
+          )
+
+          if response.code == 200
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #create hook
+      #
+      # @param hook_params
+      #
+      # @return  a Hook
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/create-hook create a Hook documentation}
+      def create_hook(hook_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_SMART_HOOK_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: hook_params.to_json
+          )
+          p response
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #update hook
+      #
+      # @param hook_id, hook_params
+      #
+      # @return updated Hook
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/update-hook update a Hook documentation}
+      def update_hook(hook_id, hook_params)
+        clean_error
+        prepare_token
+
+        begin
+          if hook_id.nil? || hook_id.to_s.empty?
+            @error = '400'
+            @error_description = "hook_id is required"
+            @error_attribute = "hook_id"
+            return
+          end
+
+          url = url_for(UPDATE_SMART_HOOK_URL, hook_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: hook_params.to_json
+          )
+
+          if response.code == 200
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #delete hook
+      #
+      # @param hook_id
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/smart-hooks/delete-hook delete a Hook documentation}
+      def delete_hook(hook_id)
+        clean_error
+        prepare_token
+
+        begin
+          if hook_id.nil? || hook_id.to_s.empty?
+            @error = '400'
+            @error_description = "hook_id is required"
+            @error_attribute = "hook_id"
+            return
+          end
+
+          url = url_for(DELETE_SMART_HOOK_URL, hook_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      #get list of reports
+      #
+      # @return list fo reports
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/reports/list-reports list of reports documentation}
+      def get_reports
+        clean_error
+        prepare_token
+        begin
+          
+
+          url=url_for(LIST_REPORTS_URL)
+
+          return self.class.get(url,
+            headers: authorized_headers,
+            max_results: @max_results
+          )
+
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      
+      #User Mapping api
+      #Get User Mapping list
+      #
+      # @return list of user mapping
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/list-mappings list user mapping documentation}
+      def get_user_mappings
+      clean_error
+      prepare_token
+
+        begin
+
+          url = url_for(LIST_USER_MAPPING_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            p "test"
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get user mapping by mapping id
+      #
+      # @param mapping_id
+      #
+      # @return user mapping by id
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/get-mapping a single User Mapping configuration documentation}
+      def get_user_mapping(mapping_id)
+      clean_error
+      prepare_token
+
+        begin
+          if mapping_id.nil? || mapping_id.to_s.empty?
+            @error = '400'
+            @error_description = "mapping_id is required"
+            @error_attribute = "mapping_id"
+            return
+          end
+
+          url = url_for(GET_USER_MAPPING_URL, mapping_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Create user mapping
+      #
+      # @param mapping_params
+      #
+      # @return a new user mapping configuration
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/create-mapping Create User Mapping configuration documentation}
+      def create_user_mapping(mapping_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_USER_MAPPING_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: mapping_params.to_json
+          )
+          
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
+      #Delete user mapping by mapping id
+      #
+      # @param mapping_id
+      #
+      # @return user mapping by id
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/delete-mapping Delete User Mapping configuration documentation}
+      def delete_user_mapping(mapping_id)
+        clean_error
+        prepare_token
+
+        begin
+          if mapping_id.nil? || mapping_id.to_s.empty?
+            @error = '400'
+            @error_description = "mapping_id is required"
+            @error_attribute = "mapping_id"
+            return
+          end
+
+          url = url_for(DELETE_USER_MAPPING_URL, mapping_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      #Update user mapping
+      #
+      # @param mapping_id, mapping_params
+      #
+      # @return updated user mapping configuration
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/update-mapping Update User Mapping configuration documentation}
+      def update_user_mapping(mapping_id, mapping_params)
+        clean_error
+        prepare_token
+
+        begin
+          if mapping_id.nil? || mapping_id.to_s.empty?
+            @error = '400'
+            @error_description = "mapping_id is required"
+            @error_attribute = "mapping_id"
+            return
+          end
+
+          url = url_for(UPDATE_USER_MAPPING_URL, mapping_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: mapping_params.to_json
+          )
+
+          if response.code == 200
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Dry Run user mapping
+      #
+      # @param maping_id, user_ids list
+      #
+      # @return perform a User Mappings dry run
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/dry-run-mapping perform a User Mappings dry run documentation}
+      def dry_run_user_mapping(mapping_id, user_ids)
+        clean_error
+        prepare_token
+
+        begin
+
+          url = url_for(DRY_RUN_USER_MAPPING_URL, mapping_id)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: user_ids.to_json
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get a list of user mapping condition
+      #
+      # @return  list of the condition types
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/list-conditions  list of the condition types that can be used to match users when mappings are run documentation}
+      def get_user_mapping_conditions
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(LIST_USER_MAPPING_CONDITION_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            p "test"
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+    
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get a list of possible operators for a given condition value
+      #
+      # @param condition_val
+      #
+      # @return list of possible operators for a given condition value
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/list-condition-operators list of possible operators for a given condition value documentation}
+      def get_user_mapping_condition_operators(condition_val)
+        clean_error
+        prepare_token
+    
+        begin
+          if condition_val.nil? || condition_val.to_s.empty?
+            @error = '400'
+            @error_description = "condition_val is required"
+            @error_attribute = "condition_val"
+            return
+          end
+    
+          url = url_for(LIST_USER_MAPPING_CONDITION_OPTS_URL, condition_val)
+    
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get a list of possible values to compare to a condition type
+      #
+      # @param condition_val
+      #
+      # @return a list of possible values to compare to a condition type
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/list-condition-values a list of possible values to compare to a condition type documentation}
+      def get_user_mapping_condition_values(condition_val)
+        clean_error
+        prepare_token
+    
+        begin
+          if condition_val.nil? || condition_val.to_s.empty?
+            @error = '400'
+            @error_description = "condition_val is required"
+            @error_attribute = "condition_val"
+            return
+          end
+    
+          url = url_for(LIST_USER_MAPPING_CONDITION_VALS_URL, condition_val)
+    
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+
+      #Get a list of the actions that can be applied when a mapping runs
+      #
+      # @param condition_val
+      #
+      # @return list of the actions that can be applied when a mapping runs
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/list-actions list of the actions that can be applied when a mapping runs documentation}
+      def get_user_mapping_condition_actions
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(LIST_USER_MAPPING_ACTIONS_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            p "test"
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+    
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get a list of possible values to set using a given action
+      #
+      # @param action_val
+      #
+      # @return list of possible values to set using a given action
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/list-action-values list of possible values to set using a given action documentation}
+      def get_user_mapping_action_values(action_val)
+        clean_error
+        prepare_token
+
+        begin
+          if action_val.nil? || action_val.to_s.empty?
+            @error = '400'
+            @error_description = "action_val is required"
+            @error_attribute = "action_val"
+            return
+          end
+
+          url = url_for(LIST_USER_MAPPING_ACTIONS_VAL_URL, action_val)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Sorted User Mapping
+      #
+      # @param mapping_ids
+      #
+      # @return Sorted List
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/user-mappings/bulk-sort Mappings can be reordered individually by setting the position attribute documentation}
+      def user_mapping_bulk_sort(mapping_ids)
+        clean_error
+        prepare_token
+
+        begin
+          if mapping_ids.nil? || mapping_ids.to_s.empty?
+            @error = '400'
+            @error_description = "action_val is required"
+            @error_attribute = "action_val"
+            return
+          end
+
+          url = url_for(BULK_SORT_USER_MAPPING_URL)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: mapping_ids.to_json
+          )
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+
+      #Create a custom rule to gain more control over the risk scoring of events
+      #
+      # @param risk_rules_params
+      #
+      # @return Creates a custom rule
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/vigilance/create-rule Create a custom rule to gain more control over the risk scoring of events documentation}
+      def create_risk_rules(risk_rules_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_RISK_RULES_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: risk_rules_params.to_json
+          )
+          p response
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
+      #Get a list of Risk Service rule
+      #
+      # @return all of the rules that have been created in the Risk Sevice
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/vigilance/get-rules  all of the rules that have been created in the Risk Sevice documentation}
+      def get_risk_rules
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(LIST_RISK_RULES_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            p "test"
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+    
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+
+      #This API to get a count of log-in events grouped by their risk score bucket
+      #
+      # @return a count of log-in events grouped by their risk score bucket
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/vigilance/get-scores This API to get a count of log-in events grouped by their risk score bucket documentation}
+      def get_risk_scores
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(GET_RISK_SCORE_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            p "test"
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+    
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+
+      #Get a single rule that has been created in the Risk Sevice
+      #
+      # @param risk_rule_id
+      #
+      # @return a single rule that has been created in the Risk Sevice
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/vigilance/get-rule a single rule that has been created in the Risk Sevice documentation}
+      def get_risk_rule(risk_rule_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if risk_rule_id.nil? || risk_rule_id.to_s.empty?
+            @error = '400'
+            @error_description = "risk_rule_id is required"
+            @error_attribute = "risk_rule_id"
+            return
+          end
+    
+          url = url_for(GET_RISK_RULES_URL, risk_rule_id)
+    
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #This Api perform a full or partial update on a rule that has been created in the Risk Sevice
+      #
+      # @param risk_rule_id, risk_rules_params
+      #
+      # @return a single rule that has been created in the Risk Sevice
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/vigilance/update-rule a full or partial update on a rule that has been created in the Risk Sevice documentation}
+      def update_risk_rules(risk_rule_id, risk_rule_params)
+        clean_error
+        prepare_token
+
+        begin
+          if risk_rule_id.nil? || risk_rule_id.to_s.empty?
+            @error = '400'
+            @error_description = "risk_rule_id is required"
+            @error_attribute = "risk_rule_id"
+            return
+          end
+
+          url = url_for(UPDATE_RISK_RULESURL, risk_rule_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: risk_rule_params.to_json
+          )
+
+          if response.code == 200
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      
+      #Delete rule that has been created in the Risk Sevice
+      #
+      # @param risk_rule_id
+      #
+      # @return Boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/vigilance/delete-rule Delete rule that has been created in the Risk Sevice documentation}
+      def delete_risk_rule(risk_rule_id)
+      clean_error
+      prepare_token
+
+        begin
+          if risk_rule_id.nil? || risk_rule_id.to_s.empty?
+            @error = '400'
+            @error_description = "risk_rule_id is required"
+            @error_attribute = "risk_rule_id"
+            return
+          end
+
+          url = url_for(DELETE_RISK_RULES_URL, risk_rule_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      #Train Vigilance AI and help it improve the accuracy of contextual risk scores
+      #
+      # @param risk_events_params
+      #
+      # @return to train Vigilance AI and help it improve the accuracy of contextual risk scores
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/vigilance/train To train Vigilance AI and help it improve the accuracy of contextual risk scores documentation}
+      def track_risk_events(risk_events_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(TRACK_RISK_EVENTS_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: risk_events_params.to_json
+          )
+          p response
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get a real-time risk score for a user before completing a critical task or action
+      #
+      # @return Risk Score
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/vigilance/verify Get a real-time risk score for a user before completing a critical task or actiondocumentation}
+      def verify_risk_score(risk_score_verify_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GET_RISK_VERIFY_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: risk_score_verify_params.to_json
+          )
+          p response
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
+      #Create a App rule
+      #
+      # @param app_id, apps_rules_params
+      #
+      # @return Created App rule
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/create-rule Create an a new App Rule documentation}
+      def create_apps_rules(app_id, apps_rules_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_APP_RULE_URL, app_id)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: apps_rules_params.to_json
+          )
+          p response
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
+      #Update App rule
+      #
+      # @param app_id, rule_id, apps_rules_params
+      #
+      # @return Updated App rule
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/update-rule Updated App Rule documentation}
+      def update_apps_rules(app_id,rule_id, apps_rules_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(UPDATE_APP_RULE_URL, app_id,rule_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: apps_rules_params.to_json
+          )
+          p response
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
+      # Gets an app rule that been defined for an application.
+      #
+      # @param app_id, rule_id
+      #
+      # @return OneLogin App Rule objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/get-rule Get App Rule documentation}
+      def get_app_rule(app_id, rule_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(GET_APPS_RULE_URL, app_id, rule_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+                return response
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+      
+      # Gets a list of app rules that been defined for an application.
+      #
+      # @param app_id
+      #
+      # @return [Array] list of OneLoginAppRuleBasic objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/list-rules Get App Rules List documentation}
+      def get_app_rules(app_id)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(LIST_APPS_RULES_URL, app_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+                return response
+          else
+            @error = extract_status_code_from_response(response)
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+    
+      # Gets a list of the condition types that can be used to match users when app rules are run.
+      #
+      # @param app_id
+      #
+      # @return a list of the condition types that can be used to match users when app rules are run
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/list-conditions Get a list of the condition types that can be used to match users when app rules are run documentation}
+      def get_app_rule_conditions(app_id)
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(LIST_APPS_RULES_CONDITION_URL,app_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            p "test"
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+    
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+
+      # Gets a list of possible operators for a given condition value
+      #
+      # @param app_id,condition_val
+      #
+      # @return a list of possible operators for a given condition value
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/list-condition-operators Get a list of possible operators for a given condition value documentation}
+      def get_app_rule_condition_operators(app_id, condition_val)
+        clean_error
+        prepare_token
+    
+        begin
+          if condition_val.nil? || condition_val.to_s.empty?
+            @error = '400'
+            @error_description = "condition_val is required"
+            @error_attribute = "condition_val"
+            return
+          end
+    
+          url = url_for(LIST_APPS_RULES_CONDITION_OPTS_URL,app_id, condition_val)
+    
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      # Gets a list of possible values to compare to a condition type
+      #
+      # @param app_id,condition_val
+      #
+      # @return a list of possible values to compare to a condition type
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/list-condition-values Get a list of possible values to compare to a condition type documentation}
+      def get_app_rule_condition_values(app_id, condition_val)
+        clean_error
+        prepare_token
+    
+        begin
+          if condition_val.nil? || condition_val.to_s.empty?
+            @error = '400'
+            @error_description = "condition_val is required"
+            @error_attribute = "condition_val"
+            return
+          end
+    
+          url = url_for(LIST_APPS_RULES_CONDITION_VALS_URL,app_id,  condition_val)
+    
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+        
+      # Gets a list of the actions that can be applied when an App Rule runs
+      #
+      # @param app_id
+      #
+      # @return a list of the actions that can be applied when an App Rule runs
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/list-actions Get a list of the actions that can be applied when an App Rule runs documentation}
+      def get_app_rule_actions(app_id)
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(LIST_APPS_RULES_ACTIONS_URL,app_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            p "test"
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+    
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+  
+  
+      # Gets a list of possible values to set using a given action
+      #
+      # @param app_id,action_val
+      #
+      # @return a list of possible values to set using a given action
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/list-action-values Get a list of possible values to set using a given action documentation}
+      def get_app_rule_action_values(app_id, action_val)
+        clean_error
+        prepare_token
+    
+        begin
+          if action_val.nil? || action_val.to_s.empty?
+            @error = '400'
+            @error_description = "action_val is required"
+            @error_attribute = "action_val"
+            return
+          end
+
+          url = url_for(LIST_APPS_RULES_ACTIONS_VAL_URL,app_id, action_val)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+  
+      #Sorted App Rule
+      #
+      # @param app_id, rule_ids
+      #
+      # @return Sorted List
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/bulk-sort App Rule can be reordered individually by setting the position attribute documentation}
+      def app_rule_bulk_sort(app_id, rule_ids)
+        clean_error
+        prepare_token
+
+        begin
+          if app_id.nil? || app_id.to_s.empty?
+            @error = '400'
+            @error_description = "aapp_idction_val is required"
+            @error_attribute = "app_id"
+            return
+          end
+
+          url = url_for(BULK_SORT_APPS_RULES_URL, app_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: rule_ids.to_json
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+          nil
+        end
+  
+      #Delete App Rule by ID
+      #
+      # @param app_id,rule_id
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/delete-rule Delete  App Rule runs documentation}
+      def delete_app_rule(app_id,rule_id)
+        clean_error
+        prepare_token
+
+        begin
+          if app_id.nil? || app_id.to_s.empty?
+            @error = '400'
+            @error_description = "app id is required"
+            @error_attribute = "app_id"
+            return
+          end
+
+          url = url_for(DELETE_APP_RULE_URL, app_id, rule_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      #API Authorization Server
+      #Create a authorization server params
+      #
+      # @param authorization_server_params
+      #
+      # @return Created authorization server
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/create Create Authorization Server documentation}
+      def create_authorization_server(authorization_server_params)
+        clean_error
+        prepare_token
+
+        begin
+
+          url = url_for(CREATE_AUTHORIZATION_SERVER_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: authorization_server_params.to_json
+          )
+
+          if response.success?
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get list of authorization servers
+      #
+      # @return list of authorization servers
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/list list of authorization servers documentation}
+      def get_authorization_servers
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(LIST_AUTHORIZATION_SERVER_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          hooks = []
+          if response.code == 200
+            hooks = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+    
+          return hooks
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+
+      #Get a single Authorization Server Configuration
+      #
+      # @param authorization_server_id
+      #
+      # @return API authorization configuration
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/get Get API authorization configuration documentation}
+      def get_authorization_server(authorization_server_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+    
+          url = url_for(GET_AUTHORIZATION_SERVER_URL, authorization_server_id)
+    
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Update an Authorization Server
+      #
+      # @param authorization_server_id,authorization_server_params
+      #
+      # @return Updated Authorization Server
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/update Update an Authorization Server documentation}
+      def update_authorization_server(authorization_server_id, authorization_server_params)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+        
+          url = url_for(UPDATE_AUTHORIZATION_SERVER_URL, authorization_server_id)
+         
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: authorization_server_params.to_json
+          )
+          
+          if response.code == 200
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+    
+      #Delete Authorization Server
+      #
+      # @param authorization_server_id
+      #
+      # @return Boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/delete Delete Authorization Server documentation}
+      def delete_authorization_server(authorization_server_id)
+      clean_error
+      prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(DELETE_AUTHORIZATION_SERVER_URL, authorization_server_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        false
+      end
+
+      #Add a custom claim to the Access Tokens that get generated by the Authorization Server
+      #
+      # @param authorization_server_id,access_token_params
+      #
+      # @return added access token claims
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/add-claim Add a custom claim to the Access Tokens that get generated by the Authorization Server documentation}
+      def add_access_token_claims(authorization_server_id, access_token_params)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(ADD_ACCESS_TOKEN_CLAIMS_URL, authorization_server_id)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: access_token_params.to_json
+          )
+
+          if response.success?
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get list of access token claims
+      #
+      # @return list of access token claims
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/list-claims list of access token claims documentation}
+      def get_access_token_claims(authorization_server_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(LIST_ACCESS_TOKEN_CLAIMS_URL, authorization_server_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+
+      #Update an Access Token
+      #
+      # @param authorization_server_id,access_token_claim_params
+      #
+      # @return Updated access_token_claim_params
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/update-claim Update an access_token_claim_params documentation}
+      def update_access_token_claims(authorization_server_id,claim_id, access_token_claim_params)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(UPDATE_ACCESS_TOKEN_CLAIMS_URL, authorization_server_id, claim_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: access_token_claim_params.to_json
+          )
+
+          if response.code == 200
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Delete an Access Token
+      #
+      # @param authorization_server_id,claim_id
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/delete-claim Delete an access_token_claim_params documentation}
+      def delete_access_token_claims(authorization_server_id,claim_id)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(DELETE_ACCESS_TOKEN_CLAIMS_URL, authorization_server_id, claim_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Add a scope to the Authorization Server
+      #
+      # @param authorization_server_id,scope_params
+      #
+      # @return scope
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/add-scope Add a scope to the Authorization Server documentation}
+      def add_scopes(authorization_server_id, access_token_params)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(ADD_SCOPE_URL, authorization_server_id)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: access_token_params.to_json
+          )
+
+          if response.success?
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get list of scopes
+      #
+      # @return list of scopes
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/list-scopes list of scopes documentation}
+      def get_scopes(authorization_server_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(LIST_SCOPE_URL, authorization_server_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Update Scope
+      #
+      # @param authorization_server_id,scope_id,scope_params
+      #
+      # @return Updated scope_params
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/update-scope Update Scope documentation}
+      def update_scopes(authorization_server_id,scope_id, scope_params)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(UPDATE_SCOPE_URL, authorization_server_id, scope_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: scope_params.to_json
+          )
+
+          if response.code == 200
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+       #Delete Scope
+      #
+      # @param authorization_server_id,scope_id
+      #
+      # @return boolean
+      #
+      # @see {hhttps://developers.onelogin.com/api-docs/2/api-authorization/delete-scope  Delete Scope documentation}
+      def delete_scope(authorization_server_id,scope_id)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(DELETE_SCOPE_URL, authorization_server_id, scope_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Add clients apps 
+      #
+      # @param authorization_server_id,clients_params
+      #
+      # @return clients apps 
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/add-client-app Add clients apps documentation}
+      def add_clients_apps(authorization_server_id, clients_params)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(ADD_CLIENTS_APPS_URL, authorization_server_id)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: clients_params.to_json
+          )
+
+          if response.success?
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+
+      #Get list of clients apps
+      #
+      #@param authorization_server_id
+      #
+      # @return list of client apps
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/list-client-apps list of clients apps documentation}
+      def get_clients_apps(authorization_server_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(LIST_CLIENTS_APPS_URL, authorization_server_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Update Clients Apps
+      #
+      # @param authorization_server_id, client_app_id, client_app_params
+      #
+      # @return Updated access_token_claim_params
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/update-client-app Update an clients apps documentation}
+      def update_clients_apps(authorization_server_id,client_app_id, client_app_params)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(UPDATE_CLIENTS_APPS_URL, authorization_server_id, client_app_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: client_app_params.to_json
+          )
+
+          if response.code == 200
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+       #Delete Clients Apps
+      #
+      # @param authorization_server_id,client_app_id
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/api-authorization/delete-client-app  Delete Clients Apps documentation}
+      def delete_clients_apps(authorization_server_id,client_app_id)
+        clean_error
+        prepare_token
+
+        begin
+          if authorization_server_id.nil? || authorization_server_id.to_s.empty?
+            @error = '400'
+            @error_description = "authorization_server_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(DELETE_CLIENTS_APPS_URL, authorization_server_id, client_app_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
       end
 
     end
