@@ -18,7 +18,6 @@ module OneLogin
         GET_USER_URL = "https://api.%s.onelogin.com/api/2/users/%s"
         GET_APPS_FOR_USER_URL = "https://api.%s.onelogin.com/api/2/users/%s/apps"
         GET_ROLES_FOR_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/roles"
-        GET_CUSTOM_ATTRIBUTES_URL = "https://api.%s.onelogin.com/api/2/users/custom_attributes"
         CREATE_USER_URL = "https://api.%s.onelogin.com/api/2/users"
         SESSION_LOGIN_TOKEN_URL = "https://api.%s.onelogin.com/api/1/login/auth"
         GET_TOKEN_VERIFY_FACTOR = "https://api.%s.onelogin.com/api/1/login/verify_factor"
@@ -34,6 +33,7 @@ module OneLogin
         LOCK_USER_URL = "https://api.%s.onelogin.com/api/1/users/%s/lock_user"
 
         #Custom Attribute URLS
+        GET_CUSTOM_ATTRIBUTES_URL = "https://api.%s.onelogin.com/api/2/users/custom_attributes"
         GET_CUSTOM_ATTRIBUTE = "https://api.%s.onelogin.com/api/2/users/custom_attributes/%s"
         CREATE_CUSTOM_ATTRIBUTE = "https://api.%s.onelogin.com/api/2/users/custom_attributes"
         UPDATE_CUSTOM_ATTRIBUTE = "https://api.%s.onelogin.com/api/2/users/custom_attributes/%s"
@@ -118,7 +118,33 @@ module OneLogin
         LIST_CLIENTS_APPS_URL = "https://api.%s.onelogin.com/api/2/api_authorizations/%s/clients"
         UPDATE_CLIENTS_APPS_URL = "https://api.%s.onelogin.com/api/2/api_authorizations/%s/clients/%s"
         DELETE_CLIENTS_APPS_URL = "https://api.%s.onelogin.com/api/2/api_authorizations/%s/clients/%s"
-        
+
+
+        #Branding APIs
+        LIST_ACCOUNT_BRANDS_URL = "https://api.%s.onelogin.com/api/2/branding/brands"
+        CREATE_ACCOUNT_BRANDS_URL = "https://api.%s.onelogin.com/api/2/branding/brands"
+        GET_ACCOUNT_BRANDS_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s"
+        UPDATE_ACCOUNT_BRANDS_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s"
+        DELETE_ACCOUNT_BRANDS_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s"
+
+        GET_APPS_ASSOSIATED_WITH_ACCOUNT_BRANDS_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/apps"
+
+        LIST_MESSAGE_TEMPLATE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/templates"
+        CREATE_MESSAGE_TEMPLATE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/templates"
+        UPDATE_MESSAGE_TEMPLATE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/templates/%s"
+        GET_MESSAGE_TEMPLATE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/templates/%s"
+        DELETE_MESSAGE_TEMPLATE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/templates/%s"
+        GET_MESSAGE_TEMPLATE_BY_TYPE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/templates/%s"
+        GET_MESSAGE_TEMPLATE_BY_TYPE_LOCALE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/templates/%s"
+        GET_MASTER_MESSAGE_TEMPLATE_BY_TYPE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/master/templates/%s"
+        GET_MASTER_MESSAGE_TEMPLATE_BY_TYPE_LOCALE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/master/templates/%s"
+        UPDATE_MESSAGE_TEMPLATE_BY_TYPE_LOCALE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/templates/%s"
+        LIST_LANGUAGE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/custom_error_messages/languages"
+        LIST_CUSTOM_MESSAGE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/custom_error_messages"
+        UPDATE_CUSTOM_MESSAGE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/custom_error_messages"
+        DELETE_CUSTOM_MESSAGE_URL = "https://api.%s.onelogin.com/api/2/branding/brands/%s/custom_error_messages/%s"
+        LOOKUP_CUSTOM_MESSAGE_URL = "https://api.%s.onelogin.com/api/2/branding/custom_error_messages"
+        GET_EMAIL_SETTINGS_URL = "https://api.%s.onelogin.com/api/2/branding/email_settings"        
 
 
         # SMART Hooks URLs

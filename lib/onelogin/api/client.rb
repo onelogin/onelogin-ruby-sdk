@@ -3778,7 +3778,6 @@ p response
 
           hooks = []
           if response.code == 200
-            p "test"
             hooks = response
           else
             @error = response.code.to_s
@@ -4229,16 +4228,15 @@ p response
             headers: authorized_headers
           )
 
-          hooks = []
+          user_mappings = []
           if response.code == 200
-            p "test"
-            hooks = response
+            user_mappings = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
 
-          return hooks
+          return user_mappings
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -4461,16 +4459,15 @@ p response
             headers: authorized_headers
           )
 
-          hooks = []
+          user_mappings_condit = []
           if response.code == 200
-            p "test"
-            hooks = response
+            user_mappings_condit = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
     
-          return hooks
+          return user_mappings_condit
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -4580,16 +4577,15 @@ p response
             headers: authorized_headers
           )
 
-          hooks = []
+          user_mappings_condit_actions = []
           if response.code == 200
-            p "test"
-            hooks = response
+            user_mappings_condit_actions = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
     
-          return hooks
+          return user_mappings_condit_actions
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -4733,16 +4729,16 @@ p response
             headers: authorized_headers
           )
 
-          hooks = []
+          risk = []
           if response.code == 200
-            p "test"
-            hooks = response
+           
+            risk = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
     
-          return hooks
+          return risk
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -4770,16 +4766,15 @@ p response
             headers: authorized_headers
           )
 
-          hooks = []
+          risk_score = []
           if response.code == 200
-            p "test"
-            hooks = response
+            risk_score = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
     
-          return hooks
+          return risk_score
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -5140,16 +5135,15 @@ p response
             headers: authorized_headers
           )
 
-          hooks = []
+          app_rule = []
           if response.code == 200
-            p "test"
-            hooks = response
+            app_rule = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
     
-          return hooks
+          return app_rule
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -5260,16 +5254,15 @@ p response
             headers: authorized_headers
           )
 
-          hooks = []
+          app_rule_actions = []
           if response.code == 200
-            p "test"
-            hooks = response
+            app_rule_actions = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
     
-          return hooks
+          return app_rule_actions
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -5456,15 +5449,15 @@ p response
             headers: authorized_headers
           )
 
-          hooks = []
+          auth_server = []
           if response.code == 200
-            hooks = response
+            auth_server = response
           else
             @error = response.code.to_s
             @error_description = extract_error_message_from_response(response)
           end
     
-          return hooks
+          return auth_server
         rescue Exception => e
           @error = '500'
           @error_description = e.message
@@ -6056,7 +6049,7 @@ p response
         nil
       end
 
-       #Delete Clients Apps
+      #Delete Clients Apps
       #
       # @param authorization_server_id,client_app_id
       #
@@ -6097,6 +6090,924 @@ p response
 
         nil
       end
+
+      #####################
+      # Brands Methods #
+      #####################
+
+      # Gets a list of the Brands.
+      #
+      # @return [Array] list of Brands objects
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/list-account-brands List Brands documentation}
+      def get_brands
+        clean_error
+        prepare_token
+
+        begin
+
+          url = url_for(LIST_ACCOUNT_BRANDS_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          brands = []
+          if response.code == 200
+            brands = response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+
+          return brands
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Create a Brand
+      #
+      # @param brand_params
+      #
+      # @return Created Brand
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/create-account-brand Create Account Brand documentation}
+      def create_account_brand(brand_params)
+        clean_error
+        prepare_token
+
+        begin
+
+          url = url_for(CREATE_ACCOUNT_BRANDS_URL)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: brand_params.to_json
+          )
+
+          if response.success?
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get Brand
+      #
+      #@param brand_id
+      #
+      # @return brand
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/get-account-brand Get Brand documentation}
+      def get_brand(brand_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "authorization_server_id"
+            return
+          end
+
+          url = url_for(GET_ACCOUNT_BRANDS_URL, brand_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+    
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Update Brand
+      #
+      # @param brand_id, brand_params
+      #
+      # @return Updated Brand
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/update-account-brand Update brand documentation}
+      def update_brand(brand_id, brand_params)
+        clean_error
+        prepare_token
+
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+
+          url = url_for(UPDATE_ACCOUNT_BRANDS_URL, brand_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: brand_params.to_json
+          )
+
+          if response.code == 200
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Delete Brand
+      #
+      # @param brand_id
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/delete-account-brand  Delete Brand documentation}
+      def delete_brand(brand_id)
+        clean_error
+        prepare_token
+
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+
+          url = url_for(DELETE_ACCOUNT_BRANDS_URL, brand_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get Apps assosiated with Account Brand
+      #
+      #@param brand_id
+      #
+      # @return apps assosiated with Account Brand
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/get-apps-associated-with-account-brand Get apps assosiated with Account Brand documentation}
+      def get_apps_assosiated_with_brand(brand_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+
+          url = url_for(GET_APPS_ASSOSIATED_WITH_ACCOUNT_BRANDS_URL, brand_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get List of message template
+      #
+      #@param brand_id
+      #
+      # @return List of message template
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/list-templates List Message Template documentation}
+      def get_message_templates(brand_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+
+          url = url_for(LIST_MESSAGE_TEMPLATE_URL, brand_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Create a message templates
+      #
+      # @param app_id, message_templates_params
+      #
+      # @return Created message_templates
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/app-rules/create-rule Create message templates documentation}
+      def create_message_templates(brand_id, message_templates_params)
+        clean_error
+        prepare_token
+
+        begin
+          url = url_for(CREATE_MESSAGE_TEMPLATE_URL, brand_id)
+
+          response = self.class.post(
+            url,
+            headers: authorized_headers,
+            body: message_templates_params.to_json
+          )
+       
+          if response.success?
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get single message template
+      #
+      #@param brand_id, template_id
+      #
+      # @return message template
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/get-template Get Message Template documentation}
+      def get_message_template(brand_id, template_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+          if template_id.nil? || template_id.to_s.empty?
+            @error = '400'
+            @error_description = "template_id is required"
+            @error_attribute = "template_id"
+            return
+          end
+
+          url = url_for(GET_MESSAGE_TEMPLATE_URL, brand_id, template_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Update Message Template
+      #
+      # @param brand_id, template_id, message_template_params
+      #
+      # @return Updated Message Template
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/update-template Update Message Template documentation}
+      def update_message_template(brand_id, template_id, message_template_params)
+        clean_error
+        prepare_token
+
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+          if template_id.nil? || template_id.to_s.empty?
+            @error = '400'
+            @error_description = "template_id is required"
+            @error_attribute = "template_id"
+            return
+          end
+
+          url = url_for(UPDATE_MESSAGE_TEMPLATE_URL, brand_id, template_id)
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: message_template_params.to_json
+          )
+
+          if response.code == 200
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+       #Delete message template
+      #
+      # @param message_template
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/delete-account-brand  Delete message template documentation}
+      def delete_message_template(brand_id, template_id)
+        clean_error
+        prepare_token
+
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+          if template_id.nil? || template_id.to_s.empty?
+            @error = '400'
+            @error_description = "template_id is required"
+            @error_attribute = "template_id"
+            return
+          end
+
+          url = url_for(DELETE_MESSAGE_TEMPLATE_URL, brand_id, template_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get message template of brand by type
+      #
+      #@param brand_id, template_type
+      #
+      # @return message template
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/get-template-by-type Get Message Template By Type documentation}
+      def get_message_template_by_type(brand_id, template_type)
+        clean_error
+        prepare_token
+    
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+          if template_type.nil? || template_type.to_s.empty?
+            @error = '400'
+            @error_description = "template_type is required"
+            @error_attribute = "template_type"
+            return
+          end
+
+          url = url_for(GET_MESSAGE_TEMPLATE_BY_TYPE_URL, brand_id, template_type)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get message template of brand by type and locale
+      #
+      #@param brand_id, template_type, locale
+      #
+      # @return message template
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/get-template-by-type-locale Get Message Template By Type and locale documentation}
+      def get_message_template_by_type_and_locale(brand_id, template_type, locale)
+        clean_error
+        prepare_token
+    
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+          if template_type.nil? || template_type.to_s.empty?
+            @error = '400'
+            @error_description = "template_type is required"
+            @error_attribute = "template_type"
+            return
+          end
+
+          url = url_for(GET_MESSAGE_TEMPLATE_BY_TYPE_LOCALE_URL, brand_id, template_type)
+          url= url+"/#{locale}"
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get master message template by type
+      #
+      #@param template_type
+      #
+      # @return master message template
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/get-master-template-by-type Get Master Message Template By Type documentation}
+      def get_master_message_template_by_type(template_type)
+        clean_error
+        prepare_token
+    
+        begin
+          if template_type.nil? || template_type.to_s.empty?
+            @error = '400'
+            @error_description = "template_type is required"
+            @error_attribute = "template_type"
+            return
+          end
+
+          url = url_for(GET_MASTER_MESSAGE_TEMPLATE_BY_TYPE_URL, template_type)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get master message template by template type and locale
+      #
+      #@param template_type, locale
+      #
+      # @return master message template
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/get-master-template-by-type-locale Get Master Message Template By Type and locale documentation}
+      def get_master_message_template_by_typeand_locale(template_type, locale)
+        clean_error
+        prepare_token
+    
+        begin
+          if locale.nil? || locale.to_s.empty?
+            @error = '400'
+            @error_description = "locale is required"
+            @error_attribute = "locale"
+            return
+          end
+          if template_type.nil? || template_type.to_s.empty?
+            @error = '400'
+            @error_description = "template_type is required"
+            @error_attribute = "template_type"
+            return
+          end
+
+          url = url_for(GET_MASTER_MESSAGE_TEMPLATE_BY_TYPE_LOCALE_URL, template_type, locale)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Update Message Template by type and locale
+      #
+      # @param brand_id, template_type, locale, message_template_params
+      #
+      # @return Updated Message Template
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/update-template Update Message Template by type and locale documentation}
+      def update_message_template_by_type_and_locale(brand_id, template_type,locale, message_template_params)
+        clean_error
+        prepare_token
+
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+          if template_type.nil? || template_type.to_s.empty?
+            @error = '400'
+            @error_description = "template_type is required"
+            @error_attribute = "template_type"
+            return
+          end
+
+          url = url_for(UPDATE_MESSAGE_TEMPLATE_BY_TYPE_LOCALE_URL, brand_id, template_type)
+          url= url+"/#{locale}"
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: message_template_params.to_json
+          )
+
+          if response.code == 200
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Get List of languages
+      #
+      #@param brand_id
+      #
+      # @return List of language
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/list-languages List languages documentation}
+      def get_languages(brand_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+
+          url = url_for(LIST_LANGUAGE_URL, brand_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get List of Custom Message
+      #
+      #@param brand_id
+      #
+      # @return List of Custom Message
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/list-custom-messages List custom message documentation}
+      def get_custom_messages(brand_id)
+        clean_error
+        prepare_token
+    
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+
+          url = url_for(LIST_CUSTOM_MESSAGE_URL, brand_id)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+          p response
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Update custom message
+      #
+      # @param brand_id, custom_message_params
+      #
+      # @return Updated Custom Message
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/update-custom-message Update Custom Message documentation}
+      def update_custom_message(brand_id, custom_message_params)
+        clean_error
+        prepare_token
+
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+
+          url = url_for(UPDATE_MESSAGE_TEMPLATE_URL, brand_id, )
+
+          response = self.class.put(
+            url,
+            headers: authorized_headers,
+            body: custom_message_params.to_json
+          )
+
+          if response.code == 200
+            return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+          p e.message
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Delete custom message
+      #
+      # @param brand_id, message_id
+      #
+      # @return boolean
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/delete-custom-message  Delete custom message documentation}
+      def delete_custom_message(brand_id,message_id)
+        clean_error
+        prepare_token
+
+        begin
+          if brand_id.nil? || brand_id.to_s.empty?
+            @error = '400'
+            @error_description = "brand_id is required"
+            @error_attribute = "brand_id"
+            return
+          end
+
+          url = url_for(DELETE_CUSTOM_MESSAGE_URL, brand_id,message_id)
+
+          response = self.class.delete(
+            url,
+            headers: authorized_headers
+          )
+
+          if response.code == 204
+          return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+            @error_attribute = extract_error_attribute_from_response(response)
+          end
+        rescue Exception => e
+
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      #Lookup Custom Message
+      #
+      # @return lookup the custom error message
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/lookup-custom-message To lookup the custom error message documentation}
+      def lookup_custom_messages
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(LOOKUP_CUSTOM_MESSAGE_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+        
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
+      #Get Email Settings
+      #
+      # @return Email Settings
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/branding/get-email-settings Get Email Settings documentation}
+      def get_email_settings
+        clean_error
+        prepare_token
+    
+        begin
+
+          url = url_for(GET_EMAIL_SETTINGS_URL)
+
+          response = self.class.get(
+            url,
+            headers: authorized_headers
+          )
+         
+          if response.code == 200
+              return response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+    
+        nil
+      end
+
 
     end
   end
