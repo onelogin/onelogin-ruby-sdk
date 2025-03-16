@@ -343,7 +343,7 @@ module OneLogin
             max_results: @max_results,
             params: params
           }
-
+          
           return self.class.get(
             url_for(GET_USERS_URL),
             headers: authorized_headers,
@@ -2809,11 +2809,9 @@ module OneLogin
         nil
       end
 
-      # Return a list of authentication factors registered to a particular user for multifactor authentication (MFA)
+      # Get verify enrollment for OneLogin Voice
       #
-      # @param user_id [Integer] The id of the user.
-      #
-      # @return [Array] OTPDevice List
+      # @param user_id [Integer] The id of the user, registration_id.
       #
       # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/enroll-factor-verify-poll Get verify enrollment for OneLogin Voice documentation}
       def verify_enrollement_voice_factor(user_id,registration_id)
@@ -2829,6 +2827,51 @@ module OneLogin
           end
 
           url = url_for(VERIFY_ENROLLMENT_VOICE_FACTOR_URL, user_id, registration_id)
+
+          response = self.class.get(
+            url,
+            :headers => authorized_headers
+          )
+
+          if response.code == 200
+            response
+          else
+            @error = response.code.to_s
+            @error_description = extract_error_message_from_response(response)
+          end
+          return response
+        rescue Exception => e
+          @error = '500'
+          @error_description = e.message
+        end
+
+        nil
+      end
+
+      # This API endpoint must be used to confirm if a user has completed their Push or Voice verification or has clicked the emailed Magic Link
+      #
+      # @param user_id [Integer] The id of the user and verification_id.
+      #
+      # @see {https://developers.onelogin.com/api-docs/2/multi-factor-authentication/verify-factor-pollGet verify completion of OneLogin Push or OneLogin Voice factors or email documentation}
+      def verify_auth_factor(user_id,verification_id)
+        clean_error
+        prepare_token
+
+        begin
+          if user_id.nil? || user_id.to_s.empty?
+            @error = '400'
+            @error_description = "user_id is required"
+            @error_attribute = "user_id"
+            return
+          end
+          if verification_id.nil? || verification_id.to_s.empty?
+            @error = '400'
+            @error_description = "verification_id is required"
+            @error_attribute = "verification_id"
+            return
+          end
+
+          url = url_for(VERIFY_AUTH_FACTOR_URL, user_id, verification_id)
 
           response = self.class.get(
             url,
@@ -2997,14 +3040,14 @@ module OneLogin
             @error_attribute = "device_id"
             return
           end
-p device_id
+
           url = url_for(REMOVE_FACTOR_URL, user_id, device_id)
-p url
+
           response = self.class.delete(
             url,
             :headers => authorized_headers
           )
-p response
+
           if response.code == 200
             return true
           else
