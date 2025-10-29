@@ -7,13 +7,15 @@ RSpec.describe "Token Expiration Handling" do
   let(:region) { 'us' }
   let(:token_url) { 'https://api.us.onelogin.com/auth/oauth2/v2/token' }
   
+  let(:test_time) { Time.utc(2025, 1, 1, 12, 0, 0) }
+  
   let(:valid_token_response) {
     {
       access_token: 'test_access_token',
       refresh_token: 'test_refresh_token',
       token_type: 'bearer',
       expires_in: 36000,
-      created_at: Time.now.utc.iso8601
+      created_at: test_time.iso8601
     }.to_json
   }
 
@@ -23,7 +25,7 @@ RSpec.describe "Token Expiration Handling" do
       refresh_token: 'refreshed_refresh_token',
       token_type: 'bearer',
       expires_in: 36000,
-      created_at: Time.now.utc.iso8601
+      created_at: test_time.iso8601
     }.to_json
   }
 

@@ -86,14 +86,7 @@ module OneLogin
       # This is separate from the public access_token method to allow internal use
       #
       def get_new_token
-        token = access_token
-        return token unless token.nil?
-        
-        # If we failed to get a token, ensure we clear any stale token data
-        @access_token = nil
-        @refresh_token = nil
-        @expiration = nil
-        nil
+        access_token
       end
 
       def handle_operation_response(response)
