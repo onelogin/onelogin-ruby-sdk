@@ -42,6 +42,7 @@ If you don't have an account you can [sign up for a free developer account here]
 |region| Optional: `us` or `eu`. Defaults to `us`   |
 |max_results| Optional: Defaults to 1000  |
 |timeout| Optional: Defaults to 60 (requires httparty > 0.16.2) |
+|token_expiration_buffer| Optional: Number of seconds before token expiration to trigger refresh. Defaults to 30 |
 
 ```ruby
 require 'onelogin'

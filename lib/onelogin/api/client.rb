@@ -26,6 +26,7 @@ module OneLogin
                          Nokogiri::XML::ParseOptions::NONET
 
       DEFAULT_USER_AGENT = "onelogin-ruby-sdk v#{OneLogin::VERSION}".freeze
+      DEFAULT_TOKEN_EXPIRATION_BUFFER = 30 # seconds
 
       # Create a new instance of the Client.
       #
@@ -38,6 +39,7 @@ module OneLogin
         @client_secret = options[:client_secret]
         @region = options[:region] || 'us'
         @max_results = options[:max_results] || 1000
+        @token_expiration_buffer = options[:token_expiration_buffer] || DEFAULT_TOKEN_EXPIRATION_BUFFER
 
         if options[:timeout] and defined? self.class.default_timeout
           self.class.default_timeout options[:timeout]
@@ -67,15 +69,31 @@ module OneLogin
       end
 
       def expired?
-        Time.now.utc > @expiration
+        return true if @expiration.nil?
+        Time.now.utc > (@expiration - @token_expiration_buffer)
       end
 
       def prepare_token
         if @access_token.nil?
-          access_token
+          get_new_token
         elsif expired?
-          regenerate_token
+          # Try to regenerate token, fall back to getting new token if regeneration fails
+          regenerate_token || get_new_token
         end
+      end
+
+      # Internal method to get a new access token
+      # This is separate from the public access_token method to allow internal use
+      #
+      def get_new_token
+        token = access_token
+        return token unless token.nil?
+        
+        # If we failed to get a token, ensure we clear any stale token data
+        @access_token = nil
+        @refresh_token = nil
+        @expiration = nil
+        nil
       end
 
       def handle_operation_response(response)
