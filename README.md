@@ -33,7 +33,14 @@ Or install it yourself as:
 
 ### Dependencies
 
+* Ruby >= 3.2
 * httparty
+* nokogiri
+
+Ruby 3.2 is the lowest version on which `nokogiri` resolves to a release with
+no known security advisories — below it, the newest installable `nokogiri` is
+still affected by a critical one. If you are on an older Ruby, `bundle install`
+will resolve to onelogin 1.7.0, the last release supporting it.
 
 ## Getting started
 
