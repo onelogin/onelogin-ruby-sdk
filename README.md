@@ -173,11 +173,17 @@ query_parameters = {
 }
 users_filtered2 = client.get_users(query_parameters)
 
-# Get Users with limit
+# Get Users with a page size of 3.
+#
+# `limit` is the API's page size, not a cap on the total. To stop after a
+# fixed number of results use `take`, or set `max_results` on the client.
 query_parameters = {
     limit: 3
 }
-users_filtered_limited = client.get_users(query_parameters)
+users_paged_by_three = client.get_users(query_parameters)
+
+# Stop after 3 users regardless of page size
+first_three = client.get_users.take(3)
 
 # Only return the firstname and email fields for each user
 client.get_users(fields: 'email,firstname').each do |user|
@@ -192,12 +198,13 @@ query_parameters = {
 }
 users_sorted = client.get_users(query_parameters)
 
-# Ten least recently active users, sorted by the API
-query_parameters = {
-    sort: '+last_login',
-    limit: 10
-}
-least_recently_active = client.get_users(query_parameters)
+# Ten least recently active users.
+#
+# `sort` is applied by the API, so use `take` to stop after ten rather than
+# enumerating everyone. Note that `limit` is the API's *page size* - it does
+# not cap the total, because the cursor keeps following pages until they run
+# out or `max_results` is reached.
+least_recently_active = client.get_users(sort: '+last_login').take(10)
 
 # Get User by id
 user = client.get_user(users_filtered.first.id)

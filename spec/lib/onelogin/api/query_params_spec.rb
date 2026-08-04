@@ -22,7 +22,7 @@ RSpec.describe "Query parameter forwarding" do
 
   # Issue #18 asked for server-side sorting, assuming it was unsupported. It
   # works today - params are forwarded straight to the API query string - it
-  # just was not documented anywhere.
+  # just wasn't documented anywhere.
   it 'forwards sort to the API' do
     request = stub_users('sort' => '+id')
 
@@ -61,5 +61,42 @@ RSpec.describe "Query parameter forwarding" do
     client.get_users(fields: 'email,firstname').to_a
 
     expect(request).to have_been_made
+  end
+
+  # `limit` is the API's page size, not a cap on the total. The cursor keeps
+  # following after_cursor until the pages run out or max_results is hit, so
+  # the README has to use `take` when it means "give me exactly N".
+  describe 'limit is page size, not a total cap' do
+    def page(ids, after_cursor)
+      { status: { error: false, code: 200 },
+        data: ids.map { |id| { id: id, username: "u#{id}" } },
+        pagination: { after_cursor: after_cursor } }.to_json
+    end
+
+    before do
+      json = { 'Content-Type' => 'application/json' }
+      stub_request(:get, users_url).with(query: hash_including({})).to_return(
+        { status: 200, body: page((1..10).to_a, 'cursor-1'), headers: json },
+        { status: 200, body: page((11..20).to_a, 'cursor-2'), headers: json },
+        { status: 200, body: page((21..25).to_a, nil), headers: json }
+      )
+    end
+
+    it 'keeps paginating past limit' do
+      expect(client.get_users(limit: 10).to_a.size).to eq(25)
+    end
+
+    it 'stops at take(n)' do
+      expect(client.get_users(sort: '+last_login').take(10).size).to eq(10)
+    end
+
+    it 'stops at max_results' do
+      capped = OneLogin::Api::Client.new(client_id: 'test_id', client_secret: 'test_secret',
+                                         max_results: 10)
+      capped.instance_variable_set(:@access_token, 'test_token')
+      capped.instance_variable_set(:@expiration, Time.now.utc + 3600)
+
+      expect(capped.get_users.to_a.size).to eq(10)
+    end
   end
 end
