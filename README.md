@@ -184,6 +184,21 @@ client.get_users(fields: 'email,firstname').each do |user|
     puts "#{user.firstname} - #{user.email}"
 end
 
+# Sort server-side with the sort parameter. Prefix with - to reverse.
+# Sorting happens in the API, so you do not need to fetch every user and
+# sort client-side.
+query_parameters = {
+    sort: '+id'
+}
+users_sorted = client.get_users(query_parameters)
+
+# Ten least recently active users, sorted by the API
+query_parameters = {
+    sort: '+last_login',
+    limit: 10
+}
+least_recently_active = client.get_users(query_parameters)
+
 # Get User by id
 user = client.get_user(users_filtered.first.id)
 user_mfa = client.get_user(users_filtered2.first.id)
