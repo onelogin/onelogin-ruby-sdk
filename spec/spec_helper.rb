@@ -1,5 +1,9 @@
 require "bundler/setup"
 require "onelogin"
+require "webmock/rspec"
+
+# No spec should reach the network. Stub the token endpoint instead.
+WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

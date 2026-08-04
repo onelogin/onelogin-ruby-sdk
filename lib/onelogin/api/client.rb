@@ -68,6 +68,14 @@ module OneLogin
         @error_attribute = nil
       end
 
+      # Whether the current access token should be considered expired.
+      #
+      # Treats the token as expired `token_expiration_buffer` seconds early so a
+      # token that would lapse while a request is in flight is refreshed first.
+      #
+      # @return [Boolean] true when there is no expiration recorded or the token
+      #   is inside the refresh buffer.
+      #
       def expired?
         return true if @expiration.nil?
         Time.now.utc > (@expiration - @token_expiration_buffer)
@@ -75,18 +83,12 @@ module OneLogin
 
       def prepare_token
         if @access_token.nil?
-          get_new_token
+          access_token
         elsif expired?
-          # Try to regenerate token, fall back to getting new token if regeneration fails
-          regenerate_token || get_new_token
+          # Fall back to a brand new token if the refresh grant fails, otherwise
+          # the stale token is reused and the request comes back 401.
+          regenerate_token || access_token
         end
-      end
-
-      # Internal method to get a new access token
-      # This is separate from the public access_token method to allow internal use
-      #
-      def get_new_token
-        access_token
       end
 
       def handle_operation_response(response)
