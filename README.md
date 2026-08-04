@@ -200,11 +200,14 @@ users_sorted = client.get_users(query_parameters)
 
 # Ten least recently active users.
 #
-# `sort` is applied by the API, so use `take` to stop after ten rather than
-# enumerating everyone. Note that `limit` is the API's *page size* - it does
-# not cap the total, because the cursor keeps following pages until they run
-# out or `max_results` is reached.
-least_recently_active = client.get_users(sort: '+last_login').take(10)
+# `sort` is applied by the API. `limit` sets the page size so the request
+# itself only fetches ten rows, and `take` stops the cursor after ten so it
+# does not page any further.
+#
+# Use both: `limit` alone does not cap the total, because the cursor keeps
+# following pages until they run out or `max_results` is reached, and `take`
+# alone still transfers a full default-sized page and discards the extra.
+least_recently_active = client.get_users(sort: '+last_login', limit: 10).take(10)
 
 # Get User by id
 user = client.get_user(users_filtered.first.id)
