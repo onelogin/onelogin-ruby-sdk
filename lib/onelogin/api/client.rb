@@ -26,6 +26,7 @@ module OneLogin
                          Nokogiri::XML::ParseOptions::NONET
 
       DEFAULT_USER_AGENT = "onelogin-ruby-sdk v#{OneLogin::VERSION}".freeze
+      DEFAULT_TOKEN_EXPIRATION_BUFFER = 30 # seconds
 
       # Create a new instance of the Client.
       #
@@ -38,6 +39,7 @@ module OneLogin
         @client_secret = options[:client_secret]
         @region = options[:region] || 'us'
         @max_results = options[:max_results] || 1000
+        @token_expiration_buffer = normalize_expiration_buffer(options[:token_expiration_buffer])
 
         if options[:timeout] and defined? self.class.default_timeout
           self.class.default_timeout options[:timeout]
@@ -58,6 +60,29 @@ module OneLogin
         raise ArgumentError, 'client_id & client_secret are required' unless @client_id && @client_secret
       end
 
+      # Coerce the configured refresh buffer into a non-negative Integer.
+      #
+      # ENV-backed configs hand this over as a String, and a negative buffer
+      # would move the refresh point past the token's real expiry - which is the
+      # 401 this buffer exists to prevent - so reject both loudly.
+      #
+      def normalize_expiration_buffer(value)
+        return DEFAULT_TOKEN_EXPIRATION_BUFFER if value.nil?
+
+        buffer = begin
+          Integer(value)
+        rescue ArgumentError, TypeError
+          nil
+        end
+
+        if buffer.nil? || buffer < 0
+          raise ArgumentError, "token_expiration_buffer must be a non-negative integer, got #{value.inspect}"
+        end
+
+        buffer
+      end
+      private :normalize_expiration_buffer
+
       # Clean any previous error registered at the client.
       #
       def clean_error
@@ -66,15 +91,26 @@ module OneLogin
         @error_attribute = nil
       end
 
+      # Whether the current access token should be considered expired.
+      #
+      # Treats the token as expired `token_expiration_buffer` seconds early so a
+      # token that would lapse while a request is in flight is refreshed first.
+      #
+      # @return [Boolean] true when there is no expiration recorded or the token
+      #   is inside the refresh buffer.
+      #
       def expired?
-        Time.now.utc > @expiration
+        return true if @expiration.nil?
+        Time.now.utc > (@expiration - @token_expiration_buffer)
       end
 
       def prepare_token
         if @access_token.nil?
           access_token
         elsif expired?
-          regenerate_token
+          # Fall back to a brand new token if the refresh grant fails, otherwise
+          # the stale token is reused and the request comes back 401.
+          regenerate_token || access_token
         end
       end
 
