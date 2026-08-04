@@ -175,5 +175,38 @@ RSpec.describe "Token Expiration Handling" do
       expect(client.instance_variable_get(:@token_expiration_buffer)).to eq(0)
       expect(client.expired?).to be false
     end
+
+    # ENV-backed configs hand numbers over as strings.
+    it 'coerces a numeric string' do
+      client = OneLogin::Api::Client.new(
+        client_id: client_id,
+        client_secret: client_secret,
+        token_expiration_buffer: '60'
+      )
+
+      expect(client.instance_variable_get(:@token_expiration_buffer)).to eq(60)
+    end
+
+    # A negative buffer would push the refresh past the real expiry, which is
+    # exactly the 401 this option exists to prevent.
+    it 'rejects a negative buffer' do
+      expect {
+        OneLogin::Api::Client.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          token_expiration_buffer: -30
+        )
+      }.to raise_error(ArgumentError, /non-negative integer/)
+    end
+
+    it 'rejects a non-numeric buffer' do
+      expect {
+        OneLogin::Api::Client.new(
+          client_id: client_id,
+          client_secret: client_secret,
+          token_expiration_buffer: 'soon'
+        )
+      }.to raise_error(ArgumentError, /non-negative integer/)
+    end
   end
 end

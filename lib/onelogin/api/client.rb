@@ -39,7 +39,7 @@ module OneLogin
         @client_secret = options[:client_secret]
         @region = options[:region] || 'us'
         @max_results = options[:max_results] || 1000
-        @token_expiration_buffer = options[:token_expiration_buffer] || DEFAULT_TOKEN_EXPIRATION_BUFFER
+        @token_expiration_buffer = normalize_expiration_buffer(options[:token_expiration_buffer])
 
         if options[:timeout] and defined? self.class.default_timeout
           self.class.default_timeout options[:timeout]
@@ -59,6 +59,29 @@ module OneLogin
       def validate_config
         raise ArgumentError, 'client_id & client_secret are required' unless @client_id && @client_secret
       end
+
+      # Coerce the configured refresh buffer into a non-negative Integer.
+      #
+      # ENV-backed configs hand this over as a String, and a negative buffer
+      # would move the refresh point past the token's real expiry - which is the
+      # 401 this buffer exists to prevent - so reject both loudly.
+      #
+      def normalize_expiration_buffer(value)
+        return DEFAULT_TOKEN_EXPIRATION_BUFFER if value.nil?
+
+        buffer = begin
+          Integer(value)
+        rescue ArgumentError, TypeError
+          nil
+        end
+
+        if buffer.nil? || buffer < 0
+          raise ArgumentError, "token_expiration_buffer must be a non-negative integer, got #{value.inspect}"
+        end
+
+        buffer
+      end
+      private :normalize_expiration_buffer
 
       # Clean any previous error registered at the client.
       #
