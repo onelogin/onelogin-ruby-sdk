@@ -64,8 +64,11 @@ class Cursor
 
     json = response.parsed_response
 
-    if json.nil?
-      raise OneLogin::Api::ApiException.new("Response could not be parsed", 500)
+    # HTTParty picks its parser from Content-Type, so a gateway or proxy error
+    # page comes back as a String and every has_key? below would blow up with a
+    # NoMethodError instead of a usable ApiException.
+    if json.nil? || !json.is_a?(Hash)
+      raise OneLogin::Api::ApiException.new("Response could not be parsed", response.code)
     elsif !json.has_key?(@container) && json.has_key?('status') && json["status"]["error"] == true
       raise OneLogin::Api::ApiException.new(extract_error_message_from_response(response), json["status"]["code"])
     elsif !json.has_key?(@container) && json.has_key?('statusCode')
