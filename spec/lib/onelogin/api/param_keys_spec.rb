@@ -49,6 +49,23 @@ RSpec.describe "Caller-supplied parameter hashes" do
       expect(client.error).to be_nil
     end
 
+    # A string-keyed hash is passed through untouched, so callers using a Hash
+    # subclass with its own to_json keep the object they handed us.
+    it 'leaves an already-string-keyed hash untouched' do
+      params = { 'username_or_email' => 'u', 'password' => 'p', 'subdomain' => 's' }
+      seen = nil
+
+      stub_request(:post, url).to_return do |req|
+        seen = req.body
+        { status: 200, body: success_body, headers: { 'Content-Type' => 'application/json' } }
+      end
+
+      expect(client.send(:stringify_param_keys, params)).to equal(params)
+
+      client.create_session_login_token(params)
+      expect(seen).to eq(params.to_json)
+    end
+
     it 'serializes symbol and string keys to the same body' do
       bodies = []
       stub_request(:post, url).to_return do |req|
@@ -85,6 +102,20 @@ RSpec.describe "Caller-supplied parameter hashes" do
 
     it 'rejects an empty connector_id' do
       client.create_app('connector_id' => '')
+
+      expect(client.error).to eq('400')
+      expect(client.error_attribute).to eq('connector_id')
+    end
+
+    it 'rejects nil with the connector_id error rather than a generic 500' do
+      client.create_app(nil)
+
+      expect(client.error).to eq('400')
+      expect(client.error_attribute).to eq('connector_id')
+    end
+
+    it 'rejects a non-Hash argument the same way' do
+      client.create_app('connector_id=123')
 
       expect(client.error).to eq('400')
       expect(client.error_attribute).to eq('connector_id')

@@ -66,8 +66,17 @@ module OneLogin
       # checks below look them up as strings. `to_json` already serializes both
       # forms identically, so only the validation ever disagreed.
       #
+      # Anything that isn't a Hash becomes an empty one so the required-parameter
+      # guards still fire and report the missing attribute, rather than blowing
+      # up on has_key? and surfacing as a generic 500.
+      #
+      # An already-string-keyed hash is returned untouched, so existing callers
+      # keep the exact object they passed - including Hash subclasses with their
+      # own to_json.
+      #
       def stringify_param_keys(params)
-        return params unless params.is_a?(Hash)
+        return {} unless params.is_a?(Hash)
+        return params if params.keys.all? { |key| key.is_a?(String) }
 
         params.each_with_object({}) { |(key, value), out| out[key.to_s] = value }
       end
