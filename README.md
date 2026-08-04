@@ -3,7 +3,7 @@
 This SDK will let you execute all the API methods, version/1, described
 at https://developers.onelogin.com/api-docs/1/getting-started/dev-overview.
 
-The toolkit is hosted on github. You can download it from:
+The toolkit is hosted on GitHub. You can download it from:
 * Lastest release: https://github.com/onelogin/onelogin-ruby-sdk/releases/latest
 * Main repo: https://github.com/onelogin/onelogin-ruby-sdk/tree/main
 
