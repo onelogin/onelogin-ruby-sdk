@@ -60,6 +60,28 @@ module OneLogin
         raise ArgumentError, 'client_id & client_secret are required' unless @client_id && @client_secret
       end
 
+      # Normalize caller-supplied parameter hashes to string keys.
+      #
+      # The README and examples use symbol keys, but the required-parameter
+      # checks below look them up as strings. `to_json` already serializes both
+      # forms identically, so only the validation ever disagreed.
+      #
+      # Anything that isn't a Hash becomes an empty one so the required-parameter
+      # guards still fire and report the missing attribute, rather than blowing
+      # up on has_key? and surfacing as a generic 500.
+      #
+      # An already-string-keyed hash is returned untouched, so existing callers
+      # keep the exact object they passed - including Hash subclasses with their
+      # own to_json.
+      #
+      def stringify_param_keys(params)
+        return {} unless params.is_a?(Hash)
+        return params if params.keys.all? { |key| key.is_a?(String) }
+
+        params.each_with_object({}) { |(key, value), out| out[key.to_s] = value }
+      end
+      private :stringify_param_keys
+
       # Coerce the configured refresh buffer into a non-negative Integer.
       #
       # ENV-backed configs hand this over as a String, and a negative buffer
@@ -1141,6 +1163,8 @@ module OneLogin
         begin
           url = url_for(SESSION_LOGIN_TOKEN_URL)
 
+          query_params = stringify_param_keys(query_params)
+
           if query_params.nil? || !query_params.has_key?('username_or_email') || !query_params.has_key?('password') || !query_params.has_key?('subdomain')
             raise "username_or_email, password and subdomain are required parameters"
           end
@@ -1366,7 +1390,12 @@ module OneLogin
         begin
           url = url_for(CREATE_APP_URL)
 
-          unless app_params.has_key?('connector_id') || app_params['connector_id'].to_s.empty?
+          app_params = stringify_param_keys(app_params)
+
+          # Was `unless has_key? || value.empty?`, which is true in every case,
+          # so the check never fired and an app could be created with no
+          # connector_id at all.
+          if !app_params.has_key?('connector_id') || app_params['connector_id'].to_s.empty?
             @error = '400'
             @error_description = "connector_id is required"
             @error_attribute = "connector_id"
