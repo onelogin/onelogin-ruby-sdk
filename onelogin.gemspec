@@ -34,7 +34,7 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  spec.required_ruby_version = '>= 1.9.3'
+  spec.required_ruby_version = '>= 3.2'
 
   spec.add_runtime_dependency('httparty', '>=0.13.7')
   spec.add_runtime_dependency('nokogiri', '>=1.6.3.1')
