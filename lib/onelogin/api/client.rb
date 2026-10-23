@@ -21,6 +21,7 @@ module OneLogin
 
       attr_accessor :client_id, :client_secret, :region
       attr_accessor :user_agent, :error, :error_description, :error_attribute
+      attr_reader :api_version
 
       NOKOGIRI_OPTIONS = Nokogiri::XML::ParseOptions::STRICT |
                          Nokogiri::XML::ParseOptions::NONET
@@ -32,6 +33,9 @@ module OneLogin
       #
       # @param config [Hash] Client Id, Client Secret and Region
       #
+      # Pass api_version to call that API version from every method that
+      # supports it (see API_VERSIONS). Other methods keep their default.
+      #
       def initialize(config)
         options = Hash[config.map { |(k, v)| [k.to_sym, v] }]
 
@@ -40,6 +44,7 @@ module OneLogin
         @region = options[:region] || 'us'
         @max_results = options[:max_results] || 1000
         @token_expiration_buffer = normalize_expiration_buffer(options[:token_expiration_buffer])
+        @api_version = normalize_api_version(options[:api_version])
 
         if options[:timeout] and defined? self.class.default_timeout
           self.class.default_timeout options[:timeout]
@@ -104,6 +109,39 @@ module OneLogin
         buffer
       end
       private :normalize_expiration_buffer
+
+      # Coerce the configured API version into one the SDK can call.
+      #
+      # nil leaves every method on its default version. Anything else must be a
+      # version at least one method supports, so a typo fails here instead of
+      # quietly calling the defaults.
+      #
+      def normalize_api_version(value)
+        return nil if value.nil?
+
+        version = begin
+          Integer(value)
+        rescue ArgumentError, TypeError
+          nil
+        end
+
+        supported = API_VERSIONS.values.flatten.uniq.sort
+        unless supported.include?(version)
+          raise ArgumentError, "api_version must be one of #{supported.join(', ')}, got #{value.inspect}"
+        end
+
+        version
+      end
+      private :normalize_api_version
+
+      # The API version a method calls: the configured api_version when the
+      # method supports it, otherwise the method's default.
+      #
+      def api_version_for(method)
+        versions = API_VERSIONS.fetch(method)
+        versions.include?(@api_version) ? @api_version : versions.first
+      end
+      private :api_version_for
 
       # Clean any previous error registered at the client.
       #
@@ -395,14 +433,16 @@ module OneLogin
         prepare_token
 
         begin
+          version = api_version_for(:get_users)
           options = {
             model: OneLogin::Api::Models::User,
             headers: authorized_headers,
             max_results: @max_results,
-            params: params
+            params: params,
+            api_version: version
           }
 
-          return Cursor.new(self, url_for(GET_USERS_URL), options)
+          return Cursor.new(self, url_for(GET_USERS_URL, version: version), options)
 
         rescue Exception => e
           @error = '500'
@@ -431,7 +471,8 @@ module OneLogin
             return
           end
 
-          url = url_for(GET_USER_URL, user_id)
+          version = api_version_for(:get_user)
+          url = url_for(GET_USER_URL, user_id, version: version)
 
           response = self.class.get(
             url,
@@ -440,7 +481,9 @@ module OneLogin
 
           if response.code == 200
             json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
+            if version == 2
+              return OneLogin::Api::Models::User.new(json_data) if json_data.is_a?(Hash)
+            elsif json_data && json_data['data']
               return OneLogin::Api::Models::User.new(json_data['data'][0])
             end
           else
@@ -474,13 +517,15 @@ module OneLogin
             return
           end
 
+          version = api_version_for(:get_user_apps)
           options = {
             model: OneLogin::Api::Models::App,
             headers: authorized_headers,
-            max_results: @max_results
+            max_results: @max_results,
+            api_version: version
           }
 
-          return Cursor.new(self, url_for(GET_APPS_FOR_USER_URL, user_id), options)
+          return Cursor.new(self, url_for(GET_APPS_FOR_USER_URL, user_id, version: version), options)
 
         rescue Exception => e
           @error = '500'
@@ -588,7 +633,8 @@ module OneLogin
         prepare_token
 
         begin
-          url = url_for(CREATE_USER_URL)
+          version = api_version_for(:create_user)
+          url = url_for(CREATE_USER_URL, version: version)
 
           response = self.class.post(
             url,
@@ -596,9 +642,12 @@ module OneLogin
             body: user_params.to_json
           )
 
-          if response.code == 200
+          # v1 answers a create with 200, v2 with 201 Created.
+          if response.code == (version == 2 ? 201 : 200)
             json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
+            if version == 2
+              return OneLogin::Api::Models::User.new(json_data) if json_data.is_a?(Hash)
+            elsif json_data && json_data['data']
               return OneLogin::Api::Models::User.new(json_data['data'][0])
             end
           else
@@ -639,7 +688,8 @@ module OneLogin
             return
           end
 
-          url = url_for(UPDATE_USER_URL, user_id)
+          version = api_version_for(:update_user)
+          url = url_for(UPDATE_USER_URL, user_id, version: version)
 
           response = self.class.put(
             url,
@@ -649,7 +699,9 @@ module OneLogin
 
           if response.code == 200
             json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
+            if version == 2
+              return OneLogin::Api::Models::User.new(json_data) if json_data.is_a?(Hash)
+            elsif json_data && json_data['data']
               return OneLogin::Api::Models::User.new(json_data['data'][0])
             end
           else
@@ -1069,14 +1121,18 @@ module OneLogin
             return
           end
 
-          url = url_for(DELETE_USER_URL, user_id)
+          version = api_version_for(:delete_user)
+          url = url_for(DELETE_USER_URL, user_id, version: version)
 
           response = self.class.delete(
             url,
             headers: authorized_headers
           )
 
-          if response.code == 200
+          # v2 confirms a delete with an empty 204 rather than a status body.
+          if version == 2 && response.code == 204
+            return true
+          elsif version == 1 && response.code == 200
             return handle_operation_response(response)
           else
             @error = response.code.to_s
@@ -1621,14 +1677,16 @@ module OneLogin
         prepare_token
 
         begin
+          version = api_version_for(:get_roles)
           options = {
             model: OneLogin::Api::Models::Role,
             headers: authorized_headers,
             max_results: @max_results,
-            params: params
+            params: params,
+            api_version: version
           }
 
-          return Cursor.new(self, url_for(GET_ROLES_URL), options)
+          return Cursor.new(self, url_for(GET_ROLES_URL, version: version), options)
 
         rescue Exception => e
           @error = '500'
@@ -1657,7 +1715,8 @@ module OneLogin
             return
           end
 
-          url = url_for(GET_ROLE_URL, role_id)
+          version = api_version_for(:get_role)
+          url = url_for(GET_ROLE_URL, role_id, version: version)
 
           response = self.class.get(
             url,
@@ -1666,7 +1725,9 @@ module OneLogin
 
           if response.code == 200
             json_data = JSON.parse(response.body)
-            if json_data && json_data['data']
+            if version == 2
+              return OneLogin::Api::Models::Role.new(json_data) if json_data.is_a?(Hash)
+            elsif json_data && json_data['data']
               return OneLogin::Api::Models::Role.new(json_data['data'][0])
             end
           else

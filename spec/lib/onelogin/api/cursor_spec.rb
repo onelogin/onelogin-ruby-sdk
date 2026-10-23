@@ -75,4 +75,69 @@ RSpec.describe Cursor do
       expect(users.map(&:username)).to eq(%w[alice bob])
     end
   end
+
+  # v2 returns a bare array and pages with an After-Cursor header. Verified on
+  # a live tenant: the cursor carries the filters and page size, and roles
+  # rejects a cursor sent with limit ("cursor xor pagination arguments").
+  describe 'v2 paging' do
+    let(:v2_url) { "https://api.us.onelogin.com/api/2/users" }
+
+    let(:v2_client) do
+      OneLogin::Api::Client.new(client_id: 'test_id', client_secret: 'test_secret', api_version: 2).tap do |c|
+        c.instance_variable_set(:@access_token, 'test_token')
+        c.instance_variable_set(:@expiration, Time.now.utc + 3600)
+      end
+    end
+
+    def page(*names, after_cursor: nil)
+      headers = json_headers
+      headers = headers.merge('After-Cursor' => after_cursor) if after_cursor
+      { status: 200, body: names.map { |name| { id: name.hash, username: name } }.to_json, headers: headers }
+    end
+
+    it 'follows After-Cursor, sending the cursor alone' do
+      first = stub_request(:get, v2_url).with(query: { 'limit' => '2', 'email' => '*example.com' })
+                                        .to_return(page('alice', 'bob', after_cursor: 'c2'))
+      second = stub_request(:get, v2_url).with(query: { 'cursor' => 'c2' })
+                                         .to_return(page('carol'))
+
+      users = v2_client.get_users(limit: 2, email: '*example.com').to_a
+
+      expect(users.map(&:username)).to eq(%w[alice bob carol])
+      expect(first).to have_been_made.once
+      expect(second).to have_been_made.once
+    end
+
+    it 'stops at max_results without fetching another page' do
+      stub_request(:get, v2_url).with(query: { 'limit' => '2' })
+                                .to_return(page('alice', 'bob', after_cursor: 'c2'))
+      next_page = stub_request(:get, v2_url).with(query: { 'cursor' => 'c2' })
+
+      users = v2_client.get_users(limit: 2).take(2)
+
+      expect(users.map(&:username)).to eq(%w[alice bob])
+      expect(next_page).not_to have_been_made
+    end
+
+    it 'raises ApiException on a v2 error' do
+      stub_request(:get, v2_url).to_return(
+        status: 400, headers: json_headers,
+        body: { status: 400, error: 'BadRequestError',
+                description: 'Requests can only have cursor xor pagination arguments' }.to_json
+      )
+
+      expect { v2_client.get_users.to_a }.to raise_error(OneLogin::Api::ApiException) { |e|
+        expect(e.code).to eq(400)
+        expect(e.message).to eq('Requests can only have cursor xor pagination arguments')
+      }
+    end
+
+    it 'raises ApiException on a non-JSON error page' do
+      stub_request(:get, v2_url).to_return(status: 502, body: '<html>502 Bad Gateway</html>',
+                                           headers: { 'Content-Type' => 'text/html' })
+
+      expect { v2_client.get_users.to_a }
+        .to raise_error(OneLogin::Api::ApiException) { |e| expect(e.code).to eq(502) }
+    end
+  end
 end

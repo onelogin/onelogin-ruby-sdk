@@ -28,7 +28,8 @@ module OneLogin
           @samaccountname = data['samaccountname'].to_s
           @userprincipalname = data['userprincipalname'].to_s
           @group_id = data['group_id']? data['group_id'].to_i : nil
-          @role_ids = data['role_id']? data['role_id'] : []
+          # v1 calls it role_id, v2 role_ids.
+          @role_ids = data['role_id'] || data['role_ids'] || []
           @custom_attributes = data['custom_attributes'] ? data['custom_attributes'] : []
           @openid_name = data['openid_name'].to_s
           @locale_code = data['locale_code'].to_s
