@@ -25,6 +25,7 @@ class Cursor
     @params = options[:params] || {}
     @max_results = options[:max_results]
     @container = options[:container] || 'data'
+    @api_version = options[:api_version]
 
     @collection = []
     @after_cursor = options.fetch(:after_cursor, nil)
@@ -53,12 +54,14 @@ class Cursor
   private
 
   def fetch_next_page
+    return fetch_next_v2_page if @api_version == 2
+
     @params = @params.merge(after_cursor: @after_cursor) if @after_cursor
     @client.prepare_token
 
     response = @client.class.get(
       @url,
-      headers: @headers,
+      headers: request_headers,
       query: @params
     )
 
@@ -89,6 +92,43 @@ class Cursor
       @after_cursor = after_cursor(json)
       @last_cursor_empty = @after_cursor.nil?
     end
+  end
+
+  # v2 returns a bare array and puts the next page's cursor in the After-Cursor
+  # header, which is absent on the last page. The cursor already encodes the
+  # filters and page size, and the API rejects a cursor sent alongside limit or
+  # page, so follow-up requests send the cursor alone.
+  def fetch_next_v2_page
+    @client.prepare_token
+
+    response = @client.class.get(
+      @url,
+      headers: request_headers,
+      query: @after_cursor ? { cursor: @after_cursor } : @params
+    )
+
+    results = response.parsed_response
+
+    unless response.code == 200 && results.is_a?(Array)
+      message = results.is_a?(Hash) ? extract_error_message_from_response(response) : "Response could not be parsed"
+      raise OneLogin::Api::ApiException.new(message, response.code)
+    end
+
+    @collection += if results_remaining < results.size
+      results.slice(0, results_remaining)
+    else
+      results
+    end
+
+    @after_cursor = response.headers['after-cursor']
+    @last_cursor_empty = @after_cursor.nil? || @after_cursor.empty?
+  end
+
+  # The headers were built when the cursor was, and prepare_token may have
+  # refreshed the token since: a cursor enumerated later, or one whose pages
+  # outlive the token. Take the current token from the client.
+  def request_headers
+    @headers.merge(@client.authorized_headers)
   end
 
   def after_cursor(json)

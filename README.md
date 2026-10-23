@@ -59,6 +59,7 @@ If you don't have an account you can [sign up for a free developer account here]
 |max_results| Optional: Defaults to 1000  |
 |timeout| Optional: Defaults to 60 (requires httparty > 0.16.2) |
 |token_expiration_buffer| Optional: Non-negative number of seconds before token expiration to trigger a refresh. Set to `0` to disable. Defaults to 30 |
+|api_version| Optional: `1` or `2`. Calls that API version from every method that supports it. See [API versions](#api-versions) |
 
 ```ruby
 require 'onelogin'
@@ -157,6 +158,34 @@ client = OneLogin::Api::Client.new(
 
 client.get_events.map {|event| event.id}
 ```
+
+### API versions
+
+Each method calls one version of the OneLogin API by default, and that default
+doesn't change. Pass `api_version: 2` to move the methods below to API v2:
+
+```ruby
+client = OneLogin::Api::Client.new(
+    client_id: '',
+    client_secret:'',
+    api_version: 2
+)
+```
+
+`get_users`, `get_user`, `get_user_apps`, `create_user`, `update_user`,
+`delete_user`, `get_roles` and `get_role` support both versions. Every other method
+keeps its default version, whatever `api_version` says.
+`OneLogin::Api::Client::API_VERSIONS` lists the versions each method supports.
+
+Under v2 they return the same models, filled from v2's responses. Two differences
+show through:
+
+- v2 lists fewer fields per user than v1. Under v2, `get_users` leaves `role_ids`
+  and `custom_attributes` empty, for example. `get_user` fills them.
+- `App#login_id` from `get_user_apps` is the login's numeric id in v2, where v1
+  gives the username used to sign in. v2 fills the `provisioning_enabled`,
+  `provisioning_state` and `provisioning_status` fields rather than `provisioned`
+  and `personal`.
 
 
 

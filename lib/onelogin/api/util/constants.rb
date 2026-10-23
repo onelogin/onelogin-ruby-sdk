@@ -98,6 +98,24 @@ module OneLogin
         GET_USERS_ASSIGNED_TO_PRIVILEGE_URL = "https://api.%s.onelogin.com/api/1/privileges/%s/users"
         ASSIGN_USERS_TO_PRIVILEGE_URL = "https://api.%s.onelogin.com/api/1/privileges/%s/users"
         REMOVE_USER_FROM_PRIVILEGE_URL = "https://api.%s.onelogin.com/api/1/privileges/%s/users/%s"
+
+        # API versions each client method can call, keyed by method name.
+        #
+        # The first version is the default and matches the version in the
+        # method's URL constant. A method that isn't listed only calls the
+        # version in its URL constant. List a version here only once the method
+        # can parse that version's response: v1 and v2 use different envelopes.
+        API_VERSIONS = {
+          get_users: [1, 2],
+          get_user: [1, 2],
+          get_user_apps: [1, 2],
+          create_user: [1, 2],
+          update_user: [1, 2],
+          delete_user: [1, 2],
+          get_roles: [1, 2],
+          get_role: [1, 2]
+        }.transform_values(&:freeze).freeze
+
         VALID_ACTIONS = [
           "apps:List",
           "apps:Get",
