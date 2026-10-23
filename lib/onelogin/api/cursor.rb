@@ -61,7 +61,7 @@ class Cursor
 
     response = @client.class.get(
       @url,
-      headers: @headers,
+      headers: request_headers,
       query: @params
     )
 
@@ -103,7 +103,7 @@ class Cursor
 
     response = @client.class.get(
       @url,
-      headers: @headers,
+      headers: request_headers,
       query: @after_cursor ? { cursor: @after_cursor } : @params
     )
 
@@ -122,6 +122,13 @@ class Cursor
 
     @after_cursor = response.headers['after-cursor']
     @last_cursor_empty = @after_cursor.nil? || @after_cursor.empty?
+  end
+
+  # The headers were built when the cursor was, and prepare_token may have
+  # refreshed the token since: a cursor enumerated later, or one whose pages
+  # outlive the token. Take the current token from the client.
+  def request_headers
+    @headers.merge(@client.authorized_headers)
   end
 
   def after_cursor(json)

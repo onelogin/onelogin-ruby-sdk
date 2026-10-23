@@ -76,6 +76,41 @@ RSpec.describe Cursor do
     end
   end
 
+  # The cursor's headers are built when it is created, but the token may be
+  # refreshed before a page is fetched.
+  describe 'a token refreshed after the cursor was created' do
+    let(:token_url) { 'https://api.us.onelogin.com/auth/oauth2/v2/token' }
+
+    before do
+      stub_request(:post, token_url).to_return(
+        status: 200, headers: json_headers,
+        body: { access_token: 'fresh_token', refresh_token: 'fresh_refresh', token_type: 'bearer',
+                expires_in: 36000, created_at: Time.now.utc.iso8601 }.to_json
+      )
+    end
+
+    [[1, "https://api.us.onelogin.com/api/1/users", { status: { error: false, code: 200 }, data: [] }],
+     [2, "https://api.us.onelogin.com/api/2/users", []]].each do |version, url, body|
+      it "sends the refreshed token on v#{version}" do
+        versioned = OneLogin::Api::Client.new(client_id: 'test_id', client_secret: 'test_secret',
+                                              api_version: version)
+        versioned.instance_variable_set(:@access_token, 'test_token')
+        versioned.instance_variable_set(:@refresh_token, 'test_refresh')
+        versioned.instance_variable_set(:@expiration, Time.now.utc + 3600)
+
+        users = versioned.get_users
+        versioned.instance_variable_set(:@expiration, Time.now.utc - 1)
+
+        fresh = stub_request(:get, url).with(headers: { 'Authorization' => 'bearer fresh_token' })
+                                       .to_return(status: 200, body: body.to_json, headers: json_headers)
+
+        users.to_a
+
+        expect(fresh).to have_been_made.once
+      end
+    end
+  end
+
   # v2 returns a bare array and pages with an After-Cursor header. Verified on
   # a live tenant: the cursor carries the filters and page size, and roles
   # rejects a cursor sent with limit ("cursor xor pagination arguments").

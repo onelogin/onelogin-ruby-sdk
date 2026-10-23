@@ -49,6 +49,12 @@ RSpec.describe "API version selection" do
     it 'rejects a non-numeric version' do
       expect { client_for(api_version: 'v2') }.to raise_error(ArgumentError, /got "v2"/)
     end
+
+    # Integer(1.9) is 1, which would quietly select a version.
+    it 'rejects a fractional version' do
+      expect { client_for(api_version: 1.9) }.to raise_error(ArgumentError, /got 1.9/)
+      expect { client_for(api_version: '1.9') }.to raise_error(ArgumentError, /got "1.9"/)
+    end
   end
 
   describe 'API_VERSIONS' do

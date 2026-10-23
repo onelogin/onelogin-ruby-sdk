@@ -114,14 +114,15 @@ module OneLogin
       #
       # nil leaves every method on its default version. Anything else must be a
       # version at least one method supports, so a typo fails here instead of
-      # quietly calling the defaults.
+      # quietly calling the defaults. Only Integers and Strings convert:
+      # Integer() would truncate 1.9 to 1.
       #
       def normalize_api_version(value)
         return nil if value.nil?
 
         version = begin
-          Integer(value)
-        rescue ArgumentError, TypeError
+          Integer(value) if value.is_a?(Integer) || value.is_a?(String)
+        rescue ArgumentError
           nil
         end
 
